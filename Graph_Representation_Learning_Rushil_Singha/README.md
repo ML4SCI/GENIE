@@ -2,7 +2,7 @@
 
 A PyTorch/PyTorch-Geometric implementation of a **graph-based diffusion model** for generating realistic jets from the [JetNet dataset](https://huggingface.co/datasets/jetnet).  
 
-This project builds **k-nearest neighbor (kNN) jet graphs**, learns **Chebyshev GCN (ChebNet) embeddings**, trains a **diffusion model in latent space**, and decodes back into particle-level jets.
+This model builds **k-nearest neighbor (kNN) jet graphs**, learns **Chebyshev GCN (ChebNet) embeddings**, trains a **diffusion model in latent space**, and decodes generated samples back into particle-level jets.
 
 ---
 
@@ -18,37 +18,34 @@ This project builds **k-nearest neighbor (kNN) jet graphs**, learns **Chebyshev 
 
 ## ⚙️ Installation
 
-Clone the repo and install dependencies:
+Clone the ML4Sci GENIE repository and navigate to this project directory :
 
 ```bash
-git clone https://github.com/your-username/jetnet-graph-diffusion.git
-cd jetnet-graph-diffusion
-
-pip install -r requirements.txt
-
-requirements.txt
-
-numpy==1.24.3
-torch==2.0.0
-torch-geometric
-torch-scatter
-torch-sparse
-torch-cluster
-networkx
-scikit-learn
-jetnet
+git clone https://github.com/ML4SCI/GENIE.git
+cd GENIE/Graph_Representation_Learning_Rushil_Singha
 ```
-# This script:
+Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+## 🏃 Quick Start
 
-->Encodes jets into latent space
+After installing dependencies, run:
 
-->Runs diffusion training
+```bash
+python code.py
+```
+# This script will:
 
-->Decodes jets back into particle space
+- Encodes jets into latent space
 
-->Logs evaluation metrics
+- Runs diffusion training
 
-->Saves visualizations to results/
+- Decodes jets back into particle space
+
+- Logs evaluation metrics
+
+- Saves visualizations to results/
 
 
 
