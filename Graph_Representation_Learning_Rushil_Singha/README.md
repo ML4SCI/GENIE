@@ -7,27 +7,29 @@ This project builds **k-nearest neighbor (kNN) jet graphs**, learns **Chebyshev 
 ---
 
 ## 🚀 Features
+
 - kNN graph construction from jet particle clouds  
 - Graph encoder using **Chebyshev GCN** (`SimpleChebNet`)  
 - Latent **diffusion process** with denoising MLP  
 - Jet particle **decoder** network  
-- Evaluation with **KL divergence** & **Wasserstein distance**  
+- Evaluation using **KL divergence** & **Wasserstein distance**  
 - Visualization utilities for jet properties  
 
 ---
 
 ## ⚙️ Installation
 
-Clone the repo and install dependencies:
+Clone the repository and install dependencies:
 
-```bash
+ 
+```sh
 git clone https://github.com/your-username/jetnet-graph-diffusion.git
 cd jetnet-graph-diffusion
-
 pip install -r requirements.txt
+```
 
 requirements.txt
-
+```sh
 numpy==1.24.3
 torch==2.0.0
 torch-geometric
@@ -38,18 +40,26 @@ networkx
 scikit-learn
 jetnet
 ```
-# This script:
 
-->Encodes jets into latent space
+## 📜 Script Overview
 
-->Runs diffusion training
+The main script performs the following steps:
 
-->Decodes jets back into particle space
+- Encodes jets into latent space
+- Runs diffusion training
+- Decodes jets back into particle space
+- Logs evaluation metrics
+- Saves visualizations to results/ directory
 
-->Logs evaluation metrics
+## To run the main workflow:
+```sh
+python code.py
+```
+##  Usage
 
-->Saves visualizations to results/
+This repository contains a research prototype for graph-based jet generation using latent diffusion models.
 
+##  Note:
+Dataset paths, hyperparameters, and output locations may need to be adjusted depending on the local environment and JetNet configuration.
 
-
-
+ 
