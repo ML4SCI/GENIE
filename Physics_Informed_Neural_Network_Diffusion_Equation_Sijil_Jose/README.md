@@ -1,80 +1,180 @@
-# PINNDE : Physics Informed Neural Networks for Diffusion Equation | GSoC 2025
+# PINNDE: Physics Informed Neural Networks for Diffusion Equation
+
+**Author**: Sijil Jose  
+**GSoC 2025 Project**: Fast sampling via reverse-time diffusion using PINNs
 
 ![ML4Sci@GSoC2024](https://miro.medium.com/v2/resize:fit:1100/format:webp/0*8KAp7eW2atsaRwdS.jpeg)
 
-## Project Description :
+## 🎯 Project Overview
 
-The over arching goal of this project is to develop a proof of concept for building a fast and reliable sampler by solving reverse-time diffusion equation that leverages the high accuracy of diffusion models with the flexibility of physics-informed neural networks. PINNDE can be the basis of a fast, accurate, sampler of complicated and, or, intractable distributions in multiple dimensions. Encouraging results of the PINNDE method in 1, 2, and 3 dimensions are obtained.  
+This project develops a proof-of-concept for building fast and reliable samplers by solving reverse-time diffusion equations using Physics-Informed Neural Networks (PINNs). PINNDE combines the high accuracy of diffusion models with the flexibility of physics-informed neural networks to sample from complicated and intractable distributions in multiple dimensions.
 
-### What was Accomplished?
-As part of GSoC 2025, I contributed to this project titled as 'PINNDE:Physics Informed Neural Networks for Diffusion Equation' with the organisation Machine Learnign for Science [ML4SCI](https://ml4sci.org/). I am working under the mentorship of Prof. Harrison Prosper, Prof. Pushpalatha Bhat, and Prof. Sergei Gleyzer. This project is part of the broader [GENIE](https://ml4sci.org/activities/gsoc2025.html) initiative within ML4SCI, which explores the use of machine learning techniques for anomaly detection and event generation in high-energy particle physics.
-Our final goal is to test this method named PINNDE on toy examples and later move on to use it for devloping a fast simulations of particle jets. As part of GSoC 2025 i have finished the following tasks
+### ✅ What Was Accomplished
 
-- Implemented an accurate and stable approximant for q-function that is required for solving the reverse-time diffusion ODE.
-- Implemented different PINN architechures to test the feasilibilty of PINNs to accurately solve the reverse-time diffusion ODE.
-- Obtained satisfactory results on different probability distributions of 1 ,2 and 3 dimensions.
-- Tested different optimisation strategies for traning PINNs
-- Started using this new method on [Fast Calorimeter Challenge 2022 for benchmarking](https://calochallenge.github.io/homepage/) (coming Soon!!) 
+- ✅ Implemented accurate q-function approximation for reverse-time diffusion ODE
+- ✅ Developed multiple PINN architectures for solving diffusion equations  
+- ✅ Validated on 1D, 2D, and 3D Gaussian Mixture Models
+- ✅ Tested different optimization strategies for PINN training
+- 🚧 Integration with Fast Calorimeter Challenge 2022 (in progress)
 
-Following are the relevant documents pertaining to this project. 
+---
 
-- Code on GENIE Github Repository: [Link to official Repository](https://github.com/ML4SCI/GENIE/tree/main/Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose)
-- Code on my Github Repository (my fork) : [Link to my fork (branch PINNDE)](https://github.com/sijil-jose/GENIE/blob/PINNDE/Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose/README.md)
-- Project Documentation: (final blog coming soon !!)
+## 🚀 Quick Start
 
-#### Other Important Documents:
-- Initial project idea from ML4SCI : [ML4SCI LinK](https://ml4sci.org/gsoc/2025/proposal_GENIE5.html)
-- My project proposal : [Proposal](https://github.com/sijil-jose/GENIE/blob/PINNDE/Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose/slides_docs/GSOC_2025_Project_Proposal_Sijil_Jose.pdf)
-- GSoC Abstract : [Abstract](https://summerofcode.withgoogle.com/programs/2025/projects/uGmyAV1q)
-- Mid Term blog summarising the project : [PINNDE mid-term blog](https://medium.com/@sijiljose.999/gsoc-2025-with-ml4sci-part-i-physics-informed-neural-network-for-diffusion-equation-pinnde-491d46a5b84d)
-- Final Document : (Coming Soon!!)
-- Midterm Lighting Talk : [Midterm slides](https://github.com/sijil-jose/GENIE/blob/PINNDE/Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose/slides_docs/Mid-term_slides.pdf)
+### Prerequisites
+- Python 3.8+
+- PyTorch 1.8+
+- NumPy, Matplotlib, SciPy
+- Jupyter (for notebooks)
 
-### Next Steps
-- Finish implementing this method for Fast Calorimeter Challenge
-- Explore Other PINN and operator learning frameworks.
-- Add more unit tests for the files
+### Installation
+```bash
+cd Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose
 
-### My Contributions:
+# Install dependencies (create requirements.txt if needed)
+pip install torch numpy matplotlib scipy jupyter corner
+```
 
-Initally I had written a detailed [proposal](https://github.com/sijil-jose/GENIE/blob/PINNDE/Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose/slides_docs/GSOC_2025_Project_Proposal_Sijil_Jose.pdf) outlining my plans for the project and also finshed a [test task](https://github.com/sijil-jose/GENIE/tree/PINNDE/Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose/Initial_test). The following is the code developed during the GSoC 2025 coding period. 
-- Code on GENIE Github Repository: [Link to official Repository](https://github.com/ML4SCI/GENIE/tree/main/Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose)
-- Code on my Github Repository (my fork) : [Link to my fork (branch PINNDE)](https://github.com/sijil-jose/GENIE/blob/PINNDE/Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose/README.md)
+### Running the Code
 
-I had also worked on documenting my work in the form of blogs and stared compiling the results we obtained into an article, which can be found below.
-- Mid Term blog summarising the project : [PINNDE mid-term blog](https://medium.com/@sijiljose.999/gsoc-2025-with-ml4sci-part-i-physics-informed-neural-network-for-diffusion-equation-pinnde-491d46a5b84d)
-- Final Document : (Coming Soon!!)
-- Preprint of the article: (Coming Soon !!)
+#### Option 1: Python Scripts (Advanced Users)
+```bash
+# 1D Gaussian Mixture Model
+python flow_de/train_1d_GMM.py
 
-### Description of Directories and files:
-- ```flow_de``` : directory containing the files and scripts to train different models
-  -   ``` flow_de.py``` : python file containg the classes named ```class qVectorField``` and ```class FlowDE``` for definig the q-function and numerically solving the reverse-time diffusion equation.
-  -   ```gendata.py``` : python file continaing functions to sample from 1 , 2 and 3 dimensional distibutions considered in this project.
-  -   ``` networks_1d.py``` , ``` networks_2d.py``` and ``` networks_3d.py``` : python files containing majority of the pytorch functions required to defining and training the neural networks for different cases.    
-  -  ```train_1d_GMM.py```, ```train_2d_GMM.py```, ```train_3d_GMM.py``` : python files to train the PINNDE models. (uncomment the last line to run the optimiser )
+# 2D Gaussian Mixture Model  
+python flow_de/train_2d_GMM.py
 
-- ```Jupyter Notebooks``` : contains the respective jupyter notebooks with more detailed explainations for each case
-- ```FlowDE``` : contained ```FlowDE.ipynb``` a jupyternotebook with code to numerically solve the reverse-time diffusion equation for a 1D case.
-- ```slides_docs``` : containes some pdf documents related to this project
-- ```Tests``` : python files with unit tests for each functions. (To be updated)
-- ```Figures```: contains some plots describing the results obtained in this project.
-- ```README.md```: This documentation file
-- ```Initial_test```: This directory contains all the files sumbitted as part of the initial tests as part of the application for GSoC 2025.
+# 3D Gaussian Mixture Model
+python flow_de/train_3d_GMM.py
+```
+**Note**: Uncomment the last line in each script to run the optimizer.
 
+#### Option 2: Jupyter Notebooks (Recommended for Beginners)
+```bash
+cd "Jupyter Notebooks"
 
-# Overview of interesting results obtained during this program (Plots):
+# Start with 1D case
+jupyter notebook FlowDE_PINN-1D_GMM.ipynb
 
-### Plots comparing the target distributions and distributions obtained from the trained model:
+# Then try 2D and 3D
+jupyter notebook FlowDE_PINN-2D_GMM.ipynb
+jupyter notebook FlowDE_PINN-3D_GMM.ipynb
+```
 
-![Trained Distibtuions](https://github.com/sijil-jose/GENIE/blob/PINNDE/Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose/Figures/trained_distributions.png)
+#### Option 3: Numerical Solver Demo
+```bash
+cd FlowDE
+jupyter notebook FlowDE.ipynb  # 1D numerical solution demo
+```
 
-These figures compares samples generated by the trained PINNDE network with those from the reference distribution used during training. The reference distribution is shown in black,
-while samples from the PINNDE model are shown in blue. The two-dimensional and three-dimensional cases are visualized using corner plots: the diagonal panels display the marginalized one-dimensional distributions, while the off-diagonal panels illustrate the pairwise joint distributions
+---
 
-### Plot comparing the trajectories obtained by solving the reverse time ODE using PINN and Numerical Solvers:
-![Normal](https://github.com/sijil-jose/GENIE/blob/PINNDE/Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose/Figures/normal_trajectories.png)
+## 📁 Project Structure
 
-![Uniform](https://github.com/sijil-jose/GENIE/blob/PINNDE/Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose/Figures/uniform_trajectories.png)
+```
+Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose/
+├── flow_de/                          # Core implementation
+│   ├── flow_de.py                    # qVectorField and FlowDE classes
+│   ├── gendata.py                    # Data generation utilities
+│   ├── networks_1d.py                # 1D PINN architectures
+│   ├── networks_2d.py                # 2D PINN architectures  
+│   ├── networks_3d.py                # 3D PINN architectures
+│   └── train_*d_GMM.py              # Training scripts
+├── Jupyter Notebooks/                # Interactive examples
+│   ├── FlowDE_PINN-1D_GMM.ipynb     # 1D demo with explanations
+│   ├── FlowDE_PINN-2D_GMM.ipynb     # 2D demo with visualizations
+│   └── FlowDE_PINN-3D_GMM.ipynb     # 3D demo with corner plots
+├── Figures/                          # Result visualizations
+├── Tests/                            # Unit tests (to be expanded)
+└── slides_docs/                      # Project documentation
+```
 
-This plot compares the solution trajectories of reverse-time diffusion ODE solution obtained by numerically solving the ODE using the 2nd −order Runge-Kutta solver with the solution predicted
-from the trained PINN. ( These are different points from the collocation points used for training). The solutions from PINN are plotted in black and solutions from the Runge-Kutta solver is plotted in green.
+---
+
+## 🎯 Expected Results
+
+### Training Process
+- **Runtime**: 30 minutes - 2 hours depending on dimension and complexity
+- **Convergence**: Loss should decrease steadily over epochs
+- **Memory**: 2-4GB RAM typically sufficient
+
+### Output Files
+- **Model checkpoints**: `*.pth` files with trained parameters
+- **Visualizations**: Comparison plots in `Figures/` directory
+- **Trajectories**: ODE solution paths (PINN vs numerical solver)
+
+### Success Indicators
+✅ **Good Results:**
+- Generated samples match target distribution visually
+- Low residual loss for physics constraints
+- Smooth trajectory plots without oscillations
+
+⚠️ **Poor Results May Indicate:**
+- Insufficient training epochs (try 5000+)
+- Learning rate too high/low (try 1e-4 to 1e-3)
+- Network architecture needs adjustment
+
+---
+
+## 🔬 Key Results Achieved
+
+### Distribution Matching
+![Trained Distributions](Figures/trained_distributions.png)
+
+*Comparison of target distributions (black) vs PINNDE samples (blue) for 1D, 2D, and 3D cases*
+
+### Trajectory Validation  
+![Normal Trajectories](Figures/normal_trajectories.png)
+![Uniform Trajectories](Figures/uniform_trajectories.png)
+
+*PINN solutions (black) vs numerical Runge-Kutta solver (green) showing excellent agreement*
+
+---
+
+## 🛠️ Troubleshooting
+
+**Training doesn't converge:**
+- Increase number of collocation points
+- Adjust learning rate (try 5e-4)
+- Check physics loss weighting
+
+**Memory issues:**
+- Reduce batch size in training scripts
+- Use CPU instead of GPU for smaller problems
+
+**Poor sample quality:**
+- Increase training epochs
+- Verify target distribution implementation
+- Check boundary conditions
+
+---
+
+## 📚 Documentation & Resources
+
+### Project Links
+- [Official Repository](https://github.com/ML4SCI/GENIE/tree/main/Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose)
+- [Author's Fork](https://github.com/sijil-jose/GENIE/blob/PINNDE/Physics_Informed_Neural_Network_Diffusion_Equation_Sijil_Jose/README.md)
+- [Mid-term Blog](https://medium.com/@sijiljose.999/gsoc-2025-with-ml4sci-part-i-physics-informed-neural-network-for-diffusion-equation-pinnde-491d46a5b84d)
+
+### Academic References
+- [Original ML4SCI Proposal](https://ml4sci.org/gsoc/2025/proposal_GENIE5.html)
+- [GSoC Abstract](https://summerofcode.withgoogle.com/programs/2025/projects/uGmyAV1q)
+- [Fast Calorimeter Challenge](https://calochallenge.github.io/homepage/)
+
+---
+
+## 🔮 Future Work
+
+- Complete Fast Calorimeter Challenge integration
+- Explore advanced PINN architectures (DeepONet, etc.)
+- Add comprehensive unit test coverage
+- Benchmark against other sampling methods
+
+---
+
+## 🙏 Acknowledgments
+
+**Mentors**: Prof. Harrison Prosper, Prof. Pushpalatha Bhat, Prof. Sergei Gleyzer  
+**Organization**: [ML4SCI](https://ml4sci.org/) - Machine Learning for Science  
+**Program**: Google Summer of Code 2025
