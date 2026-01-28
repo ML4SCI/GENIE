@@ -47,7 +47,12 @@ class EventProcessor:
             extracted_columns = []
             for column in self.columns:
                 if column in data:
-                    extracted_columns.append(ak.to_numpy(data[column]))
+                    if column == 'phi':
+                        phi = ak.to_numpy(data['phi'])
+                        extracted_columns.append(np.sin(phi))
+                        extracted_columns.append(np.cos(phi))
+                    else:
+                        extracted_columns.append(ak.to_numpy(data[column]))
 
             # Stack the extracted columns along the last axis
             if extracted_columns:
@@ -79,6 +84,7 @@ class EventProcessor:
                 simplices[k - 1][frozenset(simplex)] = len(simplices[k - 1])
             return simplices
 
+        coord = (coord - coord.mean(axis=0)) / (coord.std(axis=0) + 1e-8)
         rips_complex = gd.RipsComplex(points=coord, sparse=sparsity)
         st = rips_complex.create_simplex_tree(max_dimension=max_dimension)
         _ = st.prune_above_filtration(filtration_val)
