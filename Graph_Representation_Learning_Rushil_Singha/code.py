@@ -1,212 +1,223 @@
-
-import warnings
-warnings.filterwarnings('ignore', category=UserWarning)
-
-import math
-import numpy as np
-import matplotlib.pyplot as plt
-from jetnet.datasets import JetNet
-USE_JETNET = True
-print("Using JetNet dataset")
-
-import networkx as nx
-from sklearn.neighbors import kneighbors_graph
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader
-from torch_geometric.data import Data, Batch
-from torch_geometric.nn import ChebConv, global_mean_pool, global_max_pool, global_add_pool  # Added global_add_pool
-from torch_geometric.loader import DataLoader as GeometricDataLoader
-
 from scipy.stats import wasserstein_distance
+from torch_geometric.nn import (
+    ChebConv,
+    global_mean_pool,
+    global_max_pool,
+    global_add_pool,
+)
+from torch_geometric.data import Data
+from torch.utils.data import Dataset, DataLoader
+import torch.optim as optim
+import torch.nn.functional as F
+import torch.nn as nn
+import torch
+from sklearn.neighbors import kneighbors_graph
+import numpy as np
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
-# Set device
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+# -------------------------------
+# Safe JetNet import
+# -------------------------------
+try:
+    from jetnet.datasets import JetNet
+    USE_JETNET = True
+    print("Using JetNet dataset")
+except ImportError:
+    USE_JETNET = False
+    raise ImportError("JetNet not installed. Run: pip install jetnet")
+
+
+# -------------------------------
+# Device
+# -------------------------------
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+torch.backends.cudnn.benchmark = True if device.type == "cuda" else False
 print(f"Using device: {device}")
 
-# --- 1. Data Loading and Preprocessing ---
+# =================================================
+# 1. Data Loading and Preprocessing
+# =================================================
+
 
 def load_jetnet_data():
-    """Load JetNet dataset with fallback options"""
-    global USE_JETNET
+    if not USE_JETNET:
+        raise ImportError("JetNet not available")
 
-    if USE_JETNET is None:
-        raise ImportError("No suitable dataset package available")
+    particle_data, jet_data = JetNet.getData(
+        jet_type=["g", "q", "t"],
+        data_dir="jetnet_data",
+        particle_features=["etarel", "phirel", "ptrel", "mask"],
+        jet_features=["pt", "eta", "mass", "num_particles"],
+        num_particles=150,
+        split="train",
+        download=True,
+    )
 
-    if USE_JETNET:
-        # Load JetNet data
-        particle_data, jet_data = JetNet.getData(
-            jet_type=['g', 'q', 't'],
-            data_dir="jetnet_data",
-            particle_features=['etarel', 'phirel', 'ptrel', 'mask'],
-            jet_features=['pt', 'eta', 'mass', 'num_particles'],
-            num_particles=150,
-            split='train',
-            download=True
-        )
+    print("Particle shape:", particle_data.shape)
+    print("Jet shape:", jet_data.shape)
+    print(f"Total number of jets: {len(particle_data)}")
 
-        print("Particle shape:", particle_data.shape)
-        print("Jet shape:", jet_data.shape)
-        print(f"Total number of jets in dataset: {len(particle_data)}")
+    return particle_data, jet_data
 
-        return particle_data, jet_data
 
-def get_hits_from_jetnet(jet_particles, jet_info):
-    """Extract hits from JetNet particle data"""
-    # Get valid particles (mask == 1)
+def get_hits_from_jetnet(jet_particles):
     valid_mask = jet_particles[:, 3] == 1
     valid_particles = jet_particles[valid_mask]
 
     if len(valid_particles) == 0:
         return None
 
-    # Sort by descending pt_rel
     sorted_idx = np.argsort(-valid_particles[:, 2])
     valid_particles = valid_particles[sorted_idx]
 
-    # Extract features
-    eta = valid_particles[:, 0]  # etarel
-    phi = valid_particles[:, 1]  # phirel
-    pt = valid_particles[:, 2]   # ptrel
+    eta = valid_particles[:, 0]
+    phi = valid_particles[:, 1]
+    pt = valid_particles[:, 2]
 
-    # Create hits array: [eta, phi, pt]
-    hits = np.column_stack((eta, phi, pt))
+    return np.column_stack((eta, phi, pt))
 
-    return hits
 
 def make_graph(hits):
-    """Create graph from hits using k-nearest neighbors"""
-    if len(hits) < 4:  # Need at least 4 points for k=4
-        # Use smaller k for sparse jets
+    if len(hits) < 4:
         k = min(len(hits) - 1, 2)
         if k <= 0:
             return None, hits, None
     else:
         k = 4
 
-    coords = hits[:, :2]  # eta, phi coordinates
-    adj_matrix = kneighbors_graph(coords, n_neighbors=k, mode='connectivity', include_self=False)
-    G = nx.from_scipy_sparse_array(adj_matrix)
-    return G, hits, adj_matrix
+    coords = hits[:, :2]
+    adj_matrix = kneighbors_graph(
+        coords, n_neighbors=k, mode="connectivity", include_self=False
+    )
+
+    return None, hits, adj_matrix
+
 
 def collect_graph_and_targets(particle_data, jet_data, max_jets=3200):
-    """Collect graph data and targets for training"""
     graph_data = []
     target_particles = []
     original_jets = []
     failed_count = 0
 
     n_jets = min(len(particle_data), max_jets)
-    print(f"Collecting data for {n_jets} jets...")
+    print(f"Collecting {n_jets} jets...")
 
     for i in range(n_jets):
         if i % 100 == 0:
-            print(f"Processing jet {i}/{n_jets}...")
+            print(f"Processing jet {i}/{n_jets}")
 
         try:
             jet_particles = particle_data[i]
             jet_info = jet_data[i]
 
-            hits = get_hits_from_jetnet(jet_particles, jet_info)
-            if hits is None or len(hits) == 0:
+            hits = get_hits_from_jetnet(jet_particles)
+            if hits is None:
                 failed_count += 1
                 continue
 
-            G, hits, adj_matrix = make_graph(hits)
-            if G is None or adj_matrix is None:
+            _, hits, adj_matrix = make_graph(hits)
+            if adj_matrix is None:
                 failed_count += 1
                 continue
 
             x = torch.tensor(hits, dtype=torch.float)
-            edge_index = torch.tensor(np.array(np.nonzero(adj_matrix)), dtype=torch.long)
+            edge_index = torch.tensor(adj_matrix.nonzero(), dtype=torch.long)
 
-            data = Data(x=x, edge_index=edge_index)
-            graph_data.append(data)
+            graph_data.append(Data(x=x, edge_index=edge_index))
 
-            # Sort target particles by descending pt_rel and pad
             valid_mask = jet_particles[:, 3] == 1
             valid_particles = jet_particles[valid_mask]
+
             if len(valid_particles) > 0:
                 sorted_idx = np.argsort(-valid_particles[:, 2])
                 sorted_valid = valid_particles[sorted_idx]
             else:
                 sorted_valid = np.empty((0, 4))
+
             padded = np.zeros((150, 4))
             padded[:len(sorted_valid)] = sorted_valid
-            padded[:len(sorted_valid), 3] = 1  # set mask
-            target_particles.append(torch.tensor(padded, dtype=torch.float))
+            padded[:len(sorted_valid), 3] = 1
 
+            target_particles.append(torch.tensor(padded, dtype=torch.float))
             original_jets.append((jet_particles, jet_info))
 
         except Exception as e:
-            print(f"Error processing jet {i}: {e}")
+            print(f"Error at jet {i}: {e}")
             failed_count += 1
-            continue
 
-    print(f"\nCollection complete!")
-    print(f"Successfully collected: {len(graph_data)} jets")
+    print(f"\nCollected: {len(graph_data)} jets")
     print(f"Failed: {failed_count} jets")
 
     return graph_data, target_particles, original_jets
 
-# --- 2. Graph Neural Network Model ---
+
+# =================================================
+# 2. Graph Neural Network
+# =================================================
 
 class SimpleChebNet(nn.Module):
     def __init__(self, in_dim=3, hidden_dim=64, K=4, out_dim=32):
         super().__init__()
         self.conv1 = ChebConv(in_dim, hidden_dim, K)
         self.conv2 = ChebConv(hidden_dim, hidden_dim, K)
-        self.conv3 = ChebConv(hidden_dim, hidden_dim, K)  # Added for depth
-        self.conv4 = ChebConv(hidden_dim, out_dim, K)     # Added for depth
+        self.conv3 = ChebConv(hidden_dim, hidden_dim, K)
+        self.conv4 = ChebConv(hidden_dim, out_dim, K)
+
         self.bn1 = nn.BatchNorm1d(hidden_dim)
         self.bn2 = nn.BatchNorm1d(hidden_dim)
-        self.bn3 = nn.BatchNorm1d(hidden_dim)  # Added
+        self.bn3 = nn.BatchNorm1d(hidden_dim)
 
     def forward(self, x, edge_index, batch=None):
-        x = self.conv1(x, edge_index)
-        x = self.bn1(F.leaky_relu(x))
-        x = self.conv2(x, edge_index)
-        x = self.bn2(F.leaky_relu(x))
-        x = self.conv3(x, edge_index)
-        x = self.bn3(F.leaky_relu(x))
+        x = self.bn1(F.leaky_relu(self.conv1(x, edge_index)))
+        x = self.bn2(F.leaky_relu(self.conv2(x, edge_index)))
+        x = self.bn3(F.leaky_relu(self.conv3(x, edge_index)))
         x = self.conv4(x, edge_index)
-        x = F.normalize(x, p=2, dim=1)  # L2 normalize embeddings
+        x = F.normalize(x, p=2, dim=1)
 
-        # MODIFIED: Concat mean, max, min, sum pooling
         if batch is None:
-            mean_p = x.mean(dim=0)
-            max_p = x.max(dim=0)[0]
-            min_p = -(-x).max(dim=0)[0]  # Equivalent to min
-            sum_p = x.sum(dim=0)
-            pooled = torch.cat([mean_p, max_p, min_p, sum_p], dim=-1)
+            pooled = torch.cat(
+                [
+                    x.mean(dim=0),
+                    x.max(dim=0)[0],
+                    -(-x).max(dim=0)[0],
+                    x.sum(dim=0),
+                ],
+                dim=-1,
+            )
         else:
-            mean_p = global_mean_pool(x, batch)
-            max_p = global_max_pool(x, batch)
-            min_p = -global_max_pool(-x, batch)
-            sum_p = global_add_pool(x, batch)
-            pooled = torch.cat([mean_p, max_p, min_p, sum_p], dim=1)
+            pooled = torch.cat(
+                [
+                    global_mean_pool(x, batch),
+                    global_max_pool(x, batch),
+                    -global_max_pool(-x, batch),
+                    global_add_pool(x, batch),
+                ],
+                dim=1,
+            )
 
-        return pooled  # Now dim=128 (out_dim*4)
+        return pooled
 
-# --- 3. Diffusion Model with Batching ---
+
+# =================================================
+# 3. Diffusion Model
+# =================================================
 
 class SimpleDiffusionMLP(nn.Module):
     def __init__(self, emb_dim, hidden_dim=512):
         super().__init__()
         self.net = nn.Sequential(
-            nn.Linear(emb_dim+1, hidden_dim),
+            nn.Linear(emb_dim + 1, hidden_dim),
             nn.ReLU(),
             nn.Linear(hidden_dim, hidden_dim),
             nn.ReLU(),
-            nn.Linear(hidden_dim, emb_dim)
+            nn.Linear(hidden_dim, emb_dim),
         )
 
     def forward(self, x, t):
-        # x: [batch, emb_dim], t: [batch, 1]
-        xt = torch.cat([x, t], dim=1)
-        return self.net(xt)
+        return self.net(torch.cat([x, t], dim=1))
+
 
 class DiffusionDataset(Dataset):
     def __init__(self, embeddings):
@@ -218,12 +229,15 @@ class DiffusionDataset(Dataset):
     def __getitem__(self, idx):
         return self.embeddings[idx]
 
+
 def beta(t, beta_0=1e-4, beta_1=0.02):
     """Linear beta schedule"""
     return beta_0 + t * (beta_1 - beta_0)
 
+
 def alpha_bar(t, beta_0=1e-4, beta_1=0.02):
     return torch.exp(-(beta_0 * t + 0.5 * (beta_1 - beta_0) * t * t))
+
 
 def train_diffusion_model_batched(embeddings, n_steps=1000, epochs=200, batch_size=8):
     """Train diffusion model on embeddings with proper batching"""
@@ -257,12 +271,15 @@ def train_diffusion_model_batched(embeddings, n_steps=1000, epochs=200, batch_si
 
             # Random time steps for each sample in batch
             t = torch.rand((batch_size_actual, 1), device=device)
-            sqrt_alpha_bar_t = torch.sqrt(alpha_bar(t)) #how much noise to mix with original signal-> signal retention coeffecient
-            sqrt_1_minus_alpha_bar_t = torch.sqrt(1 - alpha_bar(t)) #noise coefficient
+            # how much noise to mix with original signal-> signal retention coeffecient
+            sqrt_alpha_bar_t = torch.sqrt(alpha_bar(t))
+            sqrt_1_minus_alpha_bar_t = torch.sqrt(
+                1 - alpha_bar(t))  # noise coefficient
 
             # Add noise
             noise = torch.randn_like(batch)
-            noisy_data = batch * sqrt_alpha_bar_t + noise * sqrt_1_minus_alpha_bar_t  # linear noise schedule
+            noisy_data = batch * sqrt_alpha_bar_t + noise * \
+                sqrt_1_minus_alpha_bar_t  # linear noise schedule
 
             # Predict noise
             pred_noise = model(noisy_data, t)
@@ -293,7 +310,9 @@ def train_diffusion_model_batched(embeddings, n_steps=1000, epochs=200, batch_si
 
     return model
 
-def sample_diffusion_model_batched(model, emb_dim, n_samples=10, n_steps=200, batch_size=8):  # Increased n_steps
+
+# Increased n_steps
+def sample_diffusion_model_batched(model, emb_dim, n_samples=10, n_steps=200, batch_size=8):
     """Sample new embeddings from trained diffusion model with batching using deterministic DDIM"""
     device = next(model.parameters()).device
     model.eval()
@@ -312,7 +331,8 @@ def sample_diffusion_model_batched(model, emb_dim, n_samples=10, n_steps=200, ba
                 s_value = (step - 1) / n_steps
                 t = torch.full((current_batch_size, 1), t_value, device=device)
                 alpha_t = alpha_bar(t)
-                alpha_s = alpha_bar(torch.full((current_batch_size, 1), s_value, device=device))
+                alpha_s = alpha_bar(torch.full(
+                    (current_batch_size, 1), s_value, device=device))
                 noise_pred = model(x, t)
 
                 # DDIM formula (deterministic)
@@ -321,8 +341,10 @@ def sample_diffusion_model_batched(model, emb_dim, n_samples=10, n_steps=200, ba
                 sqrt_one_minus_alpha_t = torch.sqrt(1 - alpha_t)
                 sqrt_one_minus_alpha_s = torch.sqrt(1 - alpha_s)
 
-                pred_x0 = (x - sqrt_one_minus_alpha_t * noise_pred) / sqrt_alpha_t
-                x = sqrt_alpha_s * pred_x0 + sqrt_one_minus_alpha_s * noise_pred  # No sigma/noise term for deterministic
+                pred_x0 = (x - sqrt_one_minus_alpha_t *
+                           noise_pred) / sqrt_alpha_t
+                x = sqrt_alpha_s * pred_x0 + sqrt_one_minus_alpha_s * \
+                    noise_pred  # No sigma/noise term for deterministic
 
             all_samples.append(x.cpu().numpy())
 
@@ -330,6 +352,7 @@ def sample_diffusion_model_batched(model, emb_dim, n_samples=10, n_steps=200, ba
     return np.concatenate(all_samples, axis=0)
 
 # --- 4. Enhanced Decoder Model for Particle Generation ---
+
 
 class JetGraphDataset(Dataset):
     def __init__(self, graph_data, target_particles):
@@ -342,6 +365,7 @@ class JetGraphDataset(Dataset):
     def __getitem__(self, idx):
         return self.graph_data[idx], self.target_particles[idx]
 
+
 def collate_fn(batch):
     graphs = [b[0] for b in batch]
     targets = [b[1] for b in batch]
@@ -349,8 +373,10 @@ def collate_fn(batch):
     batched_targets = torch.stack(targets)
     return batched_graph, batched_targets
 
+
 class ParticleDecoder(nn.Module):
-    def __init__(self, emb_dim, max_particles=150, particle_dim=4, hidden_dims=[512, 1024]):  # MODIFIED: Increased hidden dims for more capacity
+    # MODIFIED: Increased hidden dims for more capacity
+    def __init__(self, emb_dim, max_particles=150, particle_dim=4, hidden_dims=[512, 1024]):
         super().__init__()
         self.max_particles = max_particles
         self.particle_dim = particle_dim
@@ -425,10 +451,12 @@ class ParticleDecoder(nn.Module):
 
         # Better mask activation with temperature
         mask_logits = output[:, :, 3]
-        mask = torch.sigmoid(mask_logits * 2.0)  # Higher temperature for sharper decisions
+        # Higher temperature for sharper decisions
+        mask = torch.sigmoid(mask_logits * 2.0)
 
         output = torch.stack([eta, phi, pt, mask], dim=2)
         return output
+
 
 def train_autoencoder(gnn, decoder, graph_data, target_particles, epochs=300, batch_size=8):  # Increased epochs
     """Train GNN and decoder jointly as autoencoder"""
@@ -437,18 +465,23 @@ def train_autoencoder(gnn, decoder, graph_data, target_particles, epochs=300, ba
 
     # Dataset and loader
     dataset = JetGraphDataset(graph_data, target_particles)
-    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn, num_workers=0, pin_memory=True if device.type == 'cuda' else False)
+    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn,
+                        num_workers=0, pin_memory=True if device.type == 'cuda' else False)
 
     # Optimizer and scheduler
-    optimizer = optim.AdamW(list(gnn.parameters()) + list(decoder.parameters()), lr=0.001, weight_decay=1e-5)
-    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs//4, eta_min=1e-6)
+    optimizer = optim.AdamW(
+        list(gnn.parameters()) + list(decoder.parameters()), lr=0.001, weight_decay=1e-5)
+    scheduler = optim.lr_scheduler.CosineAnnealingLR(
+        optimizer, T_max=epochs//4, eta_min=1e-6)
 
     # Loss functions
     mse_criterion = nn.MSELoss()
     bce_criterion = nn.BCELoss()
 
-    print(f"Training autoencoder with {len(dataset)} samples, batch size {batch_size}")
-    print(f"Total parameters: {sum(p.numel() for p in gnn.parameters()) + sum(p.numel() for p in decoder.parameters()):,}")
+    print(
+        f"Training autoencoder with {len(dataset)} samples, batch size {batch_size}")
+    print(
+        f"Total parameters: {sum(p.numel() for p in gnn.parameters()) + sum(p.numel() for p in decoder.parameters()):,}")
 
     gnn.train()
     decoder.train()
@@ -464,7 +497,8 @@ def train_autoencoder(gnn, decoder, graph_data, target_particles, epochs=300, ba
             batch_target = batch_target.to(device)
 
             # Forward through GNN and pool (MODIFIED pooling is handled in GNN forward)
-            pooled = gnn(batch_graph.x, batch_graph.edge_index, batch_graph.batch)
+            pooled = gnn(batch_graph.x, batch_graph.edge_index,
+                         batch_graph.batch)
 
             # Decode
             pred = decoder(pooled)
@@ -477,12 +511,14 @@ def train_autoencoder(gnn, decoder, graph_data, target_particles, epochs=300, ba
             target_num = torch.sum(batch_target[:, :, 3], dim=1)
             pred_num = torch.sum(pred[:, :, 3], dim=1)
             count_loss = nn.MSELoss()(pred_num, target_num)
-            loss = eta_loss*4 + phi_loss*4 + pt_loss + mask_loss*2 + 0.1 * count_loss  # Increased eta/phi weights for better distribution matching
+            # Increased eta/phi weights for better distribution matching
+            loss = eta_loss*4 + phi_loss*4 + pt_loss + mask_loss*2 + 0.1 * count_loss
 
             # Backward
             optimizer.zero_grad()
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(list(gnn.parameters()) + list(decoder.parameters()), max_norm=1.0)
+            torch.nn.utils.clip_grad_norm_(
+                list(gnn.parameters()) + list(decoder.parameters()), max_norm=1.0)
             optimizer.step()
 
             epoch_loss += loss.item()
@@ -510,7 +546,8 @@ def train_autoencoder(gnn, decoder, graph_data, target_particles, epochs=300, ba
             print(f"Autoencoder Epoch {epoch}/{epochs}")
             print(f"  Loss: {avg_loss:.6f}")
             print(f"  LR: {optimizer.param_groups[0]['lr']:.8f}")
-            print(f"  Best Loss: {best_loss:.6f}, Patience: {patience_counter}")
+            print(
+                f"  Best Loss: {best_loss:.6f}, Patience: {patience_counter}")
 
         if patience_counter >= 15:
             print(f"Early stopping at epoch {epoch}")
@@ -521,6 +558,7 @@ def train_autoencoder(gnn, decoder, graph_data, target_particles, epochs=300, ba
     return gnn, decoder
 
 # --- 5. Visualization Functions ---
+
 
 def visualize_particle_jets(particle_data_list, titles, n_cols=2):
     """Visualize jets as scatter plots using particle data"""
@@ -545,7 +583,8 @@ def visualize_particle_jets(particle_data_list, titles, n_cols=2):
         # Get valid particles
         valid_mask = particles[:, 3] > 0.5  # Use threshold for mask
         if valid_mask.sum() == 0:
-            ax.text(0.5, 0.5, 'No valid particles', ha='center', va='center', transform=ax.transAxes)
+            ax.text(0.5, 0.5, 'No valid particles', ha='center',
+                    va='center', transform=ax.transAxes)
             ax.set_title(title, fontsize=12, fontweight='bold')
             continue
 
@@ -557,7 +596,8 @@ def visualize_particle_jets(particle_data_list, titles, n_cols=2):
         # Create scatter plot
         scatter = ax.scatter(eta, phi, c=pt, s=50, cmap='viridis', alpha=0.7)
 
-        ax.set_title(f"{title}\nParticles: {len(valid_particles)}", fontsize=12, fontweight='bold')
+        ax.set_title(f"{title}\nParticles: {len(valid_particles)}",
+                     fontsize=12, fontweight='bold')
         ax.set_xlabel('η_rel', fontsize=10)
         ax.set_ylabel('φ_rel', fontsize=10)
         ax.grid(True, alpha=0.3)
@@ -579,6 +619,7 @@ def visualize_particle_jets(particle_data_list, titles, n_cols=2):
 
     plt.tight_layout()
     plt.show()
+
 
 def calculate_kl_divergence(real_data, generated_data, n_bins=100):
     """
@@ -616,6 +657,7 @@ def calculate_kl_divergence(real_data, generated_data, n_bins=100):
     kl_div = np.sum(real_prob * np.log(real_prob / gen_prob))
     return kl_div
 
+
 def compare_particle_reconstruction(original_particles, reconstructed_particles, idx):
     """Compare original and reconstructed particle data"""
     plt.style.use('default')
@@ -627,7 +669,7 @@ def compare_particle_reconstruction(original_particles, reconstructed_particles,
     if orig_valid.sum() > 0:
         orig_valid_particles = original_particles[orig_valid]
         scatter1 = ax1.scatter(orig_valid_particles[:, 0], orig_valid_particles[:, 1],
-                             c=orig_valid_particles[:, 2], s=50, cmap='viridis', alpha=0.7)
+                               c=orig_valid_particles[:, 2], s=50, cmap='viridis', alpha=0.7)
         ax1.set_title(f'Original Jet {idx+1} ({orig_valid.sum()} particles)')
         ax1.set_xlabel('η_rel')
         ax1.set_ylabel('φ_rel')
@@ -641,8 +683,9 @@ def compare_particle_reconstruction(original_particles, reconstructed_particles,
     if recon_valid.sum() > 0:
         recon_valid_particles = reconstructed_particles[recon_valid]
         scatter2 = ax2.scatter(recon_valid_particles[:, 0], recon_valid_particles[:, 1],
-                             c=recon_valid_particles[:, 2], s=50, cmap='viridis', alpha=0.7)
-        ax2.set_title(f'Reconstructed Jet {idx+1} ({recon_valid.sum()} particles)')
+                               c=recon_valid_particles[:, 2], s=50, cmap='viridis', alpha=0.7)
+        ax2.set_title(
+            f'Reconstructed Jet {idx+1} ({recon_valid.sum()} particles)')
         ax2.set_xlabel('η_rel')
         ax2.set_ylabel('φ_rel')
         ax2.set_xlim(-0.8, 0.8)
@@ -655,8 +698,10 @@ def compare_particle_reconstruction(original_particles, reconstructed_particles,
         orig_valid_particles = original_particles[orig_valid]
         recon_valid_particles = reconstructed_particles[recon_valid]
         # η distribution
-        ax3.hist(orig_valid_particles[:, 0], bins=100, alpha=0.5, label='Original', density=True)
-        ax3.hist(recon_valid_particles[:, 0], bins=100, alpha=0.5, label='Reconstructed', density=True)
+        ax3.hist(orig_valid_particles[:, 0], bins=100,
+                 alpha=0.5, label='Original', density=True)
+        ax3.hist(recon_valid_particles[:, 0], bins=100,
+                 alpha=0.5, label='Reconstructed', density=True)
         ax3.set_xlabel('η_rel')
         ax3.set_ylabel('Density')
         ax3.set_title('η Distribution')
@@ -664,24 +709,33 @@ def compare_particle_reconstruction(original_particles, reconstructed_particles,
         ax3.grid(True, alpha=0.3)
 
         # p_T distribution
-        ax4.hist(orig_valid_particles[:, 2], bins=100, alpha=0.5, label='Original', density=True)
-        ax4.hist(recon_valid_particles[:, 2], bins=100, alpha=0.5, label='Reconstructed', density=True)
+        ax4.hist(orig_valid_particles[:, 2], bins=100,
+                 alpha=0.5, label='Original', density=True)
+        ax4.hist(recon_valid_particles[:, 2], bins=100,
+                 alpha=0.5, label='Reconstructed', density=True)
         ax4.set_xlabel('p_T')
         ax4.set_ylabel('Density')
         ax4.set_title('p_T Distribution')
         ax4.legend()
         ax4.grid(True, alpha=0.3)
-        ws_eta = wasserstein_distance(orig_valid_particles[:, 0], recon_valid_particles[:, 0])
-        ws_phi = wasserstein_distance(orig_valid_particles[:, 1], recon_valid_particles[:, 1])
-        ws_pt = wasserstein_distance(orig_valid_particles[:, 2], recon_valid_particles[:, 2])
-        kl_eta = calculate_kl_divergence(orig_valid_particles[:, 0], recon_valid_particles[:, 0])
-        kl_phi = calculate_kl_divergence(orig_valid_particles[:, 1], recon_valid_particles[:, 1])
-        kl_pt = calculate_kl_divergence(orig_valid_particles[:, 2], recon_valid_particles[:, 2])
-
+        ws_eta = wasserstein_distance(
+            orig_valid_particles[:, 0], recon_valid_particles[:, 0])
+        ws_phi = wasserstein_distance(
+            orig_valid_particles[:, 1], recon_valid_particles[:, 1])
+        ws_pt = wasserstein_distance(
+            orig_valid_particles[:, 2], recon_valid_particles[:, 2])
+        kl_eta = calculate_kl_divergence(
+            orig_valid_particles[:, 0], recon_valid_particles[:, 0])
+        kl_phi = calculate_kl_divergence(
+            orig_valid_particles[:, 1], recon_valid_particles[:, 1])
+        kl_pt = calculate_kl_divergence(
+            orig_valid_particles[:, 2], recon_valid_particles[:, 2])
 
         print(f"Jet {idx+1} Metrics:")
-        print(f"Wasserstein η: {ws_eta:.4f}, φ: {ws_phi:.4f}, p_T: {ws_pt:.4f}")
-        print(f"KL Divergence η: {kl_eta:.4f}, φ: {kl_phi:.4f}, p_T: {kl_pt:.4f}")
+        print(
+            f"Wasserstein η: {ws_eta:.4f}, φ: {ws_phi:.4f}, p_T: {ws_pt:.4f}")
+        print(
+            f"KL Divergence η: {kl_eta:.4f}, φ: {kl_phi:.4f}, p_T: {kl_pt:.4f}")
 
     plt.tight_layout()
     plt.show()
@@ -691,14 +745,19 @@ def compare_particle_reconstruction(original_particles, reconstructed_particles,
     print(f"Original particles: {orig_valid.sum()}")
     print(f"Reconstructed particles: {recon_valid.sum()}")
     if orig_valid.sum() > 0:
-        print(f"Original η range: [{orig_valid_particles[:, 0].min():.3f}, {orig_valid_particles[:, 0].max():.3f}]")
-        print(f"Original p_T range: [{orig_valid_particles[:, 2].min():.3f}, {orig_valid_particles[:, 2].max():.3f}]")
+        print(
+            f"Original η range: [{orig_valid_particles[:, 0].min():.3f}, {orig_valid_particles[:, 0].max():.3f}]")
+        print(
+            f"Original p_T range: [{orig_valid_particles[:, 2].min():.3f}, {orig_valid_particles[:, 2].max():.3f}]")
     if recon_valid.sum() > 0:
-        print(f"Reconstructed η range: [{recon_valid_particles[:, 0].min():.3f}, {recon_valid_particles[:, 0].max():.3f}]")
-        print(f"Reconstructed p_T range: [{recon_valid_particles[:, 2].min():.3f}, {recon_valid_particles[:, 2].max():.3f}]")
+        print(
+            f"Reconstructed η range: [{recon_valid_particles[:, 0].min():.3f}, {recon_valid_particles[:, 0].max():.3f}]")
+        print(
+            f"Reconstructed p_T range: [{recon_valid_particles[:, 2].min():.3f}, {recon_valid_particles[:, 2].max():.3f}]")
     print()
 
 # --- 6. Main Pipeline with JetNet Data ---
+
 
 def main_pipeline_jetnet(batch_size=8):
     """Main pipeline using JetNet dataset"""
@@ -709,7 +768,8 @@ def main_pipeline_jetnet(batch_size=8):
 
     # 2. Collect graph data and targets
     print("\n=== Collecting graph data ===")
-    graph_data, target_particles, original_jets = collect_graph_and_targets(particle_data, jet_data, max_jets=50000)
+    graph_data, target_particles, original_jets = collect_graph_and_targets(
+        particle_data, jet_data, max_jets=50000)
 
     if len(graph_data) == 0:
         print("No jets were successfully collected!")
@@ -717,9 +777,12 @@ def main_pipeline_jetnet(batch_size=8):
 
     # 3. Initialize and train autoencoder (GNN + decoder)
     print("\n=== Training autoencoder ===")
-    gnn = SimpleChebNet(in_dim=3, hidden_dim=64, K=4, out_dim=32).to(device)  # out_dim=32, but pooled=128 after concat
-    decoder = ParticleDecoder(emb_dim=128).to(device)  # MODIFIED: emb_dim=128 to match expanded pooling
-    gnn, decoder = train_autoencoder(gnn, decoder, graph_data, target_particles, epochs=300, batch_size=batch_size)
+    gnn = SimpleChebNet(in_dim=3, hidden_dim=64, K=4, out_dim=32).to(
+        device)  # out_dim=32, but pooled=128 after concat
+    # MODIFIED: emb_dim=128 to match expanded pooling
+    decoder = ParticleDecoder(emb_dim=128).to(device)
+    gnn, decoder = train_autoencoder(
+        gnn, decoder, graph_data, target_particles, epochs=300, batch_size=batch_size)
 
     # 4. Extract pooled embeddings using trained GNN
     print("\n=== Extracting pooled embeddings ===")
@@ -728,7 +791,8 @@ def main_pipeline_jetnet(batch_size=8):
     for data in graph_data:
         data = data.to(device)
         with torch.no_grad():
-            pooled = gnn(data.x, data.edge_index).cpu().numpy()  # MODIFIED: No batch, but forward handles it
+            # MODIFIED: No batch, but forward handles it
+            pooled = gnn(data.x, data.edge_index).cpu().numpy()
         all_pooled_embeddings.append(pooled)
     all_pooled_embeddings = np.stack(all_pooled_embeddings)
 
@@ -752,7 +816,8 @@ def main_pipeline_jetnet(batch_size=8):
         generated_particles = []
         for i in range(0, len(new_embeddings), batch_size):
             batch_embeddings = new_embeddings[i:i+batch_size]
-            batch_embeddings_torch = torch.tensor(batch_embeddings, dtype=torch.float32).to(device)
+            batch_embeddings_torch = torch.tensor(
+                batch_embeddings, dtype=torch.float32).to(device)
             batch_particles = decoder(batch_embeddings_torch).cpu().numpy()
             generated_particles.append(batch_particles)
 
@@ -769,13 +834,16 @@ def main_pipeline_jetnet(batch_size=8):
     comparison_embeddings = all_pooled_embeddings[:n_compare]
 
     with torch.no_grad():
-        comparison_embeddings_torch = torch.tensor(comparison_embeddings, dtype=torch.float32).to(device)
-        decoder_reconstructions = decoder(comparison_embeddings_torch).cpu().numpy()
+        comparison_embeddings_torch = torch.tensor(
+            comparison_embeddings, dtype=torch.float32).to(device)
+        decoder_reconstructions = decoder(
+            comparison_embeddings_torch).cpu().numpy()
 
     for i in range(n_compare):
         original_particles, _ = original_jets[i]
         decoder_reconstruction = decoder_reconstructions[i]
-        compare_particle_reconstruction(original_particles, decoder_reconstruction, i)
+        compare_particle_reconstruction(
+            original_particles, decoder_reconstruction, i)
 
     # Fixed metrics loop to n_compare
     ws_eta_list, ws_phi_list, ws_pt_list = [], [], []
@@ -792,14 +860,20 @@ def main_pipeline_jetnet(batch_size=8):
             recon_valid_particles = decoder_reconstruction[recon_valid]
 
             # Wasserstein
-            ws_eta = wasserstein_distance(orig_valid_particles[:, 0], recon_valid_particles[:, 0])
-            ws_phi = wasserstein_distance(orig_valid_particles[:, 1], recon_valid_particles[:, 1])
-            ws_pt = wasserstein_distance(orig_valid_particles[:, 2], recon_valid_particles[:, 2])
+            ws_eta = wasserstein_distance(
+                orig_valid_particles[:, 0], recon_valid_particles[:, 0])
+            ws_phi = wasserstein_distance(
+                orig_valid_particles[:, 1], recon_valid_particles[:, 1])
+            ws_pt = wasserstein_distance(
+                orig_valid_particles[:, 2], recon_valid_particles[:, 2])
 
             # KL
-            kl_eta = calculate_kl_divergence(orig_valid_particles[:, 0], recon_valid_particles[:, 0])
-            kl_phi = calculate_kl_divergence(orig_valid_particles[:, 1], recon_valid_particles[:, 1])
-            kl_pt = calculate_kl_divergence(orig_valid_particles[:, 2], recon_valid_particles[:, 2])
+            kl_eta = calculate_kl_divergence(
+                orig_valid_particles[:, 0], recon_valid_particles[:, 0])
+            kl_phi = calculate_kl_divergence(
+                orig_valid_particles[:, 1], recon_valid_particles[:, 1])
+            kl_pt = calculate_kl_divergence(
+                orig_valid_particles[:, 2], recon_valid_particles[:, 2])
 
             ws_eta_list.append(ws_eta)
             ws_phi_list.append(ws_phi)
@@ -818,22 +892,28 @@ def main_pipeline_jetnet(batch_size=8):
         avg_kl_pt = sum(kl_pt_list) / len(kl_pt_list)
 
         print("\nComponent-wise Average Metrics (over comparisons):")
-        print(f"Wasserstein - η: {avg_ws_eta:.4f}, φ: {avg_ws_phi:.4f}, p_T: {avg_ws_pt:.4f}")
-        print(f"KL Divergence - η: {avg_kl_eta:.4f}, φ: {avg_kl_phi:.4f}, p_T: {avg_kl_pt:.4f}")
+        print(
+            f"Wasserstein - η: {avg_ws_eta:.4f}, φ: {avg_ws_phi:.4f}, p_T: {avg_ws_pt:.4f}")
+        print(
+            f"KL Divergence - η: {avg_kl_eta:.4f}, φ: {avg_kl_phi:.4f}, p_T: {avg_kl_pt:.4f}")
 
     # 9. Show random real jets
     print("\n=== Random real jets for comparison ===")
     n_compare = 3
-    random_indices = np.random.choice(len(original_jets), n_compare, replace=False)
-    random_jets = [original_jets[idx][0] for idx in random_indices]  # Extract particle data
-    random_titles = [f'Random Real Jet (Index {idx})' for idx in random_indices]
+    random_indices = np.random.choice(
+        len(original_jets), n_compare, replace=False)
+    random_jets = [original_jets[idx][0]
+                   for idx in random_indices]  # Extract particle data
+    random_titles = [
+        f'Random Real Jet (Index {idx})' for idx in random_indices]
     visualize_particle_jets(random_jets, random_titles)
 
     # 10. Print summary
     print(f"\n=== Summary ===")
     print(f"Total jets in dataset: {len(particle_data)}")
     print(f"Successfully processed: {len(all_pooled_embeddings)}")
-    print(f"Processing success rate: {len(all_pooled_embeddings)/len(particle_data)*100:.1f}%")
+    print(
+        f"Processing success rate: {len(all_pooled_embeddings)/len(particle_data)*100:.1f}%")
     print(f"Embedding dimension: {all_pooled_embeddings.shape[1]}")
     print(f"Generated samples: {n_samples}")
     print(f"Max particles per jet: 150")
@@ -850,6 +930,7 @@ def main_pipeline_jetnet(batch_size=8):
     }
 
 # --- 7. Additional Utility Functions ---
+
 
 def plot_jetnet_sample_jets(particle_data, jet_data, jet_nums=[0, 1, 2]):
     """Plot sample jets from JetNet dataset for initial visualization"""
@@ -871,8 +952,10 @@ def plot_jetnet_sample_jets(particle_data, jet_data, jet_nums=[0, 1, 2]):
 
         plt.figure(figsize=(10, 4))
         plt.subplot(1, 2, 1)
-        scatter = plt.scatter(eta, phi, c=energy, s=50, cmap='viridis', alpha=0.7)
-        plt.title(f"Jet {idx}\npT: {jet_info[0]:.2f} GeV, eta: {jet_info[1]:.2f}")
+        scatter = plt.scatter(eta, phi, c=energy, s=50,
+                              cmap='viridis', alpha=0.7)
+        plt.title(
+            f"Jet {idx}\npT: {jet_info[0]:.2f} GeV, eta: {jet_info[1]:.2f}")
         plt.xlabel("eta_rel")
         plt.ylabel("phi_rel")
         plt.colorbar(scatter, label="Energy")
@@ -899,6 +982,7 @@ def plot_jetnet_sample_jets(particle_data, jet_data, jet_nums=[0, 1, 2]):
         print("pt mean:", np.mean(pt))
         print()
 
+
 def analyze_jetnet_dataset(particle_data, jet_data):
     """Analyze the JetNet dataset structure and statistics"""
     print("=== JetNet Dataset Analysis ===")
@@ -921,10 +1005,14 @@ def analyze_jetnet_dataset(particle_data, jet_data):
 
     # Jet feature statistics
     print(f"\nJet Statistics:")
-    print(f"Jet pT range: [{jet_data[:, 0].min():.2f}, {jet_data[:, 0].max():.2f}] GeV")
-    print(f"Jet eta range: [{jet_data[:, 1].min():.2f}, {jet_data[:, 1].max():.2f}]")
-    print(f"Jet mass range: [{jet_data[:, 2].min():.2f}, {jet_data[:, 2].max():.2f}] GeV")
-    print(f"Reported num_particles range: [{jet_data[:, 3].min():.0f}, {jet_data[:, 3].max():.0f}]")
+    print(
+        f"Jet pT range: [{jet_data[:, 0].min():.2f}, {jet_data[:, 0].max():.2f}] GeV")
+    print(
+        f"Jet eta range: [{jet_data[:, 1].min():.2f}, {jet_data[:, 1].max():.2f}]")
+    print(
+        f"Jet mass range: [{jet_data[:, 2].min():.2f}, {jet_data[:, 2].max():.2f}] GeV")
+    print(
+        f"Reported num_particles range: [{jet_data[:, 3].min():.0f}, {jet_data[:, 3].max():.0f}]")
 
     # Plot distributions
     plt.figure(figsize=(15, 10))
@@ -986,6 +1074,7 @@ def analyze_jetnet_dataset(particle_data, jet_data):
 
 # --- 8. Run the pipeline ---
 
+
 if __name__ == "__main__":
     # Set batch size for training
     BATCH_SIZE = 8
@@ -1026,9 +1115,12 @@ if __name__ == "__main__":
 
         generated_valid_counts = np.array(generated_valid_counts)
 
-        print(f"Generated jets - Average particles: {generated_valid_counts.mean():.2f}")
-        print(f"Generated jets - Std particles: {generated_valid_counts.std():.2f}")
-        print(f"Generated jets - Range: [{generated_valid_counts.min()}, {generated_valid_counts.max()}]")
+        print(
+            f"Generated jets - Average particles: {generated_valid_counts.mean():.2f}")
+        print(
+            f"Generated jets - Std particles: {generated_valid_counts.std():.2f}")
+        print(
+            f"Generated jets - Range: [{generated_valid_counts.min()}, {generated_valid_counts.max()}]")
 
         # Compare with original dataset statistics
         original_valid_counts = []
@@ -1038,9 +1130,12 @@ if __name__ == "__main__":
 
         original_valid_counts = np.array(original_valid_counts)
 
-        print(f"Original jets - Average particles: {original_valid_counts.mean():.2f}")
-        print(f"Original jets - Std particles: {original_valid_counts.std():.2f}")
-        print(f"Original jets - Range: [{original_valid_counts.min()}, {original_valid_counts.max()}]")
+        print(
+            f"Original jets - Average particles: {original_valid_counts.mean():.2f}")
+        print(
+            f"Original jets - Std particles: {original_valid_counts.std():.2f}")
+        print(
+            f"Original jets - Range: [{original_valid_counts.min()}, {original_valid_counts.max()}]")
 
     else:
         print("\nPipeline failed - no jets were successfully processed.")
