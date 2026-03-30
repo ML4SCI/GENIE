@@ -1,4 +1,25 @@
+"""
+JetNet Graph Diffusion Model Pipeline
 
+This script implements:
+- Graph construction using kNN
+- ChebNet-based GNN encoding
+- Diffusion model in latent space
+- Particle reconstruction using decoder
+
+Workflow:
+1. Load dataset
+2. Build graphs
+3. Train autoencoder
+4. Train diffusion model
+5. Generate new jets
+6. Evaluate and visualize results
+
+Contribution:
+- Added documentation
+- Improved readability
+- Structured code sections
+"""
 import warnings
 warnings.filterwarnings('ignore', category=UserWarning)
 
