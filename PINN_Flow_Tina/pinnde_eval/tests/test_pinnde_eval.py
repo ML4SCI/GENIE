@@ -5,6 +5,7 @@ Run from the project folder:  pytest pinnde_eval/tests -q
 
 import os
 import sys
+import importlib
 
 import numpy as np
 import pytest
@@ -81,6 +82,21 @@ def test_swd_handles_unequal_sizes():
     assert np.isfinite(pe.swd(a, b, seed=0))
 
 
+def test_distances_are_symmetric_and_order_invariant():
+    rng = np.random.default_rng(9)
+    a = rng.normal(size=(600, 3))
+    b = rng.normal(size=(600, 3)) + np.array([0.3, -0.2, 0.1])
+    a_perm = a[rng.permutation(len(a))]
+
+    assert np.isclose(pe.mmd(a, b, seed=0), pe.mmd(b, a, seed=0), atol=1e-6)
+    assert np.isclose(pe.swd(a, b, seed=0), pe.swd(b, a, seed=0), atol=1e-6)
+    assert np.allclose(pe.wasserstein_per_feature(a, b),
+                       pe.wasserstein_per_feature(b, a))
+
+    assert np.isclose(pe.mmd(a, b, seed=0), pe.mmd(a_perm, b, seed=0), atol=1e-6)
+    assert np.isclose(pe.swd(a, b, seed=0), pe.swd(a_perm, b, seed=0), atol=1e-6)
+
+
 # ---------- Tier 1 ----------
 
 def test_chi2_identical_near_one():
@@ -137,9 +153,91 @@ def test_evaluate_features_fn_hook():
     assert res["chi2_per_feature"].shape == (1,)
 
 
+def test_features_fn_can_compare_physics_observables():
+    # Four calorimeter-like radial cells: same total energy, different width.
+    real = np.tile(np.array([2.0, 2.0, 0.0, 0.0]), (256, 1))
+    gen = np.tile(np.array([2.0, 0.0, 2.0, 0.0]), (256, 1))
+
+    def shower_observables(cells):
+        cells = np.asarray(cells)
+        radii = np.arange(cells.shape[1], dtype=float)
+        total = cells.sum(axis=1)
+        width = (cells * radii).sum(axis=1) / total
+        return np.column_stack([total, width])
+
+    obs_real = shower_observables(real)
+    obs_gen = shower_observables(gen)
+    w1 = pe.wasserstein_per_feature(obs_real, obs_gen)
+    assert w1[0] == 0.0
+    assert w1[1] > 0.4
+
+    res = pe.evaluate(real, gen, tier="monitor", features_fn=shower_observables, seed=0)
+    assert res["swd"] > 0.2
+
+
+def test_evaluate_by_condition_finds_bad_slice():
+    rng = np.random.default_rng(11)
+    real_lo = rng.normal(size=(300, 2))
+    real_hi = rng.normal(size=(300, 2))
+    gen_lo = rng.normal(size=(300, 2))
+    gen_hi = rng.normal(size=(300, 2)) + 1.0
+
+    real = np.vstack([real_lo, real_hi])
+    gen = np.vstack([gen_lo, gen_hi])
+    labels = np.array(["low"] * 300 + ["high"] * 300)
+
+    res = pe.evaluate_by_condition(real, gen, labels, tier="monitor", seed=0)
+    assert set(res) == {"low", "high"}
+    assert res["low"]["n_real"] == 300
+    assert res["low"]["n_gen"] == 300
+    assert res["high"]["swd"] > 3 * res["low"]["swd"]
+
+
+def test_evaluate_by_condition_uses_separate_generated_labels():
+    rng = np.random.default_rng(12)
+    real = rng.normal(size=(6, 2))
+    gen = rng.normal(size=(7, 2))
+    real_labels = np.array([0, 0, 0, 1, 1, 1])
+    gen_labels = np.array([0, 0, 1, 1, 1, 2, 2])
+
+    res = pe.evaluate_by_condition(real, gen, real_labels, gen_labels,
+                                   tier="monitor", min_count=2, seed=0)
+    assert set(res) == {0, 1}
+    assert res[0]["n_real"] == 3
+    assert res[0]["n_gen"] == 2
+    assert res[1]["n_real"] == 3
+    assert res[1]["n_gen"] == 3
+
+
+def test_evaluate_by_condition_checks_label_lengths():
+    with pytest.raises(ValueError):
+        pe.evaluate_by_condition(np.zeros((4, 2)), np.zeros((4, 2)),
+                                 np.zeros(3), tier="monitor")
+
+
 def test_evaluate_bad_tier_raises():
     with pytest.raises(ValueError):
         pe.evaluate(np.zeros((10, 2)), np.zeros((10, 2)), tier="bogus")
+
+
+def test_evaluate_degrades_when_jetnet_is_missing(monkeypatch):
+    eval_mod = importlib.import_module("pinnde_eval.evaluate")
+
+    def missing_jetnet(*args, **kwargs):
+        raise ImportError("jetnet unavailable")
+
+    monkeypatch.setattr(eval_mod, "fpd", missing_jetnet)
+    monkeypatch.setattr(eval_mod, "kpd", missing_jetnet)
+    monkeypatch.setattr(eval_mod, "classifier_two_sample_test", lambda *args, **kwargs: (0.5, 0.0))
+
+    rng = np.random.default_rng(10)
+    real = rng.normal(size=(400, 2))
+    gen = rng.normal(size=(400, 2))
+    res = pe.evaluate(real, gen, tier="full", n_classifier=1, seed=0)
+    assert res["fpd"] is None
+    assert res["kpd"] is None
+    assert np.isfinite(res["mmd"])
+    assert np.isfinite(res["swd"])
 
 
 # ---------- perturbations move the metrics ----------

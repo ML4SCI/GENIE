@@ -69,6 +69,19 @@ results = evaluate(real, gen, tier="monitor")   # {"mmd": ..., "swd": ...}
 loss_monitor = mmd(real_batch, gen_batch)        # or call directly
 ```
 
+### Conditional evaluation
+
+Use `evaluate_by_condition` when a global score may hide failures in one class,
+energy range, or detector region. Pass one label/bin per sample:
+
+```python
+from pinnde_eval import evaluate_by_condition
+
+by_energy = evaluate_by_condition(real, gen, real_energy_bin, gen_energy_bin,
+                                  tier="monitor")
+print(by_energy["20-50 GeV"]["swd"])
+```
+
 ### Calorimeter hook (deferred, no API change needed)
 
 `evaluate(..., features_fn=...)` maps raw samples → high-level features before any

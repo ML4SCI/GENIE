@@ -1,4 +1,4 @@
-"""Single entry point that ties the three tiers together.
+"""Single entry point for the three evaluation tiers.
 
     results = evaluate(real, gen, tier="full")     # Tier 1 + 2 + 3
     results = evaluate(real, gen, tier="monitor")   # Tier 3 only (fast)
@@ -6,8 +6,8 @@
 
 ``real`` and ``gen`` are torch tensors or numpy arrays of shape (N, d); they are
 converted internally. The optional ``features_fn`` maps raw samples to
-high-level features before any metric runs -- the hook through which calorimeter
-observables (or the official CaloChallenge wrapper) plug in later without
+high-level features before any metric runs. Calorimeter observables or an
+official CaloChallenge wrapper can plug in through this hook without
 changing this API.
 """
 
@@ -37,7 +37,7 @@ def evaluate(real, gen, tier="full", features_fn=None,
         real, gen = check_pair(features_fn(real), features_fn(gen))
 
     results = {}
-    # Tier 3 -- always (it is the whole of "monitor" and part of "full").
+    # Tier 3 runs for both monitor and full evaluations.
     results["mmd"] = mmd(real, gen, device=device, seed=seed)
     results["swd"] = swd(real, gen, n_projections=n_projections, device=device, seed=seed)
     if tier == "monitor":
@@ -57,11 +57,44 @@ def evaluate(real, gen, tier="full", features_fn=None,
         results["fpd"] = fpd(real, gen, seed=seed, **(fpd_kwargs or {}))
         results["kpd"] = kpd(real, gen, seed=seed, **(kpd_kwargs or {}))
     except ImportError as e:
-        print(f"[pinnde_eval] {e} -- skipping FPD/KPD")
+        print(f"[pinnde_eval] {e} -- FPD/KPD not evaluated")
         results["fpd"] = None
         results["kpd"] = None
 
     return results
+
+
+def evaluate_by_condition(real, gen, real_condition, gen_condition=None,
+                          min_count=2, **kwargs):
+    """Run ``evaluate`` separately for each shared condition/bin label.
+
+    ``real_condition`` and ``gen_condition`` are 1D arrays such as class labels,
+    incident-energy bins, or detector regions. If ``gen_condition`` is omitted,
+    ``real_condition`` is used for both samples.
+    """
+    real, gen = check_pair(real, gen)
+    real_condition = np.asarray(real_condition)
+    if gen_condition is None:
+        gen_condition = real_condition
+    gen_condition = np.asarray(gen_condition)
+
+    if len(real_condition) != len(real):
+        raise ValueError("real_condition length must match real samples")
+    if len(gen_condition) != len(gen):
+        raise ValueError("gen_condition length must match gen samples")
+
+    labels = np.intersect1d(np.unique(real_condition), np.unique(gen_condition))
+    out = {}
+    for label in labels:
+        r_mask = real_condition == label
+        g_mask = gen_condition == label
+        if r_mask.sum() < min_count or g_mask.sum() < min_count:
+            continue
+        res = evaluate(real[r_mask], gen[g_mask], **kwargs)
+        res["n_real"] = int(r_mask.sum())
+        res["n_gen"] = int(g_mask.sum())
+        out[label] = res
+    return out
 
 
 def report(results, title="pinnde_eval"):
@@ -85,7 +118,7 @@ def report(results, title="pinnde_eval"):
 
 
 def plot_histograms(real, gen, path=None, bins=50, labels=("real", "gen")):
-    """Overlay per-feature histograms (nice-to-have). Saves to ``path`` if given."""
+    """Overlay per-feature histograms and save to ``path`` if given."""
     import matplotlib.pyplot as plt
 
     real, gen = check_pair(real, gen)

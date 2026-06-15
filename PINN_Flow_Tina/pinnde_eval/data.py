@@ -1,11 +1,11 @@
-"""Seeded Gaussian-mixture toys for validating the metric module.
+"""Seeded Gaussian-mixture toys for metric validation.
 
 These mirror the GMMs in ``flow_de/gendata.py`` (same shapes and ranges) but are
-fully seeded and split into a parameter step and a sampling step, so we can draw
-two *independent* samples from the *same* distribution (the null test) and apply
-controlled perturbations (the sensitivity test).
+fully seeded and split into parameter generation and sampling. That separation
+lets the validation draw two independent samples from the same distribution for
+the null test, then apply controlled perturbations for the sensitivity test.
 
-Both tracks should validate against the same toys, so reuse these generators.
+Both PINNDE tracks can validate against the same toys by using these generators.
 """
 
 import numpy as np

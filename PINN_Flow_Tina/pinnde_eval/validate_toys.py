@@ -1,7 +1,7 @@
-"""Validation that the metric module is calibrated, on Gaussian-mixture toys.
+"""Calibration checks for the metric module on Gaussian-mixture toys.
 
 Runnable top-to-bottom (``python -m pinnde_eval.validate_toys`` or pasted into a
-Colab cell). Three checks, each with assertions so the script doubles as a test:
+Colab cell). The script runs three asserted checks:
 
 1. Null test     -- two independent draws from the same 3D GMM. AUC ~ 0.5,
                     reduced chi^2 ~ 1, Tier-3 distances ~ 0.
@@ -98,7 +98,7 @@ def sensitivity_test(d=3, n=8000, seed=0, eps_grid=(0.0, 0.05, 0.1, 0.2, 0.4),
 
 
 def _plot_sensitivity(tables, path):
-    """Save a metric-vs-eps grid (nice-to-have evidence)."""
+    """Save a metric-vs-eps grid for validation records."""
     import matplotlib.pyplot as plt
 
     metrics = [(1, "mmd"), (2, "swd"), (3, "w1_mean"), (4, "auc")]
