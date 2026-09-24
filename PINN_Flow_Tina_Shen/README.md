@@ -68,7 +68,7 @@ own explanation for that, which turned out to be wrong.
   including the measurements that contradicted things I believed earlier.
 - **[Package guide](PACKAGES.md)** — API and usage for both packages.
 - **[Midterm report](GSoC_2026_Midterm_Report_Tina.docx)**
-- Standalone repository:
+- Standalone repository with the same code:
   <https://github.com/aenorhabditis6/gsoc-2026-ml4sci-pinnde>
 
 ## Running it
