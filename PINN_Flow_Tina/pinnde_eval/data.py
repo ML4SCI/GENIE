@@ -39,6 +39,49 @@ def sample_gmm(params, n, seed=0, device="cpu"):
     return torch.tensor(out, dtype=torch.float32, device=device)
 
 
+def sample_shower_toy(n, cond=None, seed=0, device="cpu"):
+    """Calorimeter-flavored *conditional* toy: 3 shower observables vs. energy.
+
+    ``cond`` is the normalized log incident energy c in [0, 1] (c=0 lowest,
+    c=1 highest); if None it is drawn uniformly. Returns ``(x, c)`` where x is
+    a (n, 3) tensor of [sampling fraction, shower depth, transverse width]:
+
+      * sampling fraction  E_tot/E_inc: rises with c, *skewed* fluctuations
+        (gamma) that shrink with energy -- mimics sampling fluctuations
+        ~1/sqrt(E).
+      * depth <z>: grows logarithmically-like with c (showers penetrate
+        deeper at high energy), Gaussian core.
+      * width sigma_r: falls with c (high-energy showers are narrower),
+        lognormal so it stays positive and right-skewed.
+
+    The three observables are correlated through a shared per-event
+    fluctuation, so a generator must learn a genuinely joint conditional
+    density, not three independent 1D laws. All laws are smooth in c, so
+    interpolation to unseen c is well-defined. Fully seeded.
+    """
+    rng = np.random.default_rng(seed)
+    if cond is None:
+        c = rng.uniform(0.0, 1.0, n)
+    else:
+        c = np.broadcast_to(np.asarray(cond, dtype=np.float64).ravel(), (n,)).copy()
+
+    # shared per-event fluctuation ("how early the shower started")
+    u = rng.normal(size=n)
+    spread = 1.0 - 0.6 * c                      # fluctuations shrink with energy
+
+    f_samp = (0.70 + 0.18 * c
+              + 0.06 * spread * (rng.gamma(4.0, 1.0, n) - 4.0) / 2.0
+              + 0.02 * u)
+    depth = (2.0 + 2.5 * np.log1p(4.0 * c) / np.log(5.0)
+             + 0.35 * spread * rng.normal(size=n) + 0.25 * u)
+    width = ((1.6 - 0.9 * c)
+             * np.exp(0.18 * spread * rng.normal(size=n) - 0.10 * u))
+
+    x = np.column_stack([f_samp, depth, width])
+    return (torch.tensor(x, dtype=torch.float32, device=device),
+            torch.tensor(c.reshape(-1, 1), dtype=torch.float32, device=device))
+
+
 def perturb_params(params, kind, eps):
     """Return a copy of ``params`` perturbed by amount ``eps``.
 

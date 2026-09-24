@@ -6,6 +6,10 @@
 * ``histogram_chi2`` -- per-feature 1D histograms on common binning and the
   reduced chi-squared between the real and generated histograms. ~1 means the
   histograms agree within statistical fluctuations.
+* ``separation_power`` -- the CaloChallenge's own per-observable histogram
+  statistic, bounded in [0, 1]. 0 means the histograms agree exactly. This is
+  the number CaloChallenge submissions report, so it makes results here
+  directly comparable to the published table.
 
 For toys the "features" are the raw coordinates; for the calorimeter the same
 path takes high-level shower observables (passed in via ``evaluate``'s
@@ -85,4 +89,51 @@ def histogram_chi2(real, gen, bins=50):
         a, _ = np.histogram(real[:, j], bins=edges)
         b, _ = np.histogram(gen[:, j], bins=edges)
         out[j] = _two_sample_chi2(a, b)
+    return out
+
+
+def _separation_power(a, b):
+    """Separation power between two histograms with counts a, b.
+
+    S = 0.5 * sum_i (p_i - q_i)^2 / (p_i + q_i) on the *normalized* histograms
+    p, q. Bins where both are empty contribute nothing. S = 0 for identical
+    shapes and S = 1 for histograms with no overlap at all.
+    """
+    a = a.astype(np.float64)
+    b = b.astype(np.float64)
+    total_a, total_b = a.sum(), b.sum()
+    if total_a == 0 or total_b == 0:
+        return float("nan")
+
+    p, q = a / total_a, b / total_b
+    denom = p + q
+    mask = denom > 0
+    return float(0.5 * ((p[mask] - q[mask]) ** 2 / denom[mask]).sum())
+
+
+def separation_power(real, gen, bins=50):
+    """CaloChallenge separation power per feature. Returns a vector of length d.
+
+    Bounded in [0, 1]: **0 = histograms identical, 1 = no overlap.** Unlike the
+    reduced chi-squared this is normalized, so it compares distribution *shape*
+    and is insensitive to the two samples having different totals.
+
+    Like every other metric in the suite it has a non-zero finite-N null floor
+    -- two independent draws from the same distribution give S > 0 because of
+    binning noise, and the floor grows as the samples get smaller or the
+    binning finer. Measure it with ``stability`` before reading any absolute
+    value as model error (see DEVLOG section 8).
+    """
+    real, gen = check_pair(real, gen)
+    d = real.shape[1]
+    out = np.empty(d)
+    for j in range(d):
+        lo = min(real[:, j].min(), gen[:, j].min())
+        hi = max(real[:, j].max(), gen[:, j].max())
+        if hi <= lo:
+            hi = lo + 1.0
+        edges = np.linspace(lo, hi, bins + 1)
+        a, _ = np.histogram(real[:, j], bins=edges)
+        b, _ = np.histogram(gen[:, j], bins=edges)
+        out[j] = _separation_power(a, b)
     return out

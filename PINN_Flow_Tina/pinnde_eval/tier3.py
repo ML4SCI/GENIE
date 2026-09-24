@@ -119,3 +119,91 @@ def swd(real, gen, n_projections=128, device="cpu", seed=0):
     pr = (real[idx_r] @ proj).sort(dim=0).values   # (n, P)
     pg = (gen[idx_g] @ proj).sort(dim=0).values     # (n, P)
     return float((pr - pg).abs().mean())
+
+
+def _subsample(x, max_points, seed):
+    """Seeded row subsample, so the estimate is reproducible."""
+    if max_points is None or len(x) <= max_points:
+        return x
+    g = torch.Generator(device="cpu").manual_seed(seed)
+    idx = torch.randperm(len(x), generator=g)[:max_points].to(x.device)
+    return x[idx]
+
+
+def _sinkhorn_cost(x, y, eps, n_iter):
+    """Entropic optimal transport cost between two uniform point clouds.
+
+    Log-domain Sinkhorn iterations on the dual potentials, which is the
+    numerically stable formulation -- the naive kernel version underflows as
+    soon as ``eps`` is small relative to the costs.
+    """
+    n, m = len(x), len(y)
+    cost = _pairwise_sq_dists(x, y)
+    log_a = -torch.log(torch.tensor(float(n), device=x.device))
+    log_b = -torch.log(torch.tensor(float(m), device=x.device))
+
+    f = torch.zeros(n, device=x.device)
+    g = torch.zeros(m, device=x.device)
+    for _ in range(n_iter):
+        f = -eps * torch.logsumexp((g.unsqueeze(0) - cost) / eps + log_b, dim=1)
+        g = -eps * torch.logsumexp((f.unsqueeze(1) - cost) / eps + log_a, dim=0)
+
+    plan = torch.exp((f.unsqueeze(1) + g.unsqueeze(0) - cost) / eps
+                     + log_a + log_b)
+    return (plan * cost).sum()
+
+
+def sinkhorn(real, gen, eps=None, n_iter=100, max_points=2000, debias=True,
+             device="cpu", seed=0):
+    """Sinkhorn divergence: entropically regularised optimal transport.
+
+    An *unbinned* transport distance, in the same family as the sliced
+    Wasserstein distance but solving the transport problem in the full feature
+    space rather than on 1-D projections. Answers "how far must one cloud of
+    points be moved to become the other", with an entropy term that makes the
+    problem solvable in O(n*m) per iteration instead of by a linear program.
+
+    ``debias=True`` returns the **Sinkhorn divergence**
+
+        S(x, y) = OT(x, y) - 0.5*OT(x, x) - 0.5*OT(y, y)
+
+    rather than the raw entropic cost. This matters here: the raw cost
+    ``OT(x, x)`` is *not* zero -- the entropy term biases it -- so an
+    unmodified Sinkhorn distance would carry a large offset that behaves like
+    yet another floor to measure. The debiased form is constructed to vanish
+    when the two samples come from the same distribution, so it is the version
+    worth reporting. Set ``debias=False`` to see the raw cost.
+
+    ``eps`` (the entropic blur) defaults to the median pairwise squared
+    distance divided by 20, so it adapts to the scale of the data the way
+    ``mmd``'s bandwidth does. Smaller ``eps`` approaches exact optimal
+    transport but converges more slowly.
+
+    **Scale-dependent**, like ``swd`` and the per-feature Wasserstein: the cost
+    is squared Euclidean distance in feature space, so a single large-scale
+    observable dominates. Pass ``evaluate(..., standardize=True)`` when the
+    features carry different units (DEVLOG section 11).
+
+    ``max_points`` caps both samples (seeded) because the cost matrix is
+    n x m; 2000 points is a 4M-entry matrix, 8000 would be 64M.
+    """
+    real = _subsample(to_torch(real, device), max_points, seed)
+    # Same seed for both: identical inputs must subsample identically, so
+    # that S(x, x) is exactly 0 rather than a spurious finite-sample offset.
+    gen = _subsample(to_torch(gen, device), max_points, seed)
+    if real.shape[1] != gen.shape[1]:
+        raise ValueError(f"real and gen must share feature dimension, got "
+                         f"{real.shape[1]} vs {gen.shape[1]}")
+
+    if eps is None:
+        with torch.no_grad():
+            med = _pairwise_sq_dists(real, gen).median()
+        eps = float(med) / 20.0
+    eps = max(float(eps), 1e-12)
+
+    with torch.no_grad():
+        value = _sinkhorn_cost(real, gen, eps, n_iter)
+        if debias:
+            value = value - 0.5 * _sinkhorn_cost(real, real, eps, n_iter) \
+                          - 0.5 * _sinkhorn_cost(gen, gen, eps, n_iter)
+    return float(value)
