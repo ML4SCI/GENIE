@@ -1,0 +1,854 @@
+==========================================================================
+RUN: global_sage_knn6_L2_N150
+==========================================================================
+  conv               = sage
+  K                  = 1
+  layers             = 2
+  knn                = 6
+  total_particles    = 150
+  pool               = set2set
+  use_attn           = False
+  epochs             = 200
+  batch_size         = 512
+  lr                 = 0.001
+  max_jets_per_type  = None
+  max_test_per_type  = None
+  n_eval             = 0
+  device             = cuda
+
+  [TRAIN SPLIT]
+Loading graph cache: /pscratch/sd/r/rushil13/gsoc_rushil/v16_ablation/results/_graph_cache/train_np150_knn6_mjall.pkl
+  368112 graphs loaded.
+
+  [TEST SPLIT — never seen during training]
+Loading graph cache: /pscratch/sd/r/rushil13/gsoc_rushil/v16_ablation/results/_graph_cache/test_np150_knn6_mjall.pkl
+  78882 graphs loaded.
+
+  data: train=368112  test=78882
+    g: train=124076  test=26588
+    q: train=119475  test=25602
+    t: train=124561  test=26692
+  graph geometry: {'median_diameter': 6.0, 'mean_diameter': 6.546666666666667, 'p90_diameter': 10.0, 'mean_avg_shortest_path': 3.046787032641952, 'mean_n_components': 1.05}
+  params: encoder=1,139,456  decoder=1,261,252  total=2,400,708
+  encoder conv: EulerSAGEConv(256, 256, K_eff=1, step=0.45, diss=0.1)
+  total receptive field = 2 hops (graph median diameter = 6.0)
+  train jets=368112  batches/epoch=718  epochs 0->200
+    E1 B200/718 tot=0.2882 sink=0.0728 mask=0.0755 cnt=0.2799
+    E1 B400/718 tot=0.1739 sink=0.0893 mask=0.0446 cnt=0.0801
+    E1 B600/718 tot=0.1111 sink=0.0572 mask=0.0317 cnt=0.0445
+  epoch    1/200  loss=0.38578  lr=1.00e-03
+    E2 B200/718 tot=0.1630 sink=0.0507 mask=0.0521 cnt=0.1203
+    E2 B400/718 tot=0.1275 sink=0.0528 mask=0.0404 cnt=0.0686
+    E2 B600/718 tot=0.1628 sink=0.0495 mask=0.0462 cnt=0.1341
+  epoch    2/200  loss=0.12701  lr=1.00e-03
+    E3 B200/718 tot=0.0849 sink=0.0475 mask=0.0250 cnt=0.0247
+    E3 B400/718 tot=0.1332 sink=0.0501 mask=0.0385 cnt=0.0892
+    E3 B600/718 tot=0.1025 sink=0.0448 mask=0.0340 cnt=0.0473
+  epoch    3/200  loss=0.11124  lr=9.99e-04
+    E4 B200/718 tot=0.0890 sink=0.0423 mask=0.0256 cnt=0.0419
+    E4 B400/718 tot=0.1406 sink=0.0672 mask=0.0385 cnt=0.0697
+    E4 B600/718 tot=0.1392 sink=0.0435 mask=0.0469 cnt=0.0976
+  epoch    4/200  loss=0.09532  lr=9.99e-04
+    E5 B200/718 tot=0.1115 sink=0.0398 mask=0.0381 cnt=0.0671
+    E5 B400/718 tot=0.0692 sink=0.0399 mask=0.0199 cnt=0.0188
+    E5 B600/718 tot=0.1035 sink=0.0461 mask=0.0355 cnt=0.0436
+  epoch    5/200  loss=0.08932  lr=9.98e-04
+    E6 B200/718 tot=0.0900 sink=0.0421 mask=0.0301 cnt=0.0357
+    E6 B400/718 tot=0.0798 sink=0.0403 mask=0.0242 cnt=0.0306
+    E6 B600/718 tot=0.0588 sink=0.0376 mask=0.0159 cnt=0.0105
+  epoch    6/200  loss=0.08693  lr=9.98e-04
+    E7 B200/718 tot=0.0818 sink=0.0384 mask=0.0267 cnt=0.0333
+    E7 B400/718 tot=0.0723 sink=0.0421 mask=0.0207 cnt=0.0192
+    E7 B600/718 tot=0.1264 sink=0.0400 mask=0.0471 cnt=0.0786
+  epoch    7/200  loss=0.07548  lr=9.97e-04
+    E8 B200/718 tot=0.0588 sink=0.0354 mask=0.0168 cnt=0.0134
+    E8 B400/718 tot=0.0696 sink=0.0429 mask=0.0177 cnt=0.0181
+    E8 B600/718 tot=0.0759 sink=0.0362 mask=0.0241 cnt=0.0313
+  epoch    8/200  loss=0.07758  lr=9.96e-04
+    E9 B200/718 tot=0.1031 sink=0.0466 mask=0.0329 cnt=0.0473
+    E9 B400/718 tot=0.0531 sink=0.0345 mask=0.0136 cnt=0.0101
+    E9 B600/718 tot=0.0597 sink=0.0340 mask=0.0175 cnt=0.0164
+  epoch    9/200  loss=0.07215  lr=9.95e-04
+    E10 B200/718 tot=0.1006 sink=0.0342 mask=0.0359 cnt=0.0611
+    E10 B400/718 tot=0.1367 sink=0.0331 mask=0.0586 cnt=0.0900
+    E10 B600/718 tot=0.0678 sink=0.0357 mask=0.0195 cnt=0.0252
+  epoch   10/200  loss=0.06864  lr=9.94e-04
+    E11 B200/718 tot=0.0550 sink=0.0353 mask=0.0150 cnt=0.0093
+    E11 B400/718 tot=0.0484 sink=0.0334 mask=0.0123 cnt=0.0053
+    E11 B600/718 tot=0.0529 sink=0.0327 mask=0.0152 cnt=0.0101
+  epoch   11/200  loss=0.06859  lr=9.93e-04
+    E12 B200/718 tot=0.0525 sink=0.0337 mask=0.0146 cnt=0.0083
+    E12 B400/718 tot=0.0481 sink=0.0314 mask=0.0134 cnt=0.0065
+    E12 B600/718 tot=0.0617 sink=0.0343 mask=0.0192 cnt=0.0166
+  epoch   12/200  loss=0.06888  lr=9.91e-04
+    E13 B200/718 tot=0.0659 sink=0.0377 mask=0.0195 cnt=0.0173
+    E13 B400/718 tot=0.0858 sink=0.0359 mask=0.0307 cnt=0.0386
+    E13 B600/718 tot=0.1599 sink=0.0359 mask=0.0666 cnt=0.1149
+  epoch   13/200  loss=0.06710  lr=9.90e-04
+    E14 B200/718 tot=0.0536 sink=0.0327 mask=0.0148 cnt=0.0122
+    E14 B400/718 tot=0.1055 sink=0.0320 mask=0.0419 cnt=0.0631
+    E14 B600/718 tot=0.0725 sink=0.0325 mask=0.0252 cnt=0.0297
+  epoch   14/200  loss=0.06098  lr=9.88e-04
+    E15 B200/718 tot=0.0465 sink=0.0301 mask=0.0126 cnt=0.0077
+    E15 B400/718 tot=0.0515 sink=0.0325 mask=0.0140 cnt=0.0100
+    E15 B600/718 tot=0.0458 sink=0.0296 mask=0.0122 cnt=0.0078
+  epoch   15/200  loss=0.06232  lr=9.86e-04
+    E16 B200/718 tot=0.0515 sink=0.0314 mask=0.0150 cnt=0.0100
+    E16 B400/718 tot=0.0983 sink=0.0312 mask=0.0393 cnt=0.0556
+    E16 B600/718 tot=0.0531 sink=0.0283 mask=0.0170 cnt=0.0155
+  epoch   16/200  loss=0.06156  lr=9.84e-04
+    E17 B200/718 tot=0.0580 sink=0.0321 mask=0.0166 cnt=0.0186
+    E17 B400/718 tot=0.0412 sink=0.0285 mask=0.0102 cnt=0.0049
+    E17 B600/718 tot=0.0620 sink=0.0321 mask=0.0202 cnt=0.0194
+  epoch   17/200  loss=0.05993  lr=9.82e-04
+    E18 B200/718 tot=0.0547 sink=0.0326 mask=0.0153 cnt=0.0134
+    E18 B400/718 tot=0.0452 sink=0.0304 mask=0.0116 cnt=0.0065
+    E18 B600/718 tot=0.0749 sink=0.0328 mask=0.0283 cnt=0.0277
+  epoch   18/200  loss=0.06123  lr=9.80e-04
+    E19 B200/718 tot=0.0470 sink=0.0293 mask=0.0130 cnt=0.0095
+    E19 B400/718 tot=0.0680 sink=0.0276 mask=0.0276 cnt=0.0257
+    E19 B600/718 tot=0.0437 sink=0.0281 mask=0.0117 cnt=0.0079
+  epoch   19/200  loss=0.05771  lr=9.78e-04
+    E20 B200/718 tot=0.0573 sink=0.0291 mask=0.0184 cnt=0.0196
+    E20 B400/718 tot=0.0493 sink=0.0302 mask=0.0138 cnt=0.0104
+    E20 B600/718 tot=0.0413 sink=0.0274 mask=0.0106 cnt=0.0067
+  epoch   20/200  loss=0.05554  lr=9.76e-04
+    E21 B200/718 tot=0.0400 sink=0.0277 mask=0.0101 cnt=0.0045
+    E21 B400/718 tot=0.0388 sink=0.0271 mask=0.0096 cnt=0.0041
+    E21 B600/718 tot=0.0371 sink=0.0266 mask=0.0090 cnt=0.0030
+  epoch   21/200  loss=0.05480  lr=9.73e-04
+    E22 B200/718 tot=0.0475 sink=0.0269 mask=0.0139 cnt=0.0135
+    E22 B400/718 tot=0.0466 sink=0.0315 mask=0.0123 cnt=0.0057
+    E22 B600/718 tot=0.0449 sink=0.0279 mask=0.0127 cnt=0.0085
+  epoch   22/200  loss=0.05639  lr=9.70e-04
+    E23 B200/718 tot=0.0390 sink=0.0274 mask=0.0097 cnt=0.0037
+    E23 B400/718 tot=0.0532 sink=0.0289 mask=0.0157 cnt=0.0172
+    E23 B600/718 tot=0.0463 sink=0.0278 mask=0.0139 cnt=0.0093
+  epoch   23/200  loss=0.05553  lr=9.68e-04
+    E24 B200/718 tot=0.0750 sink=0.0267 mask=0.0309 cnt=0.0347
+    E24 B400/718 tot=0.0410 sink=0.0281 mask=0.0105 cnt=0.0049
+    E24 B600/718 tot=0.0438 sink=0.0280 mask=0.0123 cnt=0.0070
+  epoch   24/200  loss=0.05635  lr=9.65e-04
+    E25 B200/718 tot=0.0460 sink=0.0283 mask=0.0133 cnt=0.0087
+    E25 B400/718 tot=0.0442 sink=0.0261 mask=0.0129 cnt=0.0103
+    E25 B600/718 tot=0.0361 sink=0.0265 mask=0.0081 cnt=0.0029
+  epoch   25/200  loss=0.05083  lr=9.62e-04
+    E26 B200/718 tot=0.0514 sink=0.0280 mask=0.0162 cnt=0.0145
+    E26 B400/718 tot=0.0519 sink=0.0316 mask=0.0142 cnt=0.0121
+    E26 B600/718 tot=0.0531 sink=0.0270 mask=0.0185 cnt=0.0152
+  epoch   26/200  loss=0.05303  lr=9.59e-04
+    E27 B200/718 tot=0.0629 sink=0.0323 mask=0.0201 cnt=0.0208
+    E27 B400/718 tot=0.0473 sink=0.0283 mask=0.0136 cnt=0.0108
+    E27 B600/718 tot=0.0422 sink=0.0260 mask=0.0120 cnt=0.0085
+  epoch   27/200  loss=0.05040  lr=9.56e-04
+    E28 B200/718 tot=0.0606 sink=0.0261 mask=0.0248 cnt=0.0195
+    E28 B400/718 tot=0.1314 sink=0.0334 mask=0.0513 cnt=0.0932
+    E28 B600/718 tot=0.0461 sink=0.0268 mask=0.0133 cnt=0.0119
+  epoch   28/200  loss=0.05194  lr=9.52e-04
+    E29 B200/718 tot=0.0661 sink=0.0258 mask=0.0282 cnt=0.0241
+    E29 B400/718 tot=0.0403 sink=0.0269 mask=0.0104 cnt=0.0062
+    E29 B600/718 tot=0.0349 sink=0.0241 mask=0.0086 cnt=0.0045
+  epoch   29/200  loss=0.04753  lr=9.49e-04
+    E30 B200/718 tot=0.0396 sink=0.0259 mask=0.0105 cnt=0.0064
+    E30 B400/718 tot=0.0354 sink=0.0249 mask=0.0080 cnt=0.0049
+    E30 B600/718 tot=0.0340 sink=0.0262 mask=0.0068 cnt=0.0018
+  epoch   30/200  loss=0.04839  lr=9.46e-04
+    E31 B200/718 tot=0.0588 sink=0.0260 mask=0.0222 cnt=0.0213
+    E31 B400/718 tot=0.0378 sink=0.0247 mask=0.0104 cnt=0.0054
+    E31 B600/718 tot=0.0522 sink=0.0299 mask=0.0156 cnt=0.0136
+  epoch   31/200  loss=0.04959  lr=9.42e-04
+    E32 B200/718 tot=0.0424 sink=0.0245 mask=0.0127 cnt=0.0105
+    E32 B400/718 tot=0.0344 sink=0.0243 mask=0.0082 cnt=0.0036
+    E32 B600/718 tot=0.0879 sink=0.0269 mask=0.0375 cnt=0.0470
+  epoch   32/200  loss=0.04716  lr=9.38e-04
+    E33 B200/718 tot=0.0384 sink=0.0241 mask=0.0109 cnt=0.0068
+    E33 B400/718 tot=0.0663 sink=0.0333 mask=0.0232 cnt=0.0196
+    E33 B600/718 tot=0.0410 sink=0.0252 mask=0.0124 cnt=0.0069
+  epoch   33/200  loss=0.04712  lr=9.34e-04
+    E34 B200/718 tot=0.0464 sink=0.0253 mask=0.0146 cnt=0.0130
+    E34 B400/718 tot=0.0400 sink=0.0250 mask=0.0113 cnt=0.0075
+    E34 B600/718 tot=0.0403 sink=0.0254 mask=0.0110 cnt=0.0079
+  epoch   34/200  loss=0.04805  lr=9.30e-04
+    E35 B200/718 tot=0.0332 sink=0.0238 mask=0.0079 cnt=0.0029
+    E35 B400/718 tot=0.0449 sink=0.0257 mask=0.0148 cnt=0.0089
+    E35 B600/718 tot=0.0327 sink=0.0238 mask=0.0077 cnt=0.0022
+  epoch   35/200  loss=0.04740  lr=9.26e-04
+    E36 B200/718 tot=0.0379 sink=0.0251 mask=0.0101 cnt=0.0055
+    E36 B400/718 tot=0.1031 sink=0.0272 mask=0.0487 cnt=0.0545
+    E36 B600/718 tot=0.0495 sink=0.0240 mask=0.0178 cnt=0.0154
+  epoch   36/200  loss=0.04408  lr=9.22e-04
+    E37 B200/718 tot=0.0494 sink=0.0293 mask=0.0145 cnt=0.0112
+    E37 B400/718 tot=0.0484 sink=0.0247 mask=0.0178 cnt=0.0117
+    E37 B600/718 tot=0.0381 sink=0.0254 mask=0.0103 cnt=0.0047
+  epoch   37/200  loss=0.04734  lr=9.18e-04
+    E38 B200/718 tot=0.0407 sink=0.0239 mask=0.0121 cnt=0.0094
+    E38 B400/718 tot=0.0395 sink=0.0258 mask=0.0102 cnt=0.0069
+    E38 B600/718 tot=0.0404 sink=0.0230 mask=0.0134 cnt=0.0080
+  epoch   38/200  loss=0.04496  lr=9.14e-04
+    E39 B200/718 tot=0.0499 sink=0.0228 mask=0.0194 cnt=0.0152
+    E39 B400/718 tot=0.0292 sink=0.0225 mask=0.0058 cnt=0.0019
+    E39 B600/718 tot=0.0456 sink=0.0250 mask=0.0148 cnt=0.0115
+  epoch   39/200  loss=0.04368  lr=9.09e-04
+    E40 B200/718 tot=0.0426 sink=0.0241 mask=0.0139 cnt=0.0090
+    E40 B400/718 tot=0.0400 sink=0.0234 mask=0.0127 cnt=0.0078
+    E40 B600/718 tot=0.0674 sink=0.0248 mask=0.0302 cnt=0.0247
+  epoch   40/200  loss=0.04351  lr=9.05e-04
+    E41 B200/718 tot=0.0319 sink=0.0236 mask=0.0070 cnt=0.0027
+    E41 B400/718 tot=0.0386 sink=0.0247 mask=0.0110 cnt=0.0059
+    E41 B600/718 tot=0.0392 sink=0.0238 mask=0.0117 cnt=0.0073
+  epoch   41/200  loss=0.04335  lr=9.00e-04
+    E42 B200/718 tot=0.0322 sink=0.0225 mask=0.0082 cnt=0.0030
+    E42 B400/718 tot=0.0683 sink=0.0230 mask=0.0291 cnt=0.0323
+    E42 B600/718 tot=0.0426 sink=0.0245 mask=0.0135 cnt=0.0092
+  epoch   42/200  loss=0.04447  lr=8.95e-04
+    E43 B200/718 tot=0.0724 sink=0.0235 mask=0.0304 cnt=0.0369
+    E43 B400/718 tot=0.0323 sink=0.0231 mask=0.0077 cnt=0.0030
+    E43 B600/718 tot=0.0337 sink=0.0245 mask=0.0076 cnt=0.0034
+  epoch   43/200  loss=0.04335  lr=8.90e-04
+    E44 B200/718 tot=0.0376 sink=0.0250 mask=0.0100 cnt=0.0051
+    E44 B400/718 tot=0.0389 sink=0.0254 mask=0.0099 cnt=0.0073
+    E44 B600/718 tot=0.0384 sink=0.0238 mask=0.0108 cnt=0.0076
+  epoch   44/200  loss=0.04238  lr=8.85e-04
+    E45 B200/718 tot=0.0486 sink=0.0241 mask=0.0183 cnt=0.0125
+    E45 B400/718 tot=0.0385 sink=0.0231 mask=0.0122 cnt=0.0063
+    E45 B600/718 tot=0.0512 sink=0.0235 mask=0.0203 cnt=0.0148
+  epoch   45/200  loss=0.04213  lr=8.80e-04
+    E46 B200/718 tot=0.0395 sink=0.0235 mask=0.0114 cnt=0.0092
+    E46 B400/718 tot=0.0376 sink=0.0240 mask=0.0095 cnt=0.0082
+    E46 B600/718 tot=0.0319 sink=0.0224 mask=0.0075 cnt=0.0040
+  epoch   46/200  loss=0.04124  lr=8.75e-04
+    E47 B200/718 tot=0.0403 sink=0.0228 mask=0.0126 cnt=0.0098
+    E47 B400/718 tot=0.1149 sink=0.0240 mask=0.0622 cnt=0.0574
+    E47 B600/718 tot=0.0415 sink=0.0235 mask=0.0125 cnt=0.0111
+  epoch   47/200  loss=0.04080  lr=8.70e-04
+    E48 B200/718 tot=0.0474 sink=0.0257 mask=0.0163 cnt=0.0108
+    E48 B400/718 tot=0.0411 sink=0.0255 mask=0.0116 cnt=0.0081
+    E48 B600/718 tot=0.0331 sink=0.0228 mask=0.0081 cnt=0.0045
+  epoch   48/200  loss=0.04102  lr=8.65e-04
+    E49 B200/718 tot=0.0323 sink=0.0226 mask=0.0081 cnt=0.0032
+    E49 B400/718 tot=0.0547 sink=0.0230 mask=0.0237 cnt=0.0162
+    E49 B600/718 tot=0.0457 sink=0.0227 mask=0.0167 cnt=0.0124
+  epoch   49/200  loss=0.04130  lr=8.59e-04
+    E50 B200/718 tot=0.0399 sink=0.0264 mask=0.0104 cnt=0.0063
+    E50 B400/718 tot=0.0274 sink=0.0218 mask=0.0050 cnt=0.0013
+    E50 B600/718 tot=0.0730 sink=0.0255 mask=0.0350 cnt=0.0251
+  epoch   50/200  loss=0.04217  lr=8.54e-04
+    E51 B200/718 tot=0.0296 sink=0.0208 mask=0.0074 cnt=0.0028
+    E51 B400/718 tot=0.0298 sink=0.0221 mask=0.0066 cnt=0.0024
+    E51 B600/718 tot=0.0370 sink=0.0243 mask=0.0093 cnt=0.0068
+  epoch   51/200  loss=0.04137  lr=8.48e-04
+    E52 B200/718 tot=0.0456 sink=0.0228 mask=0.0163 cnt=0.0130
+    E52 B400/718 tot=0.0271 sink=0.0207 mask=0.0057 cnt=0.0014
+    E52 B600/718 tot=0.0323 sink=0.0235 mask=0.0075 cnt=0.0027
+  epoch   52/200  loss=0.04068  lr=8.42e-04
+    E53 B200/718 tot=0.0321 sink=0.0215 mask=0.0081 cnt=0.0051
+    E53 B400/718 tot=0.0351 sink=0.0260 mask=0.0077 cnt=0.0028
+    E53 B600/718 tot=0.0884 sink=0.0233 mask=0.0409 cnt=0.0484
+  epoch   53/200  loss=0.03922  lr=8.37e-04
+    E54 B200/718 tot=0.0329 sink=0.0216 mask=0.0087 cnt=0.0053
+    E54 B400/718 tot=0.0418 sink=0.0224 mask=0.0129 cnt=0.0129
+    E54 B600/718 tot=0.0299 sink=0.0219 mask=0.0067 cnt=0.0026
+  epoch   54/200  loss=0.03858  lr=8.31e-04
+    E55 B200/718 tot=0.0352 sink=0.0213 mask=0.0103 cnt=0.0072
+    E55 B400/718 tot=0.0338 sink=0.0216 mask=0.0091 cnt=0.0063
+    E55 B600/718 tot=0.0295 sink=0.0224 mask=0.0061 cnt=0.0020
+  epoch   55/200  loss=0.03928  lr=8.25e-04
+    E56 B200/718 tot=0.0299 sink=0.0209 mask=0.0072 cnt=0.0036
+    E56 B400/718 tot=0.0266 sink=0.0208 mask=0.0052 cnt=0.0011
+    E56 B600/718 tot=0.0361 sink=0.0236 mask=0.0099 cnt=0.0052
+  epoch   56/200  loss=0.03939  lr=8.19e-04
+    E57 B200/718 tot=0.0521 sink=0.0218 mask=0.0219 cnt=0.0168
+    E57 B400/718 tot=0.0269 sink=0.0203 mask=0.0057 cnt=0.0018
+    E57 B600/718 tot=0.0313 sink=0.0214 mask=0.0080 cnt=0.0038
+  epoch   57/200  loss=0.04015  lr=8.13e-04
+    E58 B200/718 tot=0.0482 sink=0.0215 mask=0.0186 cnt=0.0162
+    E58 B400/718 tot=0.0263 sink=0.0201 mask=0.0057 cnt=0.0011
+    E58 B600/718 tot=0.0280 sink=0.0203 mask=0.0068 cnt=0.0018
+  epoch   58/200  loss=0.03884  lr=8.07e-04
+    E59 B200/718 tot=0.0290 sink=0.0228 mask=0.0056 cnt=0.0011
+    E59 B400/718 tot=0.0438 sink=0.0234 mask=0.0148 cnt=0.0114
+    E59 B600/718 tot=0.0362 sink=0.0205 mask=0.0116 cnt=0.0083
+  epoch   59/200  loss=0.03961  lr=8.00e-04
+    E60 B200/718 tot=0.0328 sink=0.0217 mask=0.0088 cnt=0.0046
+    E60 B400/718 tot=0.0293 sink=0.0221 mask=0.0062 cnt=0.0020
+    E60 B600/718 tot=0.0374 sink=0.0211 mask=0.0113 cnt=0.0101
+  epoch   60/200  loss=0.03725  lr=7.94e-04
+    E61 B200/718 tot=0.0525 sink=0.0223 mask=0.0200 cnt=0.0204
+    E61 B400/718 tot=0.0272 sink=0.0196 mask=0.0062 cnt=0.0029
+    E61 B600/718 tot=0.0283 sink=0.0218 mask=0.0058 cnt=0.0013
+  epoch   61/200  loss=0.03949  lr=7.88e-04
+    E62 B200/718 tot=0.0267 sink=0.0202 mask=0.0060 cnt=0.0011
+    E62 B400/718 tot=0.0527 sink=0.0221 mask=0.0206 cnt=0.0199
+    E62 B600/718 tot=0.0284 sink=0.0206 mask=0.0065 cnt=0.0026
+  epoch   62/200  loss=0.03787  lr=7.81e-04
+    E63 B200/718 tot=0.0440 sink=0.0218 mask=0.0167 cnt=0.0110
+    E63 B400/718 tot=0.0322 sink=0.0205 mask=0.0097 cnt=0.0039
+    E63 B600/718 tot=0.0490 sink=0.0213 mask=0.0200 cnt=0.0152
+  epoch   63/200  loss=0.03812  lr=7.75e-04
+    E64 B200/718 tot=0.0286 sink=0.0219 mask=0.0059 cnt=0.0017
+    E64 B400/718 tot=0.0437 sink=0.0209 mask=0.0169 cnt=0.0120
+    E64 B600/718 tot=0.0326 sink=0.0213 mask=0.0092 cnt=0.0040
+  epoch   64/200  loss=0.03697  lr=7.68e-04
+    E65 B200/718 tot=0.0320 sink=0.0201 mask=0.0093 cnt=0.0054
+    E65 B400/718 tot=0.0346 sink=0.0230 mask=0.0087 cnt=0.0058
+    E65 B600/718 tot=0.0261 sink=0.0200 mask=0.0054 cnt=0.0014
+  epoch   65/200  loss=0.03833  lr=7.61e-04
+    E66 B200/718 tot=0.0262 sink=0.0195 mask=0.0059 cnt=0.0016
+    E66 B400/718 tot=0.0306 sink=0.0217 mask=0.0072 cnt=0.0033
+    E66 B600/718 tot=0.1068 sink=0.0219 mask=0.0587 cnt=0.0524
+  epoch   66/200  loss=0.03656  lr=7.55e-04
+    E67 B200/718 tot=0.0336 sink=0.0205 mask=0.0108 cnt=0.0047
+    E67 B400/718 tot=0.0400 sink=0.0228 mask=0.0122 cnt=0.0100
+    E67 B600/718 tot=0.0313 sink=0.0211 mask=0.0085 cnt=0.0032
+  epoch   67/200  loss=0.03606  lr=7.48e-04
+    E68 B200/718 tot=0.0433 sink=0.0216 mask=0.0162 cnt=0.0110
+    E68 B400/718 tot=0.0319 sink=0.0217 mask=0.0081 cnt=0.0041
+    E68 B600/718 tot=0.0351 sink=0.0203 mask=0.0116 cnt=0.0064
+  epoch   68/200  loss=0.03703  lr=7.41e-04
+    E69 B200/718 tot=0.0497 sink=0.0217 mask=0.0180 cnt=0.0201
+    E69 B400/718 tot=0.0488 sink=0.0200 mask=0.0209 cnt=0.0157
+    E69 B600/718 tot=0.0275 sink=0.0206 mask=0.0062 cnt=0.0014
+  epoch   69/200  loss=0.03640  lr=7.34e-04
+    E70 B200/718 tot=0.0478 sink=0.0220 mask=0.0176 cnt=0.0164
+    E70 B400/718 tot=0.0298 sink=0.0196 mask=0.0077 cnt=0.0051
+    E70 B600/718 tot=0.0269 sink=0.0197 mask=0.0061 cnt=0.0021
+  epoch   70/200  loss=0.03675  lr=7.27e-04
+    E71 B200/718 tot=0.0327 sink=0.0230 mask=0.0081 cnt=0.0032
+    E71 B400/718 tot=0.0343 sink=0.0219 mask=0.0100 cnt=0.0049
+    E71 B600/718 tot=0.0270 sink=0.0194 mask=0.0065 cnt=0.0022
+  epoch   71/200  loss=0.03588  lr=7.20e-04
+    E72 B200/718 tot=0.0283 sink=0.0205 mask=0.0066 cnt=0.0023
+    E72 B400/718 tot=0.0262 sink=0.0193 mask=0.0059 cnt=0.0020
+    E72 B600/718 tot=0.0333 sink=0.0197 mask=0.0105 cnt=0.0061
+  epoch   72/200  loss=0.03585  lr=7.13e-04
+    E73 B200/718 tot=0.0349 sink=0.0204 mask=0.0120 cnt=0.0048
+    E73 B400/718 tot=0.0290 sink=0.0207 mask=0.0071 cnt=0.0024
+    E73 B600/718 tot=0.0258 sink=0.0197 mask=0.0054 cnt=0.0015
+  epoch   73/200  loss=0.03570  lr=7.06e-04
+    E74 B200/718 tot=0.0523 sink=0.0192 mask=0.0222 cnt=0.0220
+    E74 B400/718 tot=0.0264 sink=0.0189 mask=0.0060 cnt=0.0030
+    E74 B600/718 tot=0.0398 sink=0.0206 mask=0.0141 cnt=0.0100
+  epoch   74/200  loss=0.03526  lr=6.99e-04
+    E75 B200/718 tot=0.0237 sink=0.0188 mask=0.0045 cnt=0.0008
+    E75 B400/718 tot=0.0354 sink=0.0214 mask=0.0116 cnt=0.0049
+    E75 B600/718 tot=0.0283 sink=0.0207 mask=0.0066 cnt=0.0022
+  epoch   75/200  loss=0.03408  lr=6.92e-04
+    E76 B200/718 tot=0.0393 sink=0.0192 mask=0.0143 cnt=0.0117
+    E76 B400/718 tot=0.0250 sink=0.0192 mask=0.0050 cnt=0.0017
+    E76 B600/718 tot=0.0281 sink=0.0209 mask=0.0059 cnt=0.0024
+  epoch   76/200  loss=0.03401  lr=6.84e-04
+    E77 B200/718 tot=0.0579 sink=0.0184 mask=0.0276 cnt=0.0238
+    E77 B400/718 tot=0.0259 sink=0.0198 mask=0.0054 cnt=0.0015
+    E77 B600/718 tot=0.0292 sink=0.0215 mask=0.0066 cnt=0.0020
+  epoch   77/200  loss=0.03454  lr=6.77e-04
+    E78 B200/718 tot=0.0302 sink=0.0209 mask=0.0078 cnt=0.0030
+    E78 B400/718 tot=0.0263 sink=0.0189 mask=0.0062 cnt=0.0024
+    E78 B600/718 tot=0.0299 sink=0.0209 mask=0.0073 cnt=0.0034
+  epoch   78/200  loss=0.03529  lr=6.70e-04
+    E79 B200/718 tot=0.0320 sink=0.0193 mask=0.0094 cnt=0.0067
+    E79 B400/718 tot=0.0322 sink=0.0201 mask=0.0088 cnt=0.0065
+    E79 B600/718 tot=0.0308 sink=0.0192 mask=0.0085 cnt=0.0061
+  epoch   79/200  loss=0.03438  lr=6.62e-04
+    E80 B200/718 tot=0.0396 sink=0.0198 mask=0.0143 cnt=0.0110
+    E80 B400/718 tot=0.0466 sink=0.0217 mask=0.0182 cnt=0.0133
+    E80 B600/718 tot=0.0430 sink=0.0210 mask=0.0148 cnt=0.0144
+  epoch   80/200  loss=0.03361  lr=6.55e-04
+    E81 B200/718 tot=0.0397 sink=0.0200 mask=0.0148 cnt=0.0097
+    E81 B400/718 tot=0.0724 sink=0.0203 mask=0.0390 cnt=0.0262
+    E81 B600/718 tot=0.0491 sink=0.0198 mask=0.0205 cnt=0.0175
+  epoch   81/200  loss=0.03383  lr=6.47e-04
+    E82 B200/718 tot=0.0253 sink=0.0199 mask=0.0049 cnt=0.0010
+    E82 B400/718 tot=0.0255 sink=0.0192 mask=0.0052 cnt=0.0022
+    E82 B600/718 tot=0.0241 sink=0.0194 mask=0.0043 cnt=0.0009
+  epoch   82/200  loss=0.03287  lr=6.40e-04
+    E83 B200/718 tot=0.0297 sink=0.0187 mask=0.0084 cnt=0.0052
+    E83 B400/718 tot=0.0342 sink=0.0185 mask=0.0127 cnt=0.0060
+    E83 B600/718 tot=0.0304 sink=0.0179 mask=0.0091 cnt=0.0066
+  epoch   83/200  loss=0.03542  lr=6.32e-04
+    E84 B200/718 tot=0.0561 sink=0.0192 mask=0.0256 cnt=0.0226
+    E84 B400/718 tot=0.0347 sink=0.0200 mask=0.0113 cnt=0.0070
+    E84 B600/718 tot=0.0348 sink=0.0193 mask=0.0118 cnt=0.0073
+  epoch   84/200  loss=0.03354  lr=6.25e-04
+    E85 B200/718 tot=0.0488 sink=0.0204 mask=0.0199 cnt=0.0171
+    E85 B400/718 tot=0.0286 sink=0.0207 mask=0.0066 cnt=0.0026
+    E85 B600/718 tot=0.0267 sink=0.0181 mask=0.0065 cnt=0.0043
+  epoch   85/200  loss=0.03280  lr=6.17e-04
+    E86 B200/718 tot=0.0463 sink=0.0194 mask=0.0207 cnt=0.0124
+    E86 B400/718 tot=0.0311 sink=0.0187 mask=0.0095 cnt=0.0057
+    E86 B600/718 tot=0.0339 sink=0.0221 mask=0.0088 cnt=0.0060
+  epoch   86/200  loss=0.03337  lr=6.09e-04
+    E87 B200/718 tot=0.0234 sink=0.0190 mask=0.0039 cnt=0.0011
+    E87 B400/718 tot=0.0243 sink=0.0183 mask=0.0051 cnt=0.0017
+    E87 B600/718 tot=0.0223 sink=0.0176 mask=0.0043 cnt=0.0010
+  epoch   87/200  loss=0.03285  lr=6.02e-04
+    E88 B200/718 tot=0.0289 sink=0.0191 mask=0.0083 cnt=0.0030
+    E88 B400/718 tot=0.0252 sink=0.0187 mask=0.0055 cnt=0.0019
+    E88 B600/718 tot=0.0341 sink=0.0189 mask=0.0112 cnt=0.0078
+  epoch   88/200  loss=0.03271  lr=5.94e-04
+    E89 B200/718 tot=0.0334 sink=0.0184 mask=0.0116 cnt=0.0066
+    E89 B400/718 tot=0.0234 sink=0.0179 mask=0.0047 cnt=0.0017
+    E89 B600/718 tot=0.0434 sink=0.0194 mask=0.0174 cnt=0.0133
+  epoch   89/200  loss=0.03218  lr=5.86e-04
+    E90 B200/718 tot=0.0249 sink=0.0179 mask=0.0058 cnt=0.0023
+    E90 B400/718 tot=0.0447 sink=0.0198 mask=0.0182 cnt=0.0133
+    E90 B600/718 tot=0.0259 sink=0.0179 mask=0.0066 cnt=0.0026
+  epoch   90/200  loss=0.03219  lr=5.79e-04
+    E91 B200/718 tot=0.0234 sink=0.0180 mask=0.0048 cnt=0.0013
+    E91 B400/718 tot=0.0379 sink=0.0180 mask=0.0145 cnt=0.0107
+    E91 B600/718 tot=0.0345 sink=0.0182 mask=0.0119 cnt=0.0088
+  epoch   91/200  loss=0.03341  lr=5.71e-04
+    E92 B200/718 tot=0.0249 sink=0.0190 mask=0.0051 cnt=0.0016
+    E92 B400/718 tot=0.0219 sink=0.0180 mask=0.0035 cnt=0.0008
+    E92 B600/718 tot=0.0251 sink=0.0190 mask=0.0051 cnt=0.0020
+  epoch   92/200  loss=0.03145  lr=5.63e-04
+    E93 B200/718 tot=0.0272 sink=0.0196 mask=0.0064 cnt=0.0024
+    E93 B400/718 tot=0.0286 sink=0.0182 mask=0.0081 cnt=0.0047
+    E93 B600/718 tot=0.0659 sink=0.0182 mask=0.0345 cnt=0.0263
+  epoch   93/200  loss=0.03047  lr=5.55e-04
+    E94 B200/718 tot=0.0278 sink=0.0179 mask=0.0079 cnt=0.0040
+    E94 B400/718 tot=0.0247 sink=0.0186 mask=0.0052 cnt=0.0018
+    E94 B600/718 tot=0.0378 sink=0.0180 mask=0.0145 cnt=0.0104
+  epoch   94/200  loss=0.03268  lr=5.48e-04
+    E95 B200/718 tot=0.0359 sink=0.0178 mask=0.0137 cnt=0.0087
+    E95 B400/718 tot=0.0336 sink=0.0188 mask=0.0107 cnt=0.0081
+    E95 B600/718 tot=0.0284 sink=0.0187 mask=0.0082 cnt=0.0031
+  epoch   95/200  loss=0.03151  lr=5.40e-04
+    E96 B200/718 tot=0.0238 sink=0.0183 mask=0.0047 cnt=0.0014
+    E96 B400/718 tot=0.0226 sink=0.0179 mask=0.0041 cnt=0.0012
+    E96 B600/718 tot=0.0351 sink=0.0183 mask=0.0132 cnt=0.0073
+  epoch   96/200  loss=0.03052  lr=5.32e-04
+    E97 B200/718 tot=0.0230 sink=0.0185 mask=0.0040 cnt=0.0010
+    E97 B400/718 tot=0.0474 sink=0.0182 mask=0.0216 cnt=0.0152
+    E97 B600/718 tot=0.0231 sink=0.0187 mask=0.0040 cnt=0.0009
+  epoch   97/200  loss=0.03162  lr=5.24e-04
+    E98 B200/718 tot=0.0236 sink=0.0189 mask=0.0042 cnt=0.0009
+    E98 B400/718 tot=0.0257 sink=0.0189 mask=0.0056 cnt=0.0025
+    E98 B600/718 tot=0.0249 sink=0.0192 mask=0.0050 cnt=0.0013
+  epoch   98/200  loss=0.03158  lr=5.16e-04
+    E99 B200/718 tot=0.0233 sink=0.0190 mask=0.0039 cnt=0.0008
+    E99 B400/718 tot=0.0491 sink=0.0230 mask=0.0186 cnt=0.0152
+    E99 B600/718 tot=0.0382 sink=0.0194 mask=0.0132 cnt=0.0112
+  epoch   99/200  loss=0.03136  lr=5.08e-04
+    E100 B200/718 tot=0.0430 sink=0.0179 mask=0.0174 cnt=0.0153
+    E100 B400/718 tot=0.0276 sink=0.0200 mask=0.0065 cnt=0.0023
+    E100 B600/718 tot=0.0279 sink=0.0223 mask=0.0049 cnt=0.0014
+  epoch  100/200  loss=0.03134  lr=5.01e-04
+    E101 B200/718 tot=0.0464 sink=0.0189 mask=0.0207 cnt=0.0135
+    E101 B400/718 tot=0.0224 sink=0.0182 mask=0.0037 cnt=0.0009
+    E101 B600/718 tot=0.0228 sink=0.0189 mask=0.0035 cnt=0.0007
+  epoch  101/200  loss=0.03116  lr=4.93e-04
+    E102 B200/718 tot=0.0251 sink=0.0194 mask=0.0050 cnt=0.0014
+    E102 B400/718 tot=0.0274 sink=0.0195 mask=0.0062 cnt=0.0034
+    E102 B600/718 tot=0.0272 sink=0.0195 mask=0.0065 cnt=0.0026
+  epoch  102/200  loss=0.03143  lr=4.85e-04
+    E103 B200/718 tot=0.0293 sink=0.0193 mask=0.0081 cnt=0.0037
+    E103 B400/718 tot=0.0278 sink=0.0199 mask=0.0067 cnt=0.0025
+    E103 B600/718 tot=0.0315 sink=0.0213 mask=0.0082 cnt=0.0040
+  epoch  103/200  loss=0.03350  lr=4.77e-04
+    E104 B200/718 tot=0.0254 sink=0.0180 mask=0.0061 cnt=0.0025
+    E104 B400/718 tot=0.0297 sink=0.0178 mask=0.0091 cnt=0.0056
+    E104 B600/718 tot=0.0227 sink=0.0173 mask=0.0043 cnt=0.0021
+  epoch  104/200  loss=0.03028  lr=4.69e-04
+    E105 B200/718 tot=0.0251 sink=0.0179 mask=0.0061 cnt=0.0022
+    E105 B400/718 tot=0.0229 sink=0.0189 mask=0.0037 cnt=0.0007
+    E105 B600/718 tot=0.0273 sink=0.0194 mask=0.0062 cnt=0.0032
+  epoch  105/200  loss=0.03058  lr=4.61e-04
+    E106 B200/718 tot=0.0224 sink=0.0181 mask=0.0040 cnt=0.0007
+    E106 B400/718 tot=0.0370 sink=0.0199 mask=0.0120 cnt=0.0102
+    E106 B600/718 tot=0.0339 sink=0.0195 mask=0.0106 cnt=0.0076
+  epoch  106/200  loss=0.03138  lr=4.53e-04
+    E107 B200/718 tot=0.0266 sink=0.0180 mask=0.0065 cnt=0.0041
+    E107 B400/718 tot=0.0393 sink=0.0208 mask=0.0145 cnt=0.0079
+    E107 B600/718 tot=0.0240 sink=0.0188 mask=0.0045 cnt=0.0013
+  epoch  107/200  loss=0.03079  lr=4.46e-04
+    E108 B200/718 tot=0.0235 sink=0.0192 mask=0.0037 cnt=0.0010
+    E108 B400/718 tot=0.0226 sink=0.0184 mask=0.0038 cnt=0.0008
+    E108 B600/718 tot=0.0311 sink=0.0196 mask=0.0089 cnt=0.0053
+  epoch  108/200  loss=0.03123  lr=4.38e-04
+    E109 B200/718 tot=0.0338 sink=0.0185 mask=0.0112 cnt=0.0082
+    E109 B400/718 tot=0.0404 sink=0.0204 mask=0.0156 cnt=0.0087
+    E109 B600/718 tot=0.0252 sink=0.0186 mask=0.0055 cnt=0.0021
+  epoch  109/200  loss=0.03222  lr=4.30e-04
+    E110 B200/718 tot=0.0247 sink=0.0192 mask=0.0048 cnt=0.0014
+    E110 B400/718 tot=0.0237 sink=0.0184 mask=0.0047 cnt=0.0012
+    E110 B600/718 tot=0.0291 sink=0.0203 mask=0.0067 cnt=0.0041
+  epoch  110/200  loss=0.03172  lr=4.22e-04
+    E111 B200/718 tot=0.0400 sink=0.0178 mask=0.0165 cnt=0.0114
+    E111 B400/718 tot=0.0236 sink=0.0183 mask=0.0048 cnt=0.0011
+    E111 B600/718 tot=0.0304 sink=0.0180 mask=0.0100 cnt=0.0046
+  epoch  111/200  loss=0.03148  lr=4.15e-04
+    E112 B200/718 tot=0.0326 sink=0.0201 mask=0.0097 cnt=0.0057
+    E112 B400/718 tot=0.0272 sink=0.0200 mask=0.0058 cnt=0.0028
+    E112 B600/718 tot=0.0308 sink=0.0200 mask=0.0084 cnt=0.0047
+  epoch  112/200  loss=0.03026  lr=4.07e-04
+    E113 B200/718 tot=0.0357 sink=0.0200 mask=0.0124 cnt=0.0066
+    E113 B400/718 tot=0.0242 sink=0.0189 mask=0.0044 cnt=0.0017
+    E113 B600/718 tot=0.0358 sink=0.0180 mask=0.0129 cnt=0.0099
+  epoch  113/200  loss=0.03129  lr=3.99e-04
+    E114 B200/718 tot=0.0218 sink=0.0178 mask=0.0035 cnt=0.0010
+    E114 B400/718 tot=0.0316 sink=0.0195 mask=0.0103 cnt=0.0035
+    E114 B600/718 tot=0.0228 sink=0.0190 mask=0.0034 cnt=0.0007
+  epoch  114/200  loss=0.03099  lr=3.92e-04
+    E115 B200/718 tot=0.0266 sink=0.0196 mask=0.0055 cnt=0.0029
+    E115 B400/718 tot=0.0225 sink=0.0177 mask=0.0041 cnt=0.0012
+    E115 B600/718 tot=0.0377 sink=0.0183 mask=0.0143 cnt=0.0102
+  epoch  115/200  loss=0.02939  lr=3.84e-04
+    E116 B200/718 tot=0.0211 sink=0.0171 mask=0.0036 cnt=0.0009
+    E116 B400/718 tot=0.0256 sink=0.0190 mask=0.0055 cnt=0.0024
+    E116 B600/718 tot=0.0410 sink=0.0180 mask=0.0175 cnt=0.0109
+  epoch  116/200  loss=0.03026  lr=3.76e-04
+    E117 B200/718 tot=0.0311 sink=0.0190 mask=0.0092 cnt=0.0057
+    E117 B400/718 tot=0.0226 sink=0.0190 mask=0.0032 cnt=0.0006
+    E117 B600/718 tot=0.0236 sink=0.0195 mask=0.0036 cnt=0.0010
+  epoch  117/200  loss=0.02894  lr=3.69e-04
+    E118 B200/718 tot=0.0363 sink=0.0168 mask=0.0148 cnt=0.0095
+    E118 B400/718 tot=0.0226 sink=0.0188 mask=0.0034 cnt=0.0009
+    E118 B600/718 tot=0.0223 sink=0.0180 mask=0.0038 cnt=0.0011
+  epoch  118/200  loss=0.02996  lr=3.61e-04
+    E119 B200/718 tot=0.0237 sink=0.0190 mask=0.0041 cnt=0.0012
+    E119 B400/718 tot=0.0235 sink=0.0173 mask=0.0053 cnt=0.0018
+    E119 B600/718 tot=0.0245 sink=0.0175 mask=0.0059 cnt=0.0022
+  epoch  119/200  loss=0.02915  lr=3.54e-04
+    E120 B200/718 tot=0.0286 sink=0.0205 mask=0.0067 cnt=0.0027
+    E120 B400/718 tot=0.0229 sink=0.0192 mask=0.0034 cnt=0.0007
+    E120 B600/718 tot=0.0281 sink=0.0186 mask=0.0078 cnt=0.0035
+  epoch  120/200  loss=0.02849  lr=3.46e-04
+    E121 B200/718 tot=0.0260 sink=0.0179 mask=0.0068 cnt=0.0025
+    E121 B400/718 tot=0.0276 sink=0.0180 mask=0.0075 cnt=0.0041
+    E121 B600/718 tot=0.0577 sink=0.0213 mask=0.0266 cnt=0.0196
+  epoch  121/200  loss=0.02881  lr=3.39e-04
+    E122 B200/718 tot=0.0229 sink=0.0186 mask=0.0038 cnt=0.0010
+    E122 B400/718 tot=0.0233 sink=0.0185 mask=0.0041 cnt=0.0015
+    E122 B600/718 tot=0.0546 sink=0.0173 mask=0.0283 cnt=0.0181
+  epoch  122/200  loss=0.02973  lr=3.31e-04
+    E123 B200/718 tot=0.0468 sink=0.0193 mask=0.0201 cnt=0.0149
+    E123 B400/718 tot=0.0309 sink=0.0193 mask=0.0098 cnt=0.0036
+    E123 B600/718 tot=0.0256 sink=0.0193 mask=0.0053 cnt=0.0021
+  epoch  123/200  loss=0.02934  lr=3.24e-04
+    E124 B200/718 tot=0.0220 sink=0.0175 mask=0.0038 cnt=0.0014
+    E124 B400/718 tot=0.0219 sink=0.0183 mask=0.0032 cnt=0.0008
+    E124 B600/718 tot=0.0247 sink=0.0192 mask=0.0047 cnt=0.0016
+  epoch  124/200  loss=0.02899  lr=3.17e-04
+    E125 B200/718 tot=0.0254 sink=0.0190 mask=0.0052 cnt=0.0024
+    E125 B400/718 tot=0.0331 sink=0.0199 mask=0.0107 cnt=0.0048
+    E125 B600/718 tot=0.0248 sink=0.0193 mask=0.0046 cnt=0.0019
+  epoch  125/200  loss=0.02931  lr=3.09e-04
+    E126 B200/718 tot=0.0221 sink=0.0189 mask=0.0029 cnt=0.0006
+    E126 B400/718 tot=0.0293 sink=0.0192 mask=0.0086 cnt=0.0030
+    E126 B600/718 tot=0.0219 sink=0.0181 mask=0.0035 cnt=0.0006
+  epoch  126/200  loss=0.02844  lr=3.02e-04
+    E127 B200/718 tot=0.0326 sink=0.0186 mask=0.0112 cnt=0.0055
+    E127 B400/718 tot=0.0255 sink=0.0180 mask=0.0060 cnt=0.0031
+    E127 B600/718 tot=0.0234 sink=0.0185 mask=0.0043 cnt=0.0012
+  epoch  127/200  loss=0.02924  lr=2.95e-04
+    E128 B200/718 tot=0.0242 sink=0.0186 mask=0.0047 cnt=0.0017
+    E128 B400/718 tot=0.0222 sink=0.0184 mask=0.0034 cnt=0.0008
+    E128 B600/718 tot=0.0280 sink=0.0172 mask=0.0085 cnt=0.0044
+  epoch  128/200  loss=0.02936  lr=2.88e-04
+    E129 B200/718 tot=0.0267 sink=0.0194 mask=0.0060 cnt=0.0028
+    E129 B400/718 tot=0.0221 sink=0.0178 mask=0.0037 cnt=0.0011
+    E129 B600/718 tot=0.0229 sink=0.0194 mask=0.0031 cnt=0.0008
+  epoch  129/200  loss=0.02808  lr=2.81e-04
+    E130 B200/718 tot=0.0310 sink=0.0174 mask=0.0106 cnt=0.0059
+    E130 B400/718 tot=0.0219 sink=0.0186 mask=0.0029 cnt=0.0008
+    E130 B600/718 tot=0.0223 sink=0.0191 mask=0.0029 cnt=0.0007
+  epoch  130/200  loss=0.02826  lr=2.74e-04
+    E131 B200/718 tot=0.0232 sink=0.0193 mask=0.0035 cnt=0.0009
+    E131 B400/718 tot=0.0368 sink=0.0184 mask=0.0144 cnt=0.0081
+    E131 B600/718 tot=0.0313 sink=0.0179 mask=0.0100 cnt=0.0068
+  epoch  131/200  loss=0.02829  lr=2.67e-04
+    E132 B200/718 tot=0.0221 sink=0.0177 mask=0.0038 cnt=0.0012
+    E132 B400/718 tot=0.0240 sink=0.0189 mask=0.0043 cnt=0.0015
+    E132 B600/718 tot=0.0234 sink=0.0192 mask=0.0037 cnt=0.0009
+  epoch  132/200  loss=0.02851  lr=2.60e-04
+    E133 B200/718 tot=0.0287 sink=0.0200 mask=0.0070 cnt=0.0034
+    E133 B400/718 tot=0.0303 sink=0.0175 mask=0.0099 cnt=0.0059
+    E133 B600/718 tot=0.0433 sink=0.0205 mask=0.0177 cnt=0.0101
+  epoch  133/200  loss=0.02742  lr=2.53e-04
+    E134 B200/718 tot=0.0235 sink=0.0186 mask=0.0041 cnt=0.0016
+    E134 B400/718 tot=0.0230 sink=0.0174 mask=0.0048 cnt=0.0016
+    E134 B600/718 tot=0.0254 sink=0.0180 mask=0.0059 cnt=0.0031
+  epoch  134/200  loss=0.02795  lr=2.46e-04
+    E135 B200/718 tot=0.0216 sink=0.0181 mask=0.0031 cnt=0.0008
+    E135 B400/718 tot=0.0220 sink=0.0185 mask=0.0031 cnt=0.0007
+    E135 B600/718 tot=0.0300 sink=0.0190 mask=0.0086 cnt=0.0047
+  epoch  135/200  loss=0.02784  lr=2.40e-04
+    E136 B200/718 tot=0.0471 sink=0.0192 mask=0.0212 cnt=0.0134
+    E136 B400/718 tot=0.0236 sink=0.0195 mask=0.0035 cnt=0.0012
+    E136 B600/718 tot=0.0237 sink=0.0178 mask=0.0050 cnt=0.0016
+  epoch  136/200  loss=0.02802  lr=2.33e-04
+    E137 B200/718 tot=0.0215 sink=0.0175 mask=0.0036 cnt=0.0008
+    E137 B400/718 tot=0.0240 sink=0.0187 mask=0.0046 cnt=0.0015
+    E137 B600/718 tot=0.0299 sink=0.0180 mask=0.0092 cnt=0.0055
+  epoch  137/200  loss=0.02740  lr=2.26e-04
+    E138 B200/718 tot=0.0245 sink=0.0178 mask=0.0056 cnt=0.0021
+    E138 B400/718 tot=0.0214 sink=0.0178 mask=0.0032 cnt=0.0010
+    E138 B600/718 tot=0.0374 sink=0.0184 mask=0.0144 cnt=0.0092
+  epoch  138/200  loss=0.02749  lr=2.20e-04
+    E139 B200/718 tot=0.0202 sink=0.0171 mask=0.0027 cnt=0.0008
+    E139 B400/718 tot=0.0244 sink=0.0177 mask=0.0057 cnt=0.0021
+    E139 B600/718 tot=0.0393 sink=0.0179 mask=0.0167 cnt=0.0094
+  epoch  139/200  loss=0.02701  lr=2.13e-04
+    E140 B200/718 tot=0.0220 sink=0.0174 mask=0.0040 cnt=0.0012
+    E140 B400/718 tot=0.0220 sink=0.0184 mask=0.0032 cnt=0.0009
+    E140 B600/718 tot=0.0404 sink=0.0175 mask=0.0179 cnt=0.0101
+  epoch  140/200  loss=0.02717  lr=2.07e-04
+    E141 B200/718 tot=0.0217 sink=0.0176 mask=0.0035 cnt=0.0011
+    E141 B400/718 tot=0.0208 sink=0.0172 mask=0.0032 cnt=0.0009
+    E141 B600/718 tot=0.0230 sink=0.0194 mask=0.0032 cnt=0.0007
+  epoch  141/200  loss=0.02718  lr=2.01e-04
+    E142 B200/718 tot=0.0274 sink=0.0185 mask=0.0074 cnt=0.0032
+    E142 B400/718 tot=0.0209 sink=0.0173 mask=0.0032 cnt=0.0008
+    E142 B600/718 tot=0.0276 sink=0.0172 mask=0.0085 cnt=0.0039
+  epoch  142/200  loss=0.02676  lr=1.94e-04
+    E143 B200/718 tot=0.0233 sink=0.0187 mask=0.0040 cnt=0.0012
+    E143 B400/718 tot=0.0243 sink=0.0186 mask=0.0047 cnt=0.0019
+    E143 B600/718 tot=0.0445 sink=0.0182 mask=0.0196 cnt=0.0134
+  epoch  143/200  loss=0.02650  lr=1.88e-04
+    E144 B200/718 tot=0.0197 sink=0.0167 mask=0.0026 cnt=0.0006
+    E144 B400/718 tot=0.0202 sink=0.0172 mask=0.0027 cnt=0.0007
+    E144 B600/718 tot=0.0272 sink=0.0174 mask=0.0078 cnt=0.0040
+  epoch  144/200  loss=0.02594  lr=1.82e-04
+    E145 B200/718 tot=0.0295 sink=0.0187 mask=0.0085 cnt=0.0046
+    E145 B400/718 tot=0.0215 sink=0.0185 mask=0.0026 cnt=0.0007
+    E145 B600/718 tot=0.0221 sink=0.0181 mask=0.0035 cnt=0.0009
+  epoch  145/200  loss=0.02704  lr=1.76e-04
+    E146 B200/718 tot=0.0216 sink=0.0184 mask=0.0028 cnt=0.0008
+    E146 B400/718 tot=0.0250 sink=0.0172 mask=0.0063 cnt=0.0028
+    E146 B600/718 tot=0.0215 sink=0.0176 mask=0.0034 cnt=0.0010
+  epoch  146/200  loss=0.02563  lr=1.70e-04
+    E147 B200/718 tot=0.0218 sink=0.0186 mask=0.0027 cnt=0.0008
+    E147 B400/718 tot=0.0210 sink=0.0173 mask=0.0032 cnt=0.0009
+    E147 B600/718 tot=0.0209 sink=0.0174 mask=0.0031 cnt=0.0009
+  epoch  147/200  loss=0.02587  lr=1.64e-04
+    E148 B200/718 tot=0.0254 sink=0.0176 mask=0.0062 cnt=0.0032
+    E148 B400/718 tot=0.0229 sink=0.0170 mask=0.0049 cnt=0.0021
+    E148 B600/718 tot=0.0200 sink=0.0171 mask=0.0026 cnt=0.0006
+  epoch  148/200  loss=0.02613  lr=1.59e-04
+    E149 B200/718 tot=0.0264 sink=0.0177 mask=0.0070 cnt=0.0036
+    E149 B400/718 tot=0.0235 sink=0.0199 mask=0.0031 cnt=0.0010
+    E149 B600/718 tot=0.0347 sink=0.0179 mask=0.0135 cnt=0.0067
+  epoch  149/200  loss=0.02619  lr=1.53e-04
+    E150 B200/718 tot=0.0207 sink=0.0172 mask=0.0030 cnt=0.0010
+    E150 B400/718 tot=0.0213 sink=0.0177 mask=0.0030 cnt=0.0010
+    E150 B600/718 tot=0.0215 sink=0.0172 mask=0.0037 cnt=0.0012
+  epoch  150/200  loss=0.02556  lr=1.47e-04
+    E151 B200/718 tot=0.0240 sink=0.0178 mask=0.0051 cnt=0.0023
+    E151 B400/718 tot=0.0330 sink=0.0184 mask=0.0119 cnt=0.0054
+    E151 B600/718 tot=0.0215 sink=0.0174 mask=0.0035 cnt=0.0013
+  epoch  151/200  loss=0.02486  lr=1.42e-04
+    E152 B200/718 tot=0.0234 sink=0.0171 mask=0.0050 cnt=0.0025
+    E152 B400/718 tot=0.0240 sink=0.0183 mask=0.0046 cnt=0.0019
+    E152 B600/718 tot=0.0384 sink=0.0172 mask=0.0167 cnt=0.0091
+  epoch  152/200  loss=0.02445  lr=1.36e-04
+    E153 B200/718 tot=0.0243 sink=0.0182 mask=0.0051 cnt=0.0020
+    E153 B400/718 tot=0.0198 sink=0.0169 mask=0.0025 cnt=0.0008
+    E153 B600/718 tot=0.0191 sink=0.0171 mask=0.0018 cnt=0.0004
+  epoch  153/200  loss=0.02506  lr=1.31e-04
+    E154 B200/718 tot=0.0254 sink=0.0175 mask=0.0063 cnt=0.0031
+    E154 B400/718 tot=0.0199 sink=0.0172 mask=0.0024 cnt=0.0006
+    E154 B600/718 tot=0.0306 sink=0.0176 mask=0.0102 cnt=0.0056
+  epoch  154/200  loss=0.02505  lr=1.26e-04
+    E155 B200/718 tot=0.0292 sink=0.0167 mask=0.0100 cnt=0.0052
+    E155 B400/718 tot=0.0197 sink=0.0171 mask=0.0023 cnt=0.0006
+    E155 B600/718 tot=0.0189 sink=0.0165 mask=0.0021 cnt=0.0005
+  epoch  155/200  loss=0.02512  lr=1.21e-04
+    E156 B200/718 tot=0.0208 sink=0.0180 mask=0.0024 cnt=0.0008
+    E156 B400/718 tot=0.0204 sink=0.0179 mask=0.0022 cnt=0.0005
+    E156 B600/718 tot=0.0246 sink=0.0173 mask=0.0060 cnt=0.0027
+  epoch  156/200  loss=0.02434  lr=1.16e-04
+    E157 B200/718 tot=0.0248 sink=0.0172 mask=0.0062 cnt=0.0028
+    E157 B400/718 tot=0.0192 sink=0.0168 mask=0.0021 cnt=0.0006
+    E157 B600/718 tot=0.0238 sink=0.0171 mask=0.0055 cnt=0.0025
+  epoch  157/200  loss=0.02482  lr=1.11e-04
+    E158 B200/718 tot=0.0212 sink=0.0179 mask=0.0029 cnt=0.0009
+    E158 B400/718 tot=0.0193 sink=0.0169 mask=0.0022 cnt=0.0005
+    E158 B600/718 tot=0.0218 sink=0.0173 mask=0.0038 cnt=0.0014
+  epoch  158/200  loss=0.02475  lr=1.06e-04
+    E159 B200/718 tot=0.0210 sink=0.0174 mask=0.0031 cnt=0.0011
+    E159 B400/718 tot=0.0232 sink=0.0172 mask=0.0050 cnt=0.0021
+    E159 B600/718 tot=0.0203 sink=0.0173 mask=0.0026 cnt=0.0008
+  epoch  159/200  loss=0.02354  lr=1.01e-04
+    E160 B200/718 tot=0.0269 sink=0.0175 mask=0.0077 cnt=0.0034
+    E160 B400/718 tot=0.0317 sink=0.0177 mask=0.0110 cnt=0.0061
+    E160 B600/718 tot=0.0209 sink=0.0168 mask=0.0036 cnt=0.0011
+  epoch  160/200  loss=0.02406  lr=9.64e-05
+    E161 B200/718 tot=0.0218 sink=0.0169 mask=0.0041 cnt=0.0015
+    E161 B400/718 tot=0.0190 sink=0.0166 mask=0.0021 cnt=0.0005
+    E161 B600/718 tot=0.0193 sink=0.0171 mask=0.0020 cnt=0.0004
+  epoch  161/200  loss=0.02395  lr=9.18e-05
+    E162 B200/718 tot=0.0187 sink=0.0167 mask=0.0018 cnt=0.0004
+    E162 B400/718 tot=0.0210 sink=0.0167 mask=0.0037 cnt=0.0013
+    E162 B600/718 tot=0.0193 sink=0.0171 mask=0.0019 cnt=0.0004
+  epoch  162/200  loss=0.02378  lr=8.74e-05
+    E163 B200/718 tot=0.0199 sink=0.0169 mask=0.0026 cnt=0.0008
+    E163 B400/718 tot=0.0244 sink=0.0180 mask=0.0052 cnt=0.0024
+    E163 B600/718 tot=0.0204 sink=0.0181 mask=0.0020 cnt=0.0005
+  epoch  163/200  loss=0.02375  lr=8.30e-05
+    E164 B200/718 tot=0.0290 sink=0.0170 mask=0.0097 cnt=0.0047
+    E164 B400/718 tot=0.0218 sink=0.0165 mask=0.0044 cnt=0.0019
+    E164 B600/718 tot=0.0266 sink=0.0174 mask=0.0074 cnt=0.0037
+  epoch  164/200  loss=0.02393  lr=7.88e-05
+    E165 B200/718 tot=0.0204 sink=0.0168 mask=0.0031 cnt=0.0011
+    E165 B400/718 tot=0.0227 sink=0.0179 mask=0.0040 cnt=0.0017
+    E165 B600/718 tot=0.0190 sink=0.0168 mask=0.0019 cnt=0.0005
+  epoch  165/200  loss=0.02394  lr=7.46e-05
+    E166 B200/718 tot=0.0186 sink=0.0162 mask=0.0022 cnt=0.0005
+    E166 B400/718 tot=0.0233 sink=0.0189 mask=0.0037 cnt=0.0015
+    E166 B600/718 tot=0.0189 sink=0.0165 mask=0.0021 cnt=0.0006
+  epoch  166/200  loss=0.02315  lr=7.06e-05
+    E167 B200/718 tot=0.0237 sink=0.0176 mask=0.0050 cnt=0.0022
+    E167 B400/718 tot=0.0279 sink=0.0165 mask=0.0092 cnt=0.0044
+    E167 B600/718 tot=0.0193 sink=0.0170 mask=0.0021 cnt=0.0005
+  epoch  167/200  loss=0.02346  lr=6.66e-05
+    E168 B200/718 tot=0.0294 sink=0.0171 mask=0.0097 cnt=0.0051
+    E168 B400/718 tot=0.0225 sink=0.0169 mask=0.0046 cnt=0.0019
+    E168 B600/718 tot=0.0190 sink=0.0165 mask=0.0022 cnt=0.0007
+  epoch  168/200  loss=0.02339  lr=6.28e-05
+    E169 B200/718 tot=0.0205 sink=0.0164 mask=0.0034 cnt=0.0013
+    E169 B400/718 tot=0.0191 sink=0.0171 mask=0.0018 cnt=0.0005
+    E169 B600/718 tot=0.0196 sink=0.0175 mask=0.0019 cnt=0.0005
+  epoch  169/200  loss=0.02271  lr=5.91e-05
+    E170 B200/718 tot=0.0203 sink=0.0170 mask=0.0028 cnt=0.0009
+    E170 B400/718 tot=0.0240 sink=0.0173 mask=0.0055 cnt=0.0024
+    E170 B600/718 tot=0.0197 sink=0.0176 mask=0.0019 cnt=0.0005
+  epoch  170/200  loss=0.02383  lr=5.54e-05
+    E171 B200/718 tot=0.0194 sink=0.0164 mask=0.0026 cnt=0.0009
+    E171 B400/718 tot=0.0193 sink=0.0173 mask=0.0018 cnt=0.0004
+    E171 B600/718 tot=0.0182 sink=0.0162 mask=0.0018 cnt=0.0004
+  epoch  171/200  loss=0.02292  lr=5.19e-05
+    E172 B200/718 tot=0.0214 sink=0.0180 mask=0.0028 cnt=0.0009
+    E172 B400/718 tot=0.0189 sink=0.0167 mask=0.0020 cnt=0.0005
+    E172 B600/718 tot=0.0192 sink=0.0171 mask=0.0019 cnt=0.0005
+  epoch  172/200  loss=0.02238  lr=4.85e-05
+    E173 B200/718 tot=0.0191 sink=0.0170 mask=0.0019 cnt=0.0005
+    E173 B400/718 tot=0.0220 sink=0.0176 mask=0.0037 cnt=0.0014
+    E173 B600/718 tot=0.0196 sink=0.0168 mask=0.0024 cnt=0.0008
+  epoch  173/200  loss=0.02274  lr=4.53e-05
+    E174 B200/718 tot=0.0581 sink=0.0177 mask=0.0335 cnt=0.0139
+    E174 B400/718 tot=0.0190 sink=0.0173 mask=0.0016 cnt=0.0003
+    E174 B600/718 tot=0.0213 sink=0.0169 mask=0.0036 cnt=0.0016
+  epoch  174/200  loss=0.02350  lr=4.21e-05
+    E175 B200/718 tot=0.0497 sink=0.0172 mask=0.0262 cnt=0.0127
+    E175 B400/718 tot=0.0215 sink=0.0171 mask=0.0037 cnt=0.0014
+    E175 B600/718 tot=0.0205 sink=0.0174 mask=0.0026 cnt=0.0009
+  epoch  175/200  loss=0.02324  lr=3.90e-05
+    E176 B200/718 tot=0.0193 sink=0.0168 mask=0.0022 cnt=0.0006
+    E176 B400/718 tot=0.0208 sink=0.0177 mask=0.0026 cnt=0.0009
+    E176 B600/718 tot=0.0193 sink=0.0169 mask=0.0021 cnt=0.0007
+  epoch  176/200  loss=0.02259  lr=3.61e-05
+    E177 B200/718 tot=0.0315 sink=0.0168 mask=0.0120 cnt=0.0054
+    E177 B400/718 tot=0.0187 sink=0.0166 mask=0.0018 cnt=0.0005
+    E177 B600/718 tot=0.0196 sink=0.0173 mask=0.0020 cnt=0.0005
+  epoch  177/200  loss=0.02262  lr=3.32e-05
+    E178 B200/718 tot=0.0225 sink=0.0178 mask=0.0039 cnt=0.0015
+    E178 B400/718 tot=0.0213 sink=0.0165 mask=0.0040 cnt=0.0016
+    E178 B600/718 tot=0.0233 sink=0.0168 mask=0.0053 cnt=0.0023
+  epoch  178/200  loss=0.02248  lr=3.05e-05
+    E179 B200/718 tot=0.0196 sink=0.0172 mask=0.0021 cnt=0.0006
+    E179 B400/718 tot=0.0195 sink=0.0165 mask=0.0026 cnt=0.0007
+    E179 B600/718 tot=0.0199 sink=0.0165 mask=0.0029 cnt=0.0011
+  epoch  179/200  loss=0.02230  lr=2.79e-05
+    E180 B200/718 tot=0.0193 sink=0.0172 mask=0.0019 cnt=0.0005
+    E180 B400/718 tot=0.0220 sink=0.0160 mask=0.0049 cnt=0.0020
+    E180 B600/718 tot=0.0640 sink=0.0186 mask=0.0368 cnt=0.0171
+  epoch  180/200  loss=0.02262  lr=2.54e-05
+    E181 B200/718 tot=0.0178 sink=0.0161 mask=0.0016 cnt=0.0003
+    E181 B400/718 tot=0.0194 sink=0.0175 mask=0.0017 cnt=0.0004
+    E181 B600/718 tot=0.0256 sink=0.0166 mask=0.0073 cnt=0.0034
+  epoch  181/200  loss=0.02251  lr=2.31e-05
+    E182 B200/718 tot=0.0363 sink=0.0171 mask=0.0154 cnt=0.0076
+    E182 B400/718 tot=0.0566 sink=0.0175 mask=0.0318 cnt=0.0148
+    E182 B600/718 tot=0.0258 sink=0.0179 mask=0.0066 cnt=0.0028
+  epoch  182/200  loss=0.02241  lr=2.08e-05
+    E183 B200/718 tot=0.0189 sink=0.0170 mask=0.0016 cnt=0.0004
+    E183 B400/718 tot=0.0196 sink=0.0173 mask=0.0021 cnt=0.0005
+    E183 B600/718 tot=0.0270 sink=0.0172 mask=0.0081 cnt=0.0036
+  epoch  183/200  loss=0.02270  lr=1.87e-05
+    E184 B200/718 tot=0.0214 sink=0.0178 mask=0.0030 cnt=0.0012
+    E184 B400/718 tot=0.0191 sink=0.0168 mask=0.0020 cnt=0.0005
+    E184 B600/718 tot=0.0187 sink=0.0165 mask=0.0019 cnt=0.0005
+  epoch  184/200  loss=0.02258  lr=1.67e-05
+    E185 B200/718 tot=0.0289 sink=0.0169 mask=0.0099 cnt=0.0042
+    E185 B400/718 tot=0.0221 sink=0.0166 mask=0.0045 cnt=0.0019
+    E185 B600/718 tot=0.0239 sink=0.0170 mask=0.0056 cnt=0.0026
+  epoch  185/200  loss=0.02251  lr=1.48e-05
+    E186 B200/718 tot=0.0256 sink=0.0174 mask=0.0068 cnt=0.0028
+    E186 B400/718 tot=0.0208 sink=0.0169 mask=0.0033 cnt=0.0012
+    E186 B600/718 tot=0.0206 sink=0.0186 mask=0.0018 cnt=0.0004
+  epoch  186/200  loss=0.02195  lr=1.30e-05
+    E187 B200/718 tot=0.0285 sink=0.0169 mask=0.0094 cnt=0.0043
+    E187 B400/718 tot=0.0188 sink=0.0170 mask=0.0016 cnt=0.0004
+    E187 B600/718 tot=0.0199 sink=0.0178 mask=0.0018 cnt=0.0005
+  epoch  187/200  loss=0.02209  lr=1.14e-05
+    E188 B200/718 tot=0.0189 sink=0.0171 mask=0.0016 cnt=0.0004
+    E188 B400/718 tot=0.0209 sink=0.0175 mask=0.0029 cnt=0.0010
+    E188 B600/718 tot=0.0193 sink=0.0173 mask=0.0018 cnt=0.0005
+  epoch  188/200  loss=0.02219  lr=9.85e-06
+    E189 B200/718 tot=0.0202 sink=0.0168 mask=0.0029 cnt=0.0010
+    E189 B400/718 tot=0.0208 sink=0.0182 mask=0.0023 cnt=0.0007
+    E189 B600/718 tot=0.0232 sink=0.0177 mask=0.0046 cnt=0.0017
+  epoch  189/200  loss=0.02181  lr=8.44e-06
+    E190 B200/718 tot=0.0204 sink=0.0164 mask=0.0034 cnt=0.0012
+    E190 B400/718 tot=0.0181 sink=0.0166 mask=0.0014 cnt=0.0003
+    E190 B600/718 tot=0.0194 sink=0.0159 mask=0.0029 cnt=0.0011
+  epoch  190/200  loss=0.02216  lr=7.15e-06
+    E191 B200/718 tot=0.0204 sink=0.0173 mask=0.0026 cnt=0.0009
+    E191 B400/718 tot=0.0187 sink=0.0168 mask=0.0017 cnt=0.0004
+    E191 B600/718 tot=0.0253 sink=0.0173 mask=0.0065 cnt=0.0031
+  epoch  191/200  loss=0.02238  lr=5.98e-06
+    E192 B200/718 tot=0.0342 sink=0.0173 mask=0.0138 cnt=0.0061
+    E192 B400/718 tot=0.0199 sink=0.0172 mask=0.0023 cnt=0.0007
+    E192 B600/718 tot=0.0228 sink=0.0177 mask=0.0043 cnt=0.0018
+  epoch  192/200  loss=0.02222  lr=4.94e-06
+    E193 B200/718 tot=0.0218 sink=0.0173 mask=0.0038 cnt=0.0016
+    E193 B400/718 tot=0.0187 sink=0.0166 mask=0.0018 cnt=0.0005
+    E193 B600/718 tot=0.0200 sink=0.0176 mask=0.0021 cnt=0.0007
+  epoch  193/200  loss=0.02176  lr=4.02e-06
+    E194 B200/718 tot=0.0199 sink=0.0177 mask=0.0019 cnt=0.0005
+    E194 B400/718 tot=0.0194 sink=0.0175 mask=0.0017 cnt=0.0004
+    E194 B600/718 tot=0.0211 sink=0.0175 mask=0.0031 cnt=0.0011
+  epoch  194/200  loss=0.02216  lr=3.22e-06
+    E195 B200/718 tot=0.0199 sink=0.0179 mask=0.0018 cnt=0.0005
+    E195 B400/718 tot=0.0211 sink=0.0163 mask=0.0040 cnt=0.0016
+    E195 B600/718 tot=0.0214 sink=0.0170 mask=0.0037 cnt=0.0015
+  epoch  195/200  loss=0.02224  lr=2.54e-06
+    E196 B200/718 tot=0.0202 sink=0.0172 mask=0.0025 cnt=0.0009
+    E196 B400/718 tot=0.0179 sink=0.0162 mask=0.0015 cnt=0.0004
+    E196 B600/718 tot=0.0223 sink=0.0166 mask=0.0047 cnt=0.0020
+  epoch  196/200  loss=0.02209  lr=1.99e-06
+    E197 B200/718 tot=0.0275 sink=0.0176 mask=0.0081 cnt=0.0038
+    E197 B400/718 tot=0.0197 sink=0.0174 mask=0.0021 cnt=0.0006
+    E197 B600/718 tot=0.0253 sink=0.0178 mask=0.0061 cnt=0.0029
+  epoch  197/200  loss=0.02216  lr=1.55e-06
+    E198 B200/718 tot=0.0188 sink=0.0168 mask=0.0018 cnt=0.0005
+    E198 B400/718 tot=0.0277 sink=0.0162 mask=0.0092 cnt=0.0047
+    E198 B600/718 tot=0.0241 sink=0.0168 mask=0.0059 cnt=0.0029
+  epoch  198/200  loss=0.02199  lr=1.25e-06
+    E199 B200/718 tot=0.0186 sink=0.0167 mask=0.0017 cnt=0.0004
+    E199 B400/718 tot=0.0202 sink=0.0169 mask=0.0029 cnt=0.0010
+    E199 B600/718 tot=0.0218 sink=0.0165 mask=0.0044 cnt=0.0019
+  epoch  199/200  loss=0.02190  lr=1.06e-06
+    E200 B200/718 tot=0.0238 sink=0.0165 mask=0.0060 cnt=0.0028
+    E200 B400/718 tot=0.0190 sink=0.0173 mask=0.0015 cnt=0.0004
+    E200 B600/718 tot=0.0200 sink=0.0171 mask=0.0025 cnt=0.0009
+  epoch  200/200  loss=0.02189  lr=1.00e-06
+  evaluating on 78882 JetNet TEST jets (g=26588 q=25602 t=26692) ...
+
+  --- KEY RESULTS ---
+    longrange_relerr_mean      = 0.128401
+    control_relerr_ptD         = 0.022976
+    paired_relerr_girth        = 0.113114
+    paired_relerr_ang_scale    = 0.143857
+    paired_relerr_eec2         = 0.121521
+    paired_relerr_mass         = 0.135110
+    emd_mean                   = 0.029731
+    mult_mae                   = 0.207969
+    mult_mae_mean_baseline     = 18.242487
+    mult_corr                  = 0.999757
+    mult_exact_frac            = 0.810159
+    w1_eta                     = 0.002919
+    w1_phi                     = 0.002855
+    w1_pt                      = 0.000433
+
+  saved -> /pscratch/sd/r/rushil13/gsoc_rushil/v16_ablation/results/global_sage_knn6_L2_N150

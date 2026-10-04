@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# Large training artefacts (kept on the cluster, not in git)
+*.pth
+*.pkl
+*.pt
+_graph_cache/
+checkpoints/
+weights/
+
+# SLURM logs
+logs/
+*.out
+*.err
