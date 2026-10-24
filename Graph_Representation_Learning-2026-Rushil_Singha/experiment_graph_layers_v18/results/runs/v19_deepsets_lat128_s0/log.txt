@@ -1,0 +1,887 @@
+============================================================================
+v19 RUN: v19_deepsets_lat128_s0   device=cuda
+============================================================================
+  tag              = v19_deepsets_lat128_s0
+  conv             = deepsets
+  K                = 1
+  layers           = 2
+  knn              = 6
+  latent_dim       = 128
+  term_norm        = sqrt
+  epochs           = 200
+  batch_size       = 512
+  lr               = 0.001
+  pt_scale         = 3.0
+  blur             = 0.02
+  lam_emd          = 1.0
+  emd_blur         = 0.01
+  lam_count        = 0.1
+  val_every        = 5
+  n_val            = 20000
+  ckpt_every       = 10
+  max_train        = 0
+  max_test         = 0
+  n_eval_samples   = 50000
+  ref_per_type     = 50000
+  efp_jobs         = 32
+  skip_ceiling     = False
+  seed             = 0
+Loading graph cache: /pscratch/sd/r/rushil13/gsoc_rushil/v17_final/results/_graph_cache/train_np150_knn6_mjall_sym.pkl
+  368112 graphs loaded.
+Loading graph cache: /pscratch/sd/r/rushil13/gsoc_rushil/v17_final/results/_graph_cache/valid_np150_knn6_mjall_sym.pkl
+  78882 graphs loaded.
+Loading graph cache: /pscratch/sd/r/rushil13/gsoc_rushil/v17_final/results/_graph_cache/test_np150_knn6_mjall_sym.pkl
+  78882 graphs loaded.
+  jets: train=368112  valid=20000  test=78882
+  total-pT check on 20000 real jets: real sum 1.0025 ± 0.0033, JetNet-way 1.0028 ± 0.0034, mean |diff| 0.0003, corr 0.995
+  DeepSets, 2 layers (0 hops) in encoder and decoder
+  params: encoder=319,362  decoder=937,307  total=1,256,669
+  train jets=368112  batches/epoch=718  epochs 0->200
+    E1 B200/718 sinkhorn=0.0569 emd=0.0496 count=3.5654 total=0.4630
+    E1 B400/718 sinkhorn=0.0547 emd=0.0441 count=3.1845 total=0.4172
+    E1 B600/718 sinkhorn=0.0504 emd=0.0419 count=3.3691 total=0.4293
+  epoch    1/200  sinkhorn=0.0662 emd=0.0673 count=3.4312 total=0.4766  lr=1.00e-03  (128s)
+    E2 B200/718 sinkhorn=0.0467 emd=0.0324 count=2.6352 total=0.3426
+    E2 B400/718 sinkhorn=0.0459 emd=0.0303 count=2.5883 total=0.3350
+    E2 B600/718 sinkhorn=0.0462 emd=0.0358 count=2.4652 total=0.3285
+  epoch    2/200  sinkhorn=0.0465 emd=0.0329 count=2.6528 total=0.3447  lr=1.00e-03  (125s)
+    E3 B200/718 sinkhorn=0.0441 emd=0.0292 count=2.4438 total=0.3176
+    E3 B400/718 sinkhorn=0.0460 emd=0.0325 count=2.5593 total=0.3345
+    E3 B600/718 sinkhorn=0.0442 emd=0.0306 count=2.3986 total=0.3147
+  epoch    3/200  sinkhorn=0.0442 emd=0.0309 count=2.4000 total=0.3151  lr=9.99e-04  (120s)
+    E4 B200/718 sinkhorn=0.0427 emd=0.0280 count=2.1438 total=0.2850
+    E4 B400/718 sinkhorn=0.0417 emd=0.0289 count=2.2112 total=0.2918
+    E4 B600/718 sinkhorn=0.0423 emd=0.0271 count=2.0835 total=0.2777
+  epoch    4/200  sinkhorn=0.0429 emd=0.0297 count=2.2751 total=0.3001  lr=9.99e-04  (120s)
+    E5 B200/718 sinkhorn=0.0415 emd=0.0296 count=2.1891 total=0.2900
+    E5 B400/718 sinkhorn=0.0408 emd=0.0289 count=2.1511 total=0.2848
+    E5 B600/718 sinkhorn=0.0425 emd=0.0309 count=2.1704 total=0.2904
+  epoch    5/200  sinkhorn=0.0417 emd=0.0293 count=2.1773 total=0.2888  lr=9.98e-04  (120s)
+    VALID  sinkhorn=0.0404 emd=0.0271 count=2.0582 total=0.2733  <- best so far
+    E6 B200/718 sinkhorn=0.0405 emd=0.0289 count=1.9786 total=0.2673
+    E6 B400/718 sinkhorn=0.0395 emd=0.0273 count=1.9650 total=0.2633
+    E6 B600/718 sinkhorn=0.0407 emd=0.0275 count=1.8910 total=0.2573
+  epoch    6/200  sinkhorn=0.0404 emd=0.0282 count=2.1063 total=0.2793  lr=9.98e-04  (121s)
+    E7 B200/718 sinkhorn=0.0389 emd=0.0255 count=2.0503 total=0.2694
+    E7 B400/718 sinkhorn=0.0396 emd=0.0260 count=2.0092 total=0.2665
+    E7 B600/718 sinkhorn=0.0388 emd=0.0269 count=2.0716 total=0.2729
+  epoch    7/200  sinkhorn=0.0395 emd=0.0271 count=2.0494 total=0.2715  lr=9.97e-04  (122s)
+    E8 B200/718 sinkhorn=0.0386 emd=0.0248 count=1.9739 total=0.2607
+    E8 B400/718 sinkhorn=0.0382 emd=0.0232 count=1.8139 total=0.2428
+    E8 B600/718 sinkhorn=0.0383 emd=0.0244 count=1.7899 total=0.2417
+  epoch    8/200  sinkhorn=0.0387 emd=0.0259 count=2.0007 total=0.2647  lr=9.96e-04  (122s)
+    E9 B200/718 sinkhorn=0.0368 emd=0.0243 count=2.0182 total=0.2629
+    E9 B400/718 sinkhorn=0.0370 emd=0.0216 count=2.0053 total=0.2591
+    E9 B600/718 sinkhorn=0.0371 emd=0.0232 count=1.8743 total=0.2478
+  epoch    9/200  sinkhorn=0.0373 emd=0.0234 count=1.9555 total=0.2563  lr=9.95e-04  (120s)
+    E10 B200/718 sinkhorn=0.0360 emd=0.0219 count=1.8194 total=0.2399
+    E10 B400/718 sinkhorn=0.0380 emd=0.0227 count=1.7702 total=0.2377
+    E10 B600/718 sinkhorn=0.0360 emd=0.0202 count=1.7307 total=0.2293
+  epoch   10/200  sinkhorn=0.0368 emd=0.0228 count=1.9165 total=0.2512  lr=9.94e-04  (120s)
+    VALID  sinkhorn=0.0375 emd=0.0254 count=1.9491 total=0.2578  <- best so far
+    E11 B200/718 sinkhorn=0.0356 emd=0.0215 count=1.9685 total=0.2539
+    E11 B400/718 sinkhorn=0.0355 emd=0.0227 count=1.8426 total=0.2424
+    E11 B600/718 sinkhorn=0.0358 emd=0.0213 count=1.9332 total=0.2504
+  epoch   11/200  sinkhorn=0.0357 emd=0.0213 count=1.8665 total=0.2437  lr=9.93e-04  (121s)
+    E12 B200/718 sinkhorn=0.0349 emd=0.0219 count=1.7719 total=0.2340
+    E12 B400/718 sinkhorn=0.0343 emd=0.0192 count=1.7058 total=0.2241
+    E12 B600/718 sinkhorn=0.0338 emd=0.0185 count=1.6976 total=0.2221
+  epoch   12/200  sinkhorn=0.0353 emd=0.0210 count=1.8369 total=0.2400  lr=9.91e-04  (120s)
+    E13 B200/718 sinkhorn=0.0358 emd=0.0218 count=1.9523 total=0.2529
+    E13 B400/718 sinkhorn=0.0333 emd=0.0189 count=1.8138 total=0.2336
+    E13 B600/718 sinkhorn=0.0347 emd=0.0186 count=1.8474 total=0.2381
+  epoch   13/200  sinkhorn=0.0347 emd=0.0205 count=1.7979 total=0.2350  lr=9.90e-04  (119s)
+    E14 B200/718 sinkhorn=0.0350 emd=0.0223 count=1.6659 total=0.2238
+    E14 B400/718 sinkhorn=0.0326 emd=0.0185 count=1.6636 total=0.2174
+    E14 B600/718 sinkhorn=0.0332 emd=0.0174 count=1.6213 total=0.2128
+  epoch   14/200  sinkhorn=0.0341 emd=0.0200 count=1.7579 total=0.2299  lr=9.88e-04  (120s)
+    E15 B200/718 sinkhorn=0.0357 emd=0.0227 count=1.6927 total=0.2277
+    E15 B400/718 sinkhorn=0.0333 emd=0.0183 count=1.6175 total=0.2134
+    E15 B600/718 sinkhorn=0.0332 emd=0.0196 count=1.6643 total=0.2192
+  epoch   15/200  sinkhorn=0.0335 emd=0.0192 count=1.7275 total=0.2254  lr=9.86e-04  (120s)
+    VALID  sinkhorn=0.0353 emd=0.0207 count=2.0060 total=0.2566  <- best so far
+    E16 B200/718 sinkhorn=0.0338 emd=0.0202 count=1.6013 total=0.2142
+    E16 B400/718 sinkhorn=0.0336 emd=0.0213 count=1.5475 total=0.2096
+    E16 B600/718 sinkhorn=0.0327 emd=0.0181 count=1.6292 total=0.2137
+  epoch   16/200  sinkhorn=0.0331 emd=0.0189 count=1.6921 total=0.2212  lr=9.84e-04  (125s)
+    E17 B200/718 sinkhorn=0.0325 emd=0.0190 count=1.6764 total=0.2192
+    E17 B400/718 sinkhorn=0.0330 emd=0.0201 count=1.7100 total=0.2241
+    E17 B600/718 sinkhorn=0.0351 emd=0.0234 count=1.8047 total=0.2390
+  epoch   17/200  sinkhorn=0.0330 emd=0.0189 count=1.6661 total=0.2185  lr=9.82e-04  (120s)
+    E18 B200/718 sinkhorn=0.0319 emd=0.0165 count=1.5970 total=0.2082
+    E18 B400/718 sinkhorn=0.0322 emd=0.0172 count=1.5526 total=0.2047
+    E18 B600/718 sinkhorn=0.0317 emd=0.0176 count=1.4959 total=0.1989
+  epoch   18/200  sinkhorn=0.0325 emd=0.0184 count=1.6256 total=0.2135  lr=9.80e-04  (120s)
+    E19 B200/718 sinkhorn=0.0317 emd=0.0171 count=1.5621 total=0.2050
+    E19 B400/718 sinkhorn=0.0322 emd=0.0189 count=1.7002 total=0.2211
+    E19 B600/718 sinkhorn=0.0318 emd=0.0183 count=1.6194 total=0.2121
+  epoch   19/200  sinkhorn=0.0319 emd=0.0176 count=1.5862 total=0.2082  lr=9.78e-04  (120s)
+    E20 B200/718 sinkhorn=0.0311 emd=0.0168 count=1.4902 total=0.1969
+    E20 B400/718 sinkhorn=0.0311 emd=0.0178 count=1.4057 total=0.1895
+    E20 B600/718 sinkhorn=0.0313 emd=0.0192 count=1.4203 total=0.1925
+  epoch   20/200  sinkhorn=0.0318 emd=0.0176 count=1.5594 total=0.2053  lr=9.76e-04  (120s)
+    VALID  sinkhorn=0.0324 emd=0.0178 count=1.4982 total=0.2000  <- best so far
+    E21 B200/718 sinkhorn=0.0320 emd=0.0183 count=1.5148 total=0.2018
+    E21 B400/718 sinkhorn=0.0326 emd=0.0190 count=1.4919 total=0.2008
+    E21 B600/718 sinkhorn=0.0314 emd=0.0167 count=1.3955 total=0.1877
+  epoch   21/200  sinkhorn=0.0315 emd=0.0175 count=1.5278 total=0.2017  lr=9.73e-04  (122s)
+    E22 B200/718 sinkhorn=0.0308 emd=0.0160 count=1.4572 total=0.1925
+    E22 B400/718 sinkhorn=0.0311 emd=0.0171 count=1.5102 total=0.1992
+    E22 B600/718 sinkhorn=0.0329 emd=0.0212 count=1.4158 total=0.1957
+  epoch   22/200  sinkhorn=0.0312 emd=0.0173 count=1.5071 total=0.1992  lr=9.70e-04  (120s)
+    E23 B200/718 sinkhorn=0.0298 emd=0.0155 count=1.6193 total=0.2072
+    E23 B400/718 sinkhorn=0.0315 emd=0.0170 count=1.4781 total=0.1964
+    E23 B600/718 sinkhorn=0.0306 emd=0.0174 count=1.4919 total=0.1972
+  epoch   23/200  sinkhorn=0.0309 emd=0.0171 count=1.4747 total=0.1955  lr=9.68e-04  (119s)
+    E24 B200/718 sinkhorn=0.0328 emd=0.0183 count=1.3886 total=0.1899
+    E24 B400/718 sinkhorn=0.0303 emd=0.0168 count=1.2924 total=0.1764
+    E24 B600/718 sinkhorn=0.0301 emd=0.0166 count=1.3176 total=0.1785
+  epoch   24/200  sinkhorn=0.0308 emd=0.0170 count=1.4502 total=0.1929  lr=9.65e-04  (120s)
+    E25 B200/718 sinkhorn=0.0308 emd=0.0154 count=1.4285 total=0.1891
+    E25 B400/718 sinkhorn=0.0291 emd=0.0175 count=1.5591 total=0.2025
+    E25 B600/718 sinkhorn=0.0306 emd=0.0176 count=1.3895 total=0.1871
+  epoch   25/200  sinkhorn=0.0304 emd=0.0165 count=1.4134 total=0.1882  lr=9.62e-04  (120s)
+    VALID  sinkhorn=0.0325 emd=0.0189 count=1.5297 total=0.2044
+    E26 B200/718 sinkhorn=0.0314 emd=0.0225 count=1.2222 total=0.1761
+    E26 B400/718 sinkhorn=0.0312 emd=0.0167 count=1.3140 total=0.1793
+    E26 B600/718 sinkhorn=0.0296 emd=0.0164 count=1.2100 total=0.1669
+  epoch   26/200  sinkhorn=0.0301 emd=0.0163 count=1.3897 total=0.1854  lr=9.59e-04  (122s)
+    E27 B200/718 sinkhorn=0.0294 emd=0.0159 count=1.4849 total=0.1938
+    E27 B400/718 sinkhorn=0.0299 emd=0.0162 count=1.4142 total=0.1875
+    E27 B600/718 sinkhorn=0.0296 emd=0.0164 count=1.3283 total=0.1789
+  epoch   27/200  sinkhorn=0.0301 emd=0.0164 count=1.3725 total=0.1837  lr=9.56e-04  (120s)
+    E28 B200/718 sinkhorn=0.0296 emd=0.0157 count=1.2024 total=0.1656
+    E28 B400/718 sinkhorn=0.0289 emd=0.0147 count=1.2925 total=0.1729
+    E28 B600/718 sinkhorn=0.0303 emd=0.0185 count=1.3852 total=0.1873
+  epoch   28/200  sinkhorn=0.0299 emd=0.0162 count=1.3446 total=0.1805  lr=9.52e-04  (121s)
+    E29 B200/718 sinkhorn=0.0284 emd=0.0147 count=1.3301 total=0.1761
+    E29 B400/718 sinkhorn=0.0292 emd=0.0165 count=1.3766 total=0.1833
+    E29 B600/718 sinkhorn=0.0295 emd=0.0159 count=1.2362 total=0.1691
+  epoch   29/200  sinkhorn=0.0296 emd=0.0159 count=1.3234 total=0.1779  lr=9.49e-04  (120s)
+    E30 B200/718 sinkhorn=0.0295 emd=0.0173 count=1.1512 total=0.1620
+    E30 B400/718 sinkhorn=0.0290 emd=0.0147 count=1.1167 total=0.1553
+    E30 B600/718 sinkhorn=0.0291 emd=0.0143 count=1.2017 total=0.1636
+  epoch   30/200  sinkhorn=0.0294 emd=0.0156 count=1.2991 total=0.1749  lr=9.46e-04  (120s)
+    VALID  sinkhorn=0.0300 emd=0.0158 count=1.3441 total=0.1802  <- best so far
+    E31 B200/718 sinkhorn=0.0294 emd=0.0156 count=1.4644 total=0.1914
+    E31 B400/718 sinkhorn=0.0293 emd=0.0160 count=1.3645 total=0.1818
+    E31 B600/718 sinkhorn=0.0285 emd=0.0150 count=1.3166 total=0.1751
+  epoch   31/200  sinkhorn=0.0294 emd=0.0158 count=1.2812 total=0.1733  lr=9.42e-04  (122s)
+    E32 B200/718 sinkhorn=0.0294 emd=0.0142 count=1.0947 total=0.1531
+    E32 B400/718 sinkhorn=0.0291 emd=0.0178 count=1.1753 total=0.1644
+    E32 B600/718 sinkhorn=0.0328 emd=0.0246 count=1.0686 total=0.1643
+  epoch   32/200  sinkhorn=0.0294 emd=0.0161 count=1.2657 total=0.1720  lr=9.38e-04  (120s)
+    E33 B200/718 sinkhorn=0.0299 emd=0.0164 count=1.3293 total=0.1792
+    E33 B400/718 sinkhorn=0.0291 emd=0.0151 count=1.2490 total=0.1691
+    E33 B600/718 sinkhorn=0.0294 emd=0.0144 count=1.2007 total=0.1639
+  epoch   33/200  sinkhorn=0.0290 emd=0.0155 count=1.2327 total=0.1678  lr=9.34e-04  (120s)
+    E34 B200/718 sinkhorn=0.0284 emd=0.0141 count=1.0147 total=0.1440
+    E34 B400/718 sinkhorn=0.0297 emd=0.0152 count=1.1839 total=0.1632
+    E34 B600/718 sinkhorn=0.0290 emd=0.0153 count=1.0803 total=0.1523
+  epoch   34/200  sinkhorn=0.0288 emd=0.0152 count=1.2079 total=0.1648  lr=9.30e-04  (120s)
+    E35 B200/718 sinkhorn=0.0280 emd=0.0148 count=1.1682 total=0.1595
+    E35 B400/718 sinkhorn=0.0290 emd=0.0144 count=1.1758 total=0.1610
+    E35 B600/718 sinkhorn=0.0279 emd=0.0147 count=1.1500 total=0.1576
+  epoch   35/200  sinkhorn=0.0287 emd=0.0153 count=1.1924 total=0.1633  lr=9.26e-04  (120s)
+    VALID  sinkhorn=0.0302 emd=0.0170 count=1.5397 total=0.2012
+    E36 B200/718 sinkhorn=0.0282 emd=0.0156 count=1.1182 total=0.1557
+    E36 B400/718 sinkhorn=0.0297 emd=0.0161 count=1.1019 total=0.1560
+    E36 B600/718 sinkhorn=0.0281 emd=0.0147 count=0.9615 total=0.1389
+  epoch   36/200  sinkhorn=0.0290 emd=0.0158 count=1.1741 total=0.1622  lr=9.22e-04  (122s)
+    E37 B200/718 sinkhorn=0.0284 emd=0.0146 count=1.0949 total=0.1525
+    E37 B400/718 sinkhorn=0.0279 emd=0.0140 count=1.1816 total=0.1601
+    E37 B600/718 sinkhorn=0.0286 emd=0.0139 count=1.1654 total=0.1590
+  epoch   37/200  sinkhorn=0.0285 emd=0.0151 count=1.1518 total=0.1588  lr=9.18e-04  (120s)
+    E38 B200/718 sinkhorn=0.0273 emd=0.0137 count=0.9543 total=0.1364
+    E38 B400/718 sinkhorn=0.0271 emd=0.0139 count=0.9722 total=0.1383
+    E38 B600/718 sinkhorn=0.0290 emd=0.0148 count=1.0044 total=0.1442
+  epoch   38/200  sinkhorn=0.0282 emd=0.0148 count=1.1236 total=0.1553  lr=9.14e-04  (120s)
+    E39 B200/718 sinkhorn=0.0288 emd=0.0153 count=1.1258 total=0.1566
+    E39 B400/718 sinkhorn=0.0273 emd=0.0142 count=1.1752 total=0.1591
+    E39 B600/718 sinkhorn=0.0288 emd=0.0158 count=1.0634 total=0.1509
+  epoch   39/200  sinkhorn=0.0284 emd=0.0151 count=1.1129 total=0.1548  lr=9.09e-04  (121s)
+    E40 B200/718 sinkhorn=0.0281 emd=0.0152 count=0.9704 total=0.1404
+    E40 B400/718 sinkhorn=0.0279 emd=0.0139 count=0.8783 total=0.1297
+    E40 B600/718 sinkhorn=0.0277 emd=0.0150 count=1.0456 total=0.1472
+  epoch   40/200  sinkhorn=0.0281 emd=0.0148 count=1.0815 total=0.1511  lr=9.05e-04  (122s)
+    VALID  sinkhorn=0.0298 emd=0.0170 count=1.0394 total=0.1507  <- best so far
+    E41 B200/718 sinkhorn=0.0272 emd=0.0150 count=1.2556 total=0.1678
+    E41 B400/718 sinkhorn=0.0277 emd=0.0141 count=1.0802 total=0.1498
+    E41 B600/718 sinkhorn=0.0278 emd=0.0163 count=1.1564 total=0.1597
+  epoch   41/200  sinkhorn=0.0279 emd=0.0146 count=1.0523 total=0.1477  lr=9.00e-04  (126s)
+    E42 B200/718 sinkhorn=0.0280 emd=0.0144 count=0.9980 total=0.1423
+    E42 B400/718 sinkhorn=0.0290 emd=0.0169 count=0.9149 total=0.1374
+    E42 B600/718 sinkhorn=0.0276 emd=0.0143 count=0.9108 total=0.1329
+  epoch   42/200  sinkhorn=0.0279 emd=0.0148 count=1.0449 total=0.1472  lr=8.95e-04  (120s)
+    E43 B200/718 sinkhorn=0.0274 emd=0.0146 count=1.0076 total=0.1428
+    E43 B400/718 sinkhorn=0.0290 emd=0.0146 count=0.9772 total=0.1414
+    E43 B600/718 sinkhorn=0.0273 emd=0.0158 count=1.0582 total=0.1489
+  epoch   43/200  sinkhorn=0.0279 emd=0.0148 count=1.0261 total=0.1453  lr=8.90e-04  (120s)
+    E44 B200/718 sinkhorn=0.0273 emd=0.0138 count=0.8730 total=0.1283
+    E44 B400/718 sinkhorn=0.0270 emd=0.0146 count=0.9497 total=0.1366
+    E44 B600/718 sinkhorn=0.0276 emd=0.0142 count=0.8884 total=0.1307
+  epoch   44/200  sinkhorn=0.0276 emd=0.0144 count=0.9915 total=0.1411  lr=8.85e-04  (120s)
+    E45 B200/718 sinkhorn=0.0279 emd=0.0144 count=0.9801 total=0.1403
+    E45 B400/718 sinkhorn=0.0292 emd=0.0169 count=1.0704 total=0.1531
+    E45 B600/718 sinkhorn=0.0265 emd=0.0138 count=0.9543 total=0.1358
+  epoch   45/200  sinkhorn=0.0276 emd=0.0146 count=0.9759 total=0.1398  lr=8.80e-04  (120s)
+    VALID  sinkhorn=0.0274 emd=0.0142 count=1.0503 total=0.1466  <- best so far
+    E46 B200/718 sinkhorn=0.0275 emd=0.0135 count=0.8865 total=0.1297
+    E46 B400/718 sinkhorn=0.0271 emd=0.0139 count=0.9499 total=0.1359
+    E46 B600/718 sinkhorn=0.0277 emd=0.0132 count=0.8058 total=0.1215
+  epoch   46/200  sinkhorn=0.0274 emd=0.0143 count=0.9565 total=0.1373  lr=8.75e-04  (121s)
+    E47 B200/718 sinkhorn=0.0279 emd=0.0132 count=0.8886 total=0.1299
+    E47 B400/718 sinkhorn=0.0278 emd=0.0138 count=1.0249 total=0.1441
+    E47 B600/718 sinkhorn=0.0274 emd=0.0144 count=1.2070 total=0.1625
+  epoch   47/200  sinkhorn=0.0273 emd=0.0142 count=0.9391 total=0.1354  lr=8.70e-04  (120s)
+    E48 B200/718 sinkhorn=0.0275 emd=0.0147 count=0.8506 total=0.1273
+    E48 B400/718 sinkhorn=0.0271 emd=0.0135 count=0.8613 total=0.1267
+    E48 B600/718 sinkhorn=0.0271 emd=0.0145 count=0.8876 total=0.1304
+  epoch   48/200  sinkhorn=0.0274 emd=0.0146 count=0.9328 total=0.1353  lr=8.65e-04  (120s)
+    E49 B200/718 sinkhorn=0.0267 emd=0.0135 count=0.8249 total=0.1226
+    E49 B400/718 sinkhorn=0.0277 emd=0.0155 count=1.0432 total=0.1475
+    E49 B600/718 sinkhorn=0.0281 emd=0.0139 count=1.0108 total=0.1431
+  epoch   49/200  sinkhorn=0.0272 emd=0.0144 count=0.9028 total=0.1319  lr=8.59e-04  (120s)
+    E50 B200/718 sinkhorn=0.0272 emd=0.0144 count=0.7460 total=0.1162
+    E50 B400/718 sinkhorn=0.0262 emd=0.0133 count=0.9269 total=0.1322
+    E50 B600/718 sinkhorn=0.0291 emd=0.0188 count=0.8030 total=0.1282
+  epoch   50/200  sinkhorn=0.0269 emd=0.0141 count=0.8895 total=0.1299  lr=8.54e-04  (120s)
+    VALID  sinkhorn=0.0293 emd=0.0173 count=0.8607 total=0.1327  <- best so far
+    E51 B200/718 sinkhorn=0.0274 emd=0.0147 count=0.9200 total=0.1341
+    E51 B400/718 sinkhorn=0.0278 emd=0.0155 count=0.9106 total=0.1344
+    E51 B600/718 sinkhorn=0.0267 emd=0.0138 count=0.9528 total=0.1357
+  epoch   51/200  sinkhorn=0.0275 emd=0.0150 count=0.8791 total=0.1303  lr=8.48e-04  (122s)
+    E52 B200/718 sinkhorn=0.0268 emd=0.0138 count=0.7172 total=0.1123
+    E52 B400/718 sinkhorn=0.0269 emd=0.0141 count=0.7263 total=0.1136
+    E52 B600/718 sinkhorn=0.0270 emd=0.0130 count=0.6836 total=0.1083
+  epoch   52/200  sinkhorn=0.0269 emd=0.0139 count=0.8469 total=0.1255  lr=8.42e-04  (120s)
+    E53 B200/718 sinkhorn=0.0265 emd=0.0138 count=0.8201 total=0.1224
+    E53 B400/718 sinkhorn=0.0263 emd=0.0132 count=0.9707 total=0.1367
+    E53 B600/718 sinkhorn=0.0267 emd=0.0139 count=0.7993 total=0.1206
+  epoch   53/200  sinkhorn=0.0266 emd=0.0137 count=0.8380 total=0.1240  lr=8.37e-04  (120s)
+    E54 B200/718 sinkhorn=0.0268 emd=0.0142 count=0.8059 total=0.1217
+    E54 B400/718 sinkhorn=0.0267 emd=0.0134 count=0.7300 total=0.1131
+    E54 B600/718 sinkhorn=0.0274 emd=0.0182 count=0.7253 total=0.1182
+  epoch   54/200  sinkhorn=0.0266 emd=0.0140 count=0.8084 total=0.1214  lr=8.31e-04  (120s)
+    E55 B200/718 sinkhorn=0.0269 emd=0.0134 count=0.7801 total=0.1183
+    E55 B400/718 sinkhorn=0.0269 emd=0.0132 count=0.8458 total=0.1247
+    E55 B600/718 sinkhorn=0.0262 emd=0.0139 count=0.8815 total=0.1282
+  epoch   55/200  sinkhorn=0.0264 emd=0.0135 count=0.8034 total=0.1202  lr=8.25e-04  (120s)
+    VALID  sinkhorn=0.0282 emd=0.0148 count=0.8503 total=0.1280  <- best so far
+    E56 B200/718 sinkhorn=0.0270 emd=0.0146 count=0.5788 total=0.0995
+    E56 B400/718 sinkhorn=0.0265 emd=0.0136 count=0.6557 total=0.1056
+    E56 B600/718 sinkhorn=0.0255 emd=0.0140 count=0.6300 total=0.1025
+  epoch   56/200  sinkhorn=0.0265 emd=0.0138 count=0.7809 total=0.1183  lr=8.19e-04  (122s)
+    E57 B200/718 sinkhorn=0.0283 emd=0.0145 count=0.8065 total=0.1234
+    E57 B400/718 sinkhorn=0.0272 emd=0.0150 count=0.9581 total=0.1380
+    E57 B600/718 sinkhorn=0.0264 emd=0.0130 count=0.8242 total=0.1219
+  epoch   57/200  sinkhorn=0.0308 emd=0.0198 count=0.8223 total=0.1328  lr=8.13e-04  (120s)
+    E58 B200/718 sinkhorn=0.0259 emd=0.0130 count=0.7347 total=0.1123
+    E58 B400/718 sinkhorn=0.0260 emd=0.0126 count=0.6680 total=0.1054
+    E58 B600/718 sinkhorn=0.0262 emd=0.0139 count=0.6142 total=0.1015
+  epoch   58/200  sinkhorn=0.0263 emd=0.0134 count=0.7392 total=0.1136  lr=8.07e-04  (121s)
+    E59 B200/718 sinkhorn=0.0270 emd=0.0147 count=0.7390 total=0.1155
+    E59 B400/718 sinkhorn=0.0272 emd=0.0141 count=0.7040 total=0.1117
+    E59 B600/718 sinkhorn=0.0262 emd=0.0138 count=0.6534 total=0.1053
+  epoch   59/200  sinkhorn=0.0263 emd=0.0135 count=0.7298 total=0.1128  lr=8.00e-04  (122s)
+    E60 B200/718 sinkhorn=0.0272 emd=0.0148 count=0.5726 total=0.0992
+    E60 B400/718 sinkhorn=0.0255 emd=0.0130 count=0.4888 total=0.0875
+    E60 B600/718 sinkhorn=0.0259 emd=0.0128 count=0.6383 total=0.1026
+  epoch   60/200  sinkhorn=0.0263 emd=0.0136 count=0.7189 total=0.1118  lr=7.94e-04  (123s)
+    VALID  sinkhorn=0.0287 emd=0.0171 count=0.6474 total=0.1105  <- best so far
+    E61 B200/718 sinkhorn=0.0263 emd=0.0130 count=0.7788 total=0.1172
+    E61 B400/718 sinkhorn=0.0266 emd=0.0136 count=0.9545 total=0.1357
+    E61 B600/718 sinkhorn=0.0269 emd=0.0140 count=0.7595 total=0.1168
+  epoch   61/200  sinkhorn=0.0262 emd=0.0135 count=0.7025 total=0.1099  lr=7.88e-04  (122s)
+    E62 B200/718 sinkhorn=0.0257 emd=0.0130 count=0.5448 total=0.0932
+    E62 B400/718 sinkhorn=0.0258 emd=0.0124 count=0.6539 total=0.1036
+    E62 B600/718 sinkhorn=0.0270 emd=0.0160 count=0.6020 total=0.1032
+  epoch   62/200  sinkhorn=0.0262 emd=0.0137 count=0.6832 total=0.1082  lr=7.81e-04  (123s)
+    E63 B200/718 sinkhorn=0.0266 emd=0.0132 count=0.6527 total=0.1051
+    E63 B400/718 sinkhorn=0.0265 emd=0.0138 count=0.6571 total=0.1060
+    E63 B600/718 sinkhorn=0.0261 emd=0.0130 count=0.6282 total=0.1020
+  epoch   63/200  sinkhorn=0.0260 emd=0.0134 count=0.6726 total=0.1067  lr=7.75e-04  (122s)
+    E64 B200/718 sinkhorn=0.0256 emd=0.0133 count=0.5841 total=0.0973
+    E64 B400/718 sinkhorn=0.0278 emd=0.0168 count=0.6846 total=0.1131
+    E64 B600/718 sinkhorn=0.0254 emd=0.0134 count=0.4522 total=0.0840
+  epoch   64/200  sinkhorn=0.0261 emd=0.0136 count=0.6567 total=0.1053  lr=7.68e-04  (120s)
+    E65 B200/718 sinkhorn=0.0253 emd=0.0132 count=0.5981 total=0.0983
+    E65 B400/718 sinkhorn=0.0252 emd=0.0135 count=0.6227 total=0.1010
+    E65 B600/718 sinkhorn=0.0268 emd=0.0139 count=0.4227 total=0.0830
+  epoch   65/200  sinkhorn=0.0259 emd=0.0134 count=0.6483 total=0.1042  lr=7.61e-04  (120s)
+    VALID  sinkhorn=0.0275 emd=0.0140 count=0.7226 total=0.1138
+    E66 B200/718 sinkhorn=0.0257 emd=0.0119 count=0.4492 total=0.0825
+    E66 B400/718 sinkhorn=0.0261 emd=0.0128 count=0.4271 total=0.0816
+    E66 B600/718 sinkhorn=0.0264 emd=0.0153 count=0.4647 total=0.0882
+  epoch   66/200  sinkhorn=0.0260 emd=0.0135 count=0.6303 total=0.1026  lr=7.55e-04  (126s)
+    E67 B200/718 sinkhorn=0.0255 emd=0.0127 count=0.6759 total=0.1058
+    E67 B400/718 sinkhorn=0.0254 emd=0.0133 count=0.6839 total=0.1071
+    E67 B600/718 sinkhorn=0.0255 emd=0.0132 count=0.6040 total=0.0991
+  epoch   67/200  sinkhorn=0.0257 emd=0.0133 count=0.6086 total=0.0999  lr=7.48e-04  (121s)
+    E68 B200/718 sinkhorn=0.0250 emd=0.0133 count=0.5655 total=0.0948
+    E68 B400/718 sinkhorn=0.0252 emd=0.0129 count=0.4630 total=0.0843
+    E68 B600/718 sinkhorn=0.0259 emd=0.0136 count=0.4874 total=0.0883
+  epoch   68/200  sinkhorn=0.0257 emd=0.0134 count=0.5913 total=0.0983  lr=7.41e-04  (120s)
+    E69 B200/718 sinkhorn=0.0259 emd=0.0144 count=0.6850 total=0.1088
+    E69 B400/718 sinkhorn=0.0250 emd=0.0126 count=0.5190 total=0.0896
+    E69 B600/718 sinkhorn=0.0253 emd=0.0133 count=0.8502 total=0.1236
+  epoch   69/200  sinkhorn=0.0256 emd=0.0131 count=0.5942 total=0.0982  lr=7.34e-04  (120s)
+    E70 B200/718 sinkhorn=0.0253 emd=0.0120 count=0.5629 total=0.0936
+    E70 B400/718 sinkhorn=0.0250 emd=0.0124 count=0.4418 total=0.0816
+    E70 B600/718 sinkhorn=0.0275 emd=0.0187 count=0.4154 total=0.0878
+  epoch   70/200  sinkhorn=0.0259 emd=0.0138 count=0.5639 total=0.0961  lr=7.27e-04  (120s)
+    VALID  sinkhorn=0.0260 emd=0.0137 count=0.4310 total=0.0829  <- best so far
+    E71 B200/718 sinkhorn=0.0256 emd=0.0136 count=0.5989 total=0.0991
+    E71 B400/718 sinkhorn=0.0253 emd=0.0128 count=0.5792 total=0.0960
+    E71 B600/718 sinkhorn=0.0261 emd=0.0136 count=0.5533 total=0.0950
+  epoch   71/200  sinkhorn=0.0254 emd=0.0129 count=0.5610 total=0.0945  lr=7.20e-04  (123s)
+    E72 B200/718 sinkhorn=0.0251 emd=0.0122 count=0.4014 total=0.0775
+    E72 B400/718 sinkhorn=0.0260 emd=0.0126 count=0.5686 total=0.0954
+    E72 B600/718 sinkhorn=0.0247 emd=0.0129 count=0.3831 total=0.0758
+  epoch   72/200  sinkhorn=0.0253 emd=0.0129 count=0.5282 total=0.0910  lr=7.13e-04  (121s)
+    E73 B200/718 sinkhorn=0.0248 emd=0.0121 count=0.6305 total=0.0999
+    E73 B400/718 sinkhorn=0.0247 emd=0.0129 count=0.4783 total=0.0853
+    E73 B600/718 sinkhorn=0.0246 emd=0.0133 count=0.6875 total=0.1066
+  epoch   73/200  sinkhorn=0.0255 emd=0.0133 count=0.5317 total=0.0920  lr=7.06e-04  (120s)
+    E74 B200/718 sinkhorn=0.0254 emd=0.0135 count=0.4274 total=0.0817
+    E74 B400/718 sinkhorn=0.0248 emd=0.0123 count=0.5512 total=0.0923
+    E74 B600/718 sinkhorn=0.0249 emd=0.0139 count=0.3562 total=0.0744
+  epoch   74/200  sinkhorn=0.0254 emd=0.0131 count=0.5124 total=0.0897  lr=6.99e-04  (120s)
+    E75 B200/718 sinkhorn=0.0258 emd=0.0136 count=0.6733 total=0.1067
+    E75 B400/718 sinkhorn=0.0247 emd=0.0131 count=0.7366 total=0.1114
+    E75 B600/718 sinkhorn=0.0253 emd=0.0126 count=0.4803 total=0.0859
+  epoch   75/200  sinkhorn=0.0255 emd=0.0133 count=0.5141 total=0.0902  lr=6.92e-04  (120s)
+    VALID  sinkhorn=0.0268 emd=0.0140 count=0.4504 total=0.0859
+    E76 B200/718 sinkhorn=0.0250 emd=0.0127 count=0.3564 total=0.0733
+    E76 B400/718 sinkhorn=0.0253 emd=0.0134 count=0.3136 total=0.0700
+    E76 B600/718 sinkhorn=0.0265 emd=0.0150 count=0.7222 total=0.1137
+  epoch   76/200  sinkhorn=0.0251 emd=0.0128 count=0.4860 total=0.0866  lr=6.84e-04  (123s)
+    E77 B200/718 sinkhorn=0.0253 emd=0.0127 count=0.5148 total=0.0895
+    E77 B400/718 sinkhorn=0.0252 emd=0.0136 count=0.5205 total=0.0908
+    E77 B600/718 sinkhorn=0.0257 emd=0.0134 count=0.6335 total=0.1024
+  epoch   77/200  sinkhorn=0.0252 emd=0.0129 count=0.4773 total=0.0858  lr=6.77e-04  (121s)
+    E78 B200/718 sinkhorn=0.0263 emd=0.0137 count=0.5463 total=0.0947
+    E78 B400/718 sinkhorn=0.0286 emd=0.0155 count=0.3322 total=0.0773
+    E78 B600/718 sinkhorn=0.0258 emd=0.0134 count=0.3466 total=0.0738
+  epoch   78/200  sinkhorn=0.0302 emd=0.0199 count=0.4859 total=0.0987  lr=6.70e-04  (120s)
+    E79 B200/718 sinkhorn=0.0256 emd=0.0138 count=0.5746 total=0.0968
+    E79 B400/718 sinkhorn=0.0258 emd=0.0125 count=0.3244 total=0.0707
+    E79 B600/718 sinkhorn=0.0257 emd=0.0129 count=0.3481 total=0.0734
+  epoch   79/200  sinkhorn=0.0253 emd=0.0127 count=0.4560 total=0.0836  lr=6.62e-04  (121s)
+    E80 B200/718 sinkhorn=0.0260 emd=0.0135 count=0.3237 total=0.0719
+    E80 B400/718 sinkhorn=0.0256 emd=0.0131 count=0.4245 total=0.0811
+    E80 B600/718 sinkhorn=0.0275 emd=0.0152 count=0.6495 total=0.1076
+  epoch   80/200  sinkhorn=0.0275 emd=0.0166 count=0.4515 total=0.0892  lr=6.55e-04  (122s)
+    VALID  sinkhorn=0.0278 emd=0.0147 count=0.5510 total=0.0976
+    E81 B200/718 sinkhorn=0.0253 emd=0.0129 count=0.5142 total=0.0897
+    E81 B400/718 sinkhorn=0.0251 emd=0.0127 count=0.4666 total=0.0844
+    E81 B600/718 sinkhorn=0.0252 emd=0.0132 count=0.5802 total=0.0964
+  epoch   81/200  sinkhorn=0.0253 emd=0.0129 count=0.4136 total=0.0797  lr=6.47e-04  (122s)
+    E82 B200/718 sinkhorn=0.0266 emd=0.0146 count=0.2564 total=0.0668
+    E82 B400/718 sinkhorn=0.0254 emd=0.0133 count=0.2467 total=0.0633
+    E82 B600/718 sinkhorn=0.0268 emd=0.0156 count=0.4710 total=0.0895
+  epoch   82/200  sinkhorn=0.0251 emd=0.0129 count=0.4327 total=0.0813  lr=6.40e-04  (121s)
+    E83 B200/718 sinkhorn=0.0246 emd=0.0121 count=0.5134 total=0.0880
+    E83 B400/718 sinkhorn=0.0248 emd=0.0124 count=0.3601 total=0.0732
+    E83 B600/718 sinkhorn=0.0247 emd=0.0121 count=0.4400 total=0.0808
+  epoch   83/200  sinkhorn=0.0247 emd=0.0123 count=0.3909 total=0.0761  lr=6.32e-04  (122s)
+    E84 B200/718 sinkhorn=0.0249 emd=0.0128 count=0.4327 total=0.0809
+    E84 B400/718 sinkhorn=0.0243 emd=0.0119 count=0.3225 total=0.0685
+    E84 B600/718 sinkhorn=0.0249 emd=0.0127 count=0.3109 total=0.0687
+  epoch   84/200  sinkhorn=0.0249 emd=0.0127 count=0.3851 total=0.0760  lr=6.25e-04  (122s)
+    E85 B200/718 sinkhorn=0.0246 emd=0.0125 count=0.3374 total=0.0708
+    E85 B400/718 sinkhorn=0.0248 emd=0.0120 count=0.3624 total=0.0730
+    E85 B600/718 sinkhorn=0.0311 emd=0.0182 count=1.2397 total=0.1732
+  epoch   85/200  sinkhorn=0.0327 emd=0.0228 count=0.8416 total=0.1397  lr=6.17e-04  (122s)
+    VALID  sinkhorn=0.0396 emd=0.0301 count=0.5774 total=0.1274
+    E86 B200/718 sinkhorn=0.0272 emd=0.0139 count=1.0788 total=0.1490
+    E86 B400/718 sinkhorn=0.0265 emd=0.0127 count=0.9761 total=0.1368
+    E86 B600/718 sinkhorn=0.0261 emd=0.0145 count=0.7840 total=0.1190
+  epoch   86/200  sinkhorn=0.0284 emd=0.0161 count=0.9165 total=0.1362  lr=6.09e-04  (121s)
+    E87 B200/718 sinkhorn=0.0275 emd=0.0163 count=0.7072 total=0.1146
+    E87 B400/718 sinkhorn=0.0263 emd=0.0125 count=1.0308 total=0.1419
+    E87 B600/718 sinkhorn=0.0254 emd=0.0131 count=1.0140 total=0.1399
+  epoch   87/200  sinkhorn=0.0274 emd=0.0157 count=0.8832 total=0.1314  lr=6.02e-04  (122s)
+    E88 B200/718 sinkhorn=0.0248 emd=0.0123 count=0.7501 total=0.1121
+    E88 B400/718 sinkhorn=0.0253 emd=0.0128 count=0.6375 total=0.1019
+    E88 B600/718 sinkhorn=0.0279 emd=0.0162 count=1.0907 total=0.1532
+  epoch   88/200  sinkhorn=0.0264 emd=0.0142 count=0.8530 total=0.1259  lr=5.94e-04  (122s)
+    E89 B200/718 sinkhorn=0.0246 emd=0.0128 count=0.7756 total=0.1149
+    E89 B400/718 sinkhorn=0.0313 emd=0.0189 count=0.9897 total=0.1492
+    E89 B600/718 sinkhorn=0.0255 emd=0.0132 count=0.5362 total=0.0922
+  epoch   89/200  sinkhorn=0.0268 emd=0.0154 count=0.8393 total=0.1262  lr=5.86e-04  (121s)
+    E90 B200/718 sinkhorn=0.0257 emd=0.0129 count=0.7191 total=0.1104
+    E90 B400/718 sinkhorn=0.0246 emd=0.0123 count=0.8413 total=0.1210
+    E90 B600/718 sinkhorn=0.0278 emd=0.0152 count=1.0128 total=0.1443
+  epoch   90/200  sinkhorn=0.0264 emd=0.0147 count=0.8127 total=0.1224  lr=5.79e-04  (121s)
+    VALID  sinkhorn=0.0295 emd=0.0168 count=0.4028 total=0.0865
+    E91 B200/718 sinkhorn=0.0293 emd=0.0225 count=0.9711 total=0.1489
+    E91 B400/718 sinkhorn=0.0255 emd=0.0123 count=0.5000 total=0.0878
+    E91 B600/718 sinkhorn=0.0256 emd=0.0131 count=0.7249 total=0.1112
+  epoch   91/200  sinkhorn=0.0260 emd=0.0138 count=0.7865 total=0.1185  lr=5.71e-04  (125s)
+    E92 B200/718 sinkhorn=0.0250 emd=0.0125 count=0.8043 total=0.1179
+    E92 B400/718 sinkhorn=0.0258 emd=0.0136 count=0.6312 total=0.1025
+    E92 B600/718 sinkhorn=0.0259 emd=0.0141 count=0.7828 total=0.1182
+  epoch   92/200  sinkhorn=0.0263 emd=0.0146 count=0.7756 total=0.1185  lr=5.63e-04  (121s)
+    E93 B200/718 sinkhorn=0.0259 emd=0.0144 count=0.5921 total=0.0995
+    E93 B400/718 sinkhorn=0.0248 emd=0.0120 count=0.9781 total=0.1346
+    E93 B600/718 sinkhorn=0.0249 emd=0.0117 count=0.6001 total=0.0966
+  epoch   93/200  sinkhorn=0.0255 emd=0.0135 count=0.7351 total=0.1126  lr=5.55e-04  (121s)
+    E94 B200/718 sinkhorn=0.0247 emd=0.0123 count=0.7568 total=0.1127
+    E94 B400/718 sinkhorn=0.0262 emd=0.0136 count=0.4861 total=0.0884
+    E94 B600/718 sinkhorn=0.0248 emd=0.0123 count=0.9402 total=0.1311
+  epoch   94/200  sinkhorn=0.0255 emd=0.0135 count=0.7226 total=0.1112  lr=5.48e-04  (121s)
+    E95 B200/718 sinkhorn=0.0283 emd=0.0162 count=1.0717 total=0.1517
+    E95 B400/718 sinkhorn=0.0247 emd=0.0122 count=0.5260 total=0.0895
+    E95 B600/718 sinkhorn=0.0249 emd=0.0124 count=0.4973 total=0.0870
+  epoch   95/200  sinkhorn=0.0260 emd=0.0145 count=0.7088 total=0.1114  lr=5.40e-04  (120s)
+    VALID  sinkhorn=0.0254 emd=0.0133 count=1.2791 total=0.1666
+    E96 B200/718 sinkhorn=0.0287 emd=0.0222 count=0.5438 total=0.1053
+    E96 B400/718 sinkhorn=0.0252 emd=0.0119 count=0.9035 total=0.1274
+    E96 B600/718 sinkhorn=0.0261 emd=0.0128 count=0.8007 total=0.1190
+  epoch   96/200  sinkhorn=0.0254 emd=0.0135 count=0.6840 total=0.1073  lr=5.32e-04  (122s)
+    E97 B200/718 sinkhorn=0.0250 emd=0.0127 count=0.7704 total=0.1148
+    E97 B400/718 sinkhorn=0.0707 emd=0.0630 count=1.7729 total=0.3110
+    E97 B600/718 sinkhorn=0.0407 emd=0.0246 count=0.8863 total=0.1539
+  epoch   97/200  sinkhorn=0.0446 emd=0.0341 count=0.9469 total=0.1734  lr=5.24e-04  (122s)
+    E98 B200/718 sinkhorn=0.0364 emd=0.0192 count=0.9618 total=0.1517
+    E98 B400/718 sinkhorn=0.0329 emd=0.0185 count=0.3431 total=0.0857
+    E98 B600/718 sinkhorn=0.0329 emd=0.0161 count=0.3083 total=0.0799
+  epoch   98/200  sinkhorn=0.0337 emd=0.0181 count=0.6113 total=0.1129  lr=5.16e-04  (120s)
+    E99 B200/718 sinkhorn=0.0306 emd=0.0159 count=0.2831 total=0.0748
+    E99 B400/718 sinkhorn=0.0304 emd=0.0156 count=0.8941 total=0.1354
+    E99 B600/718 sinkhorn=0.0289 emd=0.0145 count=0.3750 total=0.0810
+  epoch   99/200  sinkhorn=0.0301 emd=0.0154 count=0.5969 total=0.1052  lr=5.08e-04  (119s)
+    E100 B200/718 sinkhorn=0.0303 emd=0.0159 count=0.3771 total=0.0839
+    E100 B400/718 sinkhorn=0.0285 emd=0.0144 count=0.3096 total=0.0739
+    E100 B600/718 sinkhorn=0.0284 emd=0.0142 count=0.8526 total=0.1278
+  epoch  100/200  sinkhorn=0.0289 emd=0.0149 count=0.5968 total=0.1035  lr=5.01e-04  (119s)
+    VALID  sinkhorn=0.0278 emd=0.0138 count=0.5219 total=0.0937
+    E101 B200/718 sinkhorn=0.0280 emd=0.0134 count=1.1147 total=0.1530
+    E101 B400/718 sinkhorn=0.0275 emd=0.0136 count=0.4053 total=0.0816
+    E101 B600/718 sinkhorn=0.0272 emd=0.0142 count=0.2319 total=0.0646
+  epoch  101/200  sinkhorn=0.0286 emd=0.0155 count=0.5792 total=0.1021  lr=4.93e-04  (120s)
+    E102 B200/718 sinkhorn=0.0265 emd=0.0131 count=0.2423 total=0.0639
+    E102 B400/718 sinkhorn=0.0268 emd=0.0135 count=0.9664 total=0.1369
+    E102 B600/718 sinkhorn=0.0257 emd=0.0124 count=0.2506 total=0.0633
+  epoch  102/200  sinkhorn=0.0275 emd=0.0142 count=0.5605 total=0.0978  lr=4.85e-04  (120s)
+    E103 B200/718 sinkhorn=0.0277 emd=0.0146 count=0.3523 total=0.0776
+    E103 B400/718 sinkhorn=0.0262 emd=0.0128 count=0.2798 total=0.0670
+    E103 B600/718 sinkhorn=0.0269 emd=0.0155 count=1.0319 total=0.1457
+  epoch  103/200  sinkhorn=0.0279 emd=0.0157 count=0.5527 total=0.0989  lr=4.77e-04  (121s)
+    E104 B200/718 sinkhorn=0.0263 emd=0.0137 count=1.1619 total=0.1562
+    E104 B400/718 sinkhorn=0.0273 emd=0.0130 count=0.3585 total=0.0761
+    E104 B600/718 sinkhorn=0.0257 emd=0.0129 count=0.2152 total=0.0602
+  epoch  104/200  sinkhorn=0.0261 emd=0.0129 count=0.5168 total=0.0907  lr=4.69e-04  (121s)
+    E105 B200/718 sinkhorn=0.0258 emd=0.0124 count=0.2671 total=0.0649
+    E105 B400/718 sinkhorn=0.0730 emd=0.0872 count=1.1646 total=0.2767
+    E105 B600/718 sinkhorn=0.0265 emd=0.0134 count=0.3573 total=0.0756
+  epoch  105/200  sinkhorn=0.0290 emd=0.0177 count=0.5262 total=0.0994  lr=4.61e-04  (121s)
+    VALID  sinkhorn=0.0264 emd=0.0133 count=0.3891 total=0.0786  <- best so far
+    E106 B200/718 sinkhorn=0.0261 emd=0.0127 count=0.2997 total=0.0687
+    E106 B400/718 sinkhorn=0.0254 emd=0.0126 count=0.1864 total=0.0566
+    E106 B600/718 sinkhorn=0.0251 emd=0.0130 count=1.0816 total=0.1463
+  epoch  106/200  sinkhorn=0.0258 emd=0.0130 count=0.4852 total=0.0873  lr=4.53e-04  (120s)
+    E107 B200/718 sinkhorn=0.0249 emd=0.0122 count=0.8234 total=0.1194
+    E107 B400/718 sinkhorn=0.0291 emd=0.0207 count=0.3303 total=0.0828
+    E107 B600/718 sinkhorn=0.0269 emd=0.0146 count=0.1918 total=0.0607
+  epoch  107/200  sinkhorn=0.0260 emd=0.0138 count=0.4730 total=0.0872  lr=4.46e-04  (119s)
+    E108 B200/718 sinkhorn=0.0250 emd=0.0128 count=0.2023 total=0.0580
+    E108 B400/718 sinkhorn=0.0252 emd=0.0117 count=0.4983 total=0.0868
+    E108 B600/718 sinkhorn=0.0261 emd=0.0130 count=0.5294 total=0.0921
+  epoch  108/200  sinkhorn=0.0253 emd=0.0128 count=0.4384 total=0.0820  lr=4.38e-04  (119s)
+    E109 B200/718 sinkhorn=0.0260 emd=0.0139 count=0.2880 total=0.0686
+    E109 B400/718 sinkhorn=0.0247 emd=0.0125 count=0.1750 total=0.0547
+    E109 B600/718 sinkhorn=0.0252 emd=0.0124 count=0.2020 total=0.0578
+  epoch  109/200  sinkhorn=0.0260 emd=0.0139 count=0.2616 total=0.0661  lr=4.30e-04  (120s)
+    E110 B200/718 sinkhorn=0.0241 emd=0.0124 count=0.1934 total=0.0558
+    E110 B400/718 sinkhorn=0.0243 emd=0.0118 count=0.1598 total=0.0522
+    E110 B600/718 sinkhorn=0.0249 emd=0.0127 count=0.1862 total=0.0562
+  epoch  110/200  sinkhorn=0.0247 emd=0.0123 count=0.1690 total=0.0538  lr=4.22e-04  (120s)
+    VALID  sinkhorn=0.0277 emd=0.0164 count=0.1106 total=0.0551  <- best so far
+    E111 B200/718 sinkhorn=0.0252 emd=0.0121 count=0.1180 total=0.0491
+    E111 B400/718 sinkhorn=0.0249 emd=0.0129 count=0.2503 total=0.0628
+    E111 B600/718 sinkhorn=0.0242 emd=0.0124 count=0.2101 total=0.0576
+  epoch  111/200  sinkhorn=0.0246 emd=0.0123 count=0.1534 total=0.0523  lr=4.15e-04  (121s)
+    E112 B200/718 sinkhorn=0.0250 emd=0.0124 count=0.1091 total=0.0483
+    E112 B400/718 sinkhorn=0.0247 emd=0.0124 count=0.1729 total=0.0543
+    E112 B600/718 sinkhorn=0.0240 emd=0.0118 count=0.1577 total=0.0515
+  epoch  112/200  sinkhorn=0.0245 emd=0.0123 count=0.1361 total=0.0504  lr=4.07e-04  (120s)
+    E113 B200/718 sinkhorn=0.0248 emd=0.0132 count=0.1038 total=0.0484
+    E113 B400/718 sinkhorn=0.0249 emd=0.0133 count=0.1789 total=0.0561
+    E113 B600/718 sinkhorn=0.0244 emd=0.0125 count=0.1145 total=0.0484
+  epoch  113/200  sinkhorn=0.0249 emd=0.0129 count=0.2388 total=0.0617  lr=3.99e-04  (120s)
+    E114 B200/718 sinkhorn=0.0500 emd=0.0459 count=0.9723 total=0.1932
+    E114 B400/718 sinkhorn=0.0300 emd=0.0153 count=0.1272 total=0.0580
+    E114 B600/718 sinkhorn=0.0266 emd=0.0140 count=0.5473 total=0.0954
+  epoch  114/200  sinkhorn=0.0378 emd=0.0287 count=0.7327 total=0.1398  lr=3.92e-04  (120s)
+    E115 B200/718 sinkhorn=0.0260 emd=0.0134 count=0.3315 total=0.0726
+    E115 B400/718 sinkhorn=0.0257 emd=0.0136 count=0.1653 total=0.0559
+    E115 B600/718 sinkhorn=0.0253 emd=0.0120 count=0.2122 total=0.0585
+  epoch  115/200  sinkhorn=0.0258 emd=0.0130 count=0.3195 total=0.0707  lr=3.84e-04  (119s)
+    VALID  sinkhorn=0.0252 emd=0.0127 count=0.6353 total=0.1014
+    E116 B200/718 sinkhorn=0.0258 emd=0.0129 count=0.1820 total=0.0569
+    E116 B400/718 sinkhorn=0.0248 emd=0.0116 count=0.6658 total=0.1030
+    E116 B600/718 sinkhorn=0.0247 emd=0.0133 count=0.6979 total=0.1078
+  epoch  116/200  sinkhorn=0.0259 emd=0.0131 count=0.3302 total=0.0720  lr=3.76e-04  (123s)
+    E117 B200/718 sinkhorn=0.0240 emd=0.0118 count=0.1947 total=0.0552
+    E117 B400/718 sinkhorn=0.0252 emd=0.0123 count=0.1958 total=0.0571
+    E117 B600/718 sinkhorn=0.0243 emd=0.0117 count=0.4294 total=0.0789
+  epoch  117/200  sinkhorn=0.0244 emd=0.0121 count=0.2998 total=0.0665  lr=3.69e-04  (119s)
+    E118 B200/718 sinkhorn=0.0242 emd=0.0120 count=0.4248 total=0.0787
+    E118 B400/718 sinkhorn=0.0239 emd=0.0114 count=0.1461 total=0.0499
+    E118 B600/718 sinkhorn=0.0244 emd=0.0120 count=0.1049 total=0.0469
+  epoch  118/200  sinkhorn=0.0258 emd=0.0141 count=0.2955 total=0.0694  lr=3.61e-04  (119s)
+    E119 B200/718 sinkhorn=0.0264 emd=0.0145 count=0.2270 total=0.0637
+    E119 B400/718 sinkhorn=0.0237 emd=0.0117 count=0.4399 total=0.0794
+    E119 B600/718 sinkhorn=0.0244 emd=0.0119 count=0.1165 total=0.0480
+  epoch  119/200  sinkhorn=0.0245 emd=0.0124 count=0.2737 total=0.0642  lr=3.54e-04  (119s)
+    E120 B200/718 sinkhorn=0.0254 emd=0.0117 count=0.3722 total=0.0744
+    E120 B400/718 sinkhorn=0.0283 emd=0.0149 count=0.0750 total=0.0506
+    E120 B600/718 sinkhorn=0.0260 emd=0.0130 count=0.0769 total=0.0467
+  epoch  120/200  sinkhorn=0.0304 emd=0.0205 count=0.3339 total=0.0843  lr=3.46e-04  (119s)
+    VALID  sinkhorn=0.0252 emd=0.0132 count=0.0910 total=0.0474  <- best so far
+    E121 B200/718 sinkhorn=0.0242 emd=0.0119 count=0.0812 total=0.0443
+    E121 B400/718 sinkhorn=0.0243 emd=0.0119 count=0.0795 total=0.0442
+    E121 B600/718 sinkhorn=0.0248 emd=0.0128 count=0.0757 total=0.0452
+  epoch  121/200  sinkhorn=0.0244 emd=0.0121 count=0.0872 total=0.0453  lr=3.39e-04  (120s)
+    E122 B200/718 sinkhorn=0.0242 emd=0.0124 count=0.0849 total=0.0451
+    E122 B400/718 sinkhorn=0.0246 emd=0.0117 count=0.0544 total=0.0417
+    E122 B600/718 sinkhorn=0.0240 emd=0.0122 count=0.0786 total=0.0441
+  epoch  122/200  sinkhorn=0.0242 emd=0.0120 count=0.0807 total=0.0443  lr=3.31e-04  (120s)
+    E123 B200/718 sinkhorn=0.0261 emd=0.0143 count=0.3693 total=0.0772
+    E123 B400/718 sinkhorn=0.0239 emd=0.0119 count=0.0961 total=0.0455
+    E123 B600/718 sinkhorn=0.0238 emd=0.0122 count=0.0649 total=0.0425
+  epoch  123/200  sinkhorn=0.0266 emd=0.0150 count=0.2251 total=0.0641  lr=3.24e-04  (120s)
+    E124 B200/718 sinkhorn=0.0242 emd=0.0120 count=0.1377 total=0.0500
+    E124 B400/718 sinkhorn=0.0233 emd=0.0123 count=1.0296 total=0.1386
+    E124 B600/718 sinkhorn=0.0238 emd=0.0116 count=0.1675 total=0.0522
+  epoch  124/200  sinkhorn=0.0240 emd=0.0118 count=0.2007 total=0.0559  lr=3.17e-04  (120s)
+    E125 B200/718 sinkhorn=0.0234 emd=0.0114 count=0.1225 total=0.0471
+    E125 B400/718 sinkhorn=0.0238 emd=0.0118 count=0.1183 total=0.0474
+    E125 B600/718 sinkhorn=0.0242 emd=0.0112 count=0.1985 total=0.0553
+  epoch  125/200  sinkhorn=0.0239 emd=0.0117 count=0.1825 total=0.0539  lr=3.09e-04  (121s)
+    VALID  sinkhorn=0.0252 emd=0.0126 count=0.1145 total=0.0492
+    E126 B200/718 sinkhorn=0.0335 emd=0.0246 count=0.3939 total=0.0974
+    E126 B400/718 sinkhorn=0.0249 emd=0.0123 count=0.1630 total=0.0535
+    E126 B600/718 sinkhorn=0.0244 emd=0.0115 count=0.0804 total=0.0439
+  epoch  126/200  sinkhorn=0.0270 emd=0.0161 count=0.1906 total=0.0622  lr=3.02e-04  (120s)
+    E127 B200/718 sinkhorn=0.0244 emd=0.0123 count=0.0854 total=0.0452
+    E127 B400/718 sinkhorn=0.0237 emd=0.0119 count=0.3452 total=0.0701
+    E127 B600/718 sinkhorn=0.0242 emd=0.0111 count=0.1019 total=0.0455
+  epoch  127/200  sinkhorn=0.0239 emd=0.0118 count=0.1635 total=0.0521  lr=2.95e-04  (119s)
+    E128 B200/718 sinkhorn=0.0236 emd=0.0114 count=0.1273 total=0.0476
+    E128 B400/718 sinkhorn=0.0322 emd=0.0194 count=0.1521 total=0.0668
+    E128 B600/718 sinkhorn=0.0290 emd=0.0173 count=0.1009 total=0.0564
+  epoch  128/200  sinkhorn=0.0300 emd=0.0205 count=0.2769 total=0.0782  lr=2.88e-04  (119s)
+    E129 B200/718 sinkhorn=0.0240 emd=0.0115 count=0.0298 total=0.0385
+    E129 B400/718 sinkhorn=0.0242 emd=0.0120 count=0.0493 total=0.0411
+    E129 B600/718 sinkhorn=0.0237 emd=0.0125 count=0.0646 total=0.0426
+  epoch  129/200  sinkhorn=0.0241 emd=0.0120 count=0.0558 total=0.0417  lr=2.81e-04  (119s)
+    E130 B200/718 sinkhorn=0.0283 emd=0.0162 count=0.0718 total=0.0516
+    E130 B400/718 sinkhorn=0.0241 emd=0.0123 count=0.0544 total=0.0418
+    E130 B600/718 sinkhorn=0.0235 emd=0.0119 count=0.4459 total=0.0800
+  epoch  130/200  sinkhorn=0.0251 emd=0.0136 count=0.1217 total=0.0509  lr=2.74e-04  (119s)
+    VALID  sinkhorn=0.0238 emd=0.0118 count=0.0822 total=0.0439  <- best so far
+    E131 B200/718 sinkhorn=0.0242 emd=0.0115 count=0.2784 total=0.0635
+    E131 B400/718 sinkhorn=0.0235 emd=0.0115 count=0.0794 total=0.0429
+    E131 B600/718 sinkhorn=0.0236 emd=0.0120 count=0.0564 total=0.0412
+  epoch  131/200  sinkhorn=0.0236 emd=0.0116 count=0.1147 total=0.0467  lr=2.67e-04  (119s)
+    E132 B200/718 sinkhorn=0.0234 emd=0.0116 count=0.0493 total=0.0399
+    E132 B400/718 sinkhorn=0.0234 emd=0.0115 count=0.2104 total=0.0559
+    E132 B600/718 sinkhorn=0.0239 emd=0.0111 count=0.0829 total=0.0433
+  epoch  132/200  sinkhorn=0.0236 emd=0.0115 count=0.1073 total=0.0458  lr=2.60e-04  (119s)
+    E133 B200/718 sinkhorn=0.0247 emd=0.0131 count=0.0697 total=0.0448
+    E133 B400/718 sinkhorn=0.0232 emd=0.0117 count=0.0529 total=0.0402
+    E133 B600/718 sinkhorn=0.0233 emd=0.0109 count=0.1795 total=0.0522
+  epoch  133/200  sinkhorn=0.0240 emd=0.0120 count=0.1141 total=0.0474  lr=2.53e-04  (119s)
+    E134 B200/718 sinkhorn=0.0265 emd=0.0150 count=0.2338 total=0.0649
+    E134 B400/718 sinkhorn=0.0243 emd=0.0121 count=0.0603 total=0.0423
+    E134 B600/718 sinkhorn=0.0236 emd=0.0118 count=0.0540 total=0.0408
+  epoch  134/200  sinkhorn=0.0267 emd=0.0159 count=0.1709 total=0.0597  lr=2.46e-04  (119s)
+    E135 B200/718 sinkhorn=0.0233 emd=0.0111 count=0.0175 total=0.0361
+    E135 B400/718 sinkhorn=0.0235 emd=0.0119 count=0.1332 total=0.0487
+    E135 B600/718 sinkhorn=0.0239 emd=0.0111 count=0.0544 total=0.0405
+  epoch  135/200  sinkhorn=0.0239 emd=0.0118 count=0.0857 total=0.0443  lr=2.40e-04  (119s)
+    VALID  sinkhorn=0.0256 emd=0.0143 count=0.1059 total=0.0504
+    E136 B200/718 sinkhorn=0.0240 emd=0.0113 count=0.0277 total=0.0381
+    E136 B400/718 sinkhorn=0.0241 emd=0.0126 count=0.0682 total=0.0435
+    E136 B600/718 sinkhorn=0.0231 emd=0.0106 count=0.1570 total=0.0494
+  epoch  136/200  sinkhorn=0.0237 emd=0.0117 count=0.0821 total=0.0436  lr=2.33e-04  (119s)
+    E137 B200/718 sinkhorn=0.0288 emd=0.0151 count=0.1374 total=0.0577
+    E137 B400/718 sinkhorn=0.0244 emd=0.0120 count=0.0453 total=0.0409
+    E137 B600/718 sinkhorn=0.0237 emd=0.0114 count=0.0349 total=0.0386
+  epoch  137/200  sinkhorn=0.0255 emd=0.0139 count=0.1254 total=0.0520  lr=2.26e-04  (119s)
+    E138 B200/718 sinkhorn=0.0237 emd=0.0123 count=0.0408 total=0.0401
+    E138 B400/718 sinkhorn=0.0239 emd=0.0113 count=0.1806 total=0.0532
+    E138 B600/718 sinkhorn=0.0233 emd=0.0119 count=0.0638 total=0.0415
+  epoch  138/200  sinkhorn=0.0233 emd=0.0114 count=0.0656 total=0.0413  lr=2.20e-04  (119s)
+    E139 B200/718 sinkhorn=0.0234 emd=0.0114 count=0.0471 total=0.0396
+    E139 B400/718 sinkhorn=0.0318 emd=0.0205 count=0.0468 total=0.0569
+    E139 B600/718 sinkhorn=0.0247 emd=0.0130 count=0.1725 total=0.0550
+  epoch  139/200  sinkhorn=0.0256 emd=0.0144 count=0.0996 total=0.0499  lr=2.13e-04  (119s)
+    E140 B200/718 sinkhorn=0.0236 emd=0.0115 count=0.1889 total=0.0540
+    E140 B400/718 sinkhorn=0.0237 emd=0.0112 count=0.2385 total=0.0587
+    E140 B600/718 sinkhorn=0.0242 emd=0.0118 count=0.1854 total=0.0546
+  epoch  140/200  sinkhorn=0.0235 emd=0.0115 count=0.2096 total=0.0559  lr=2.07e-04  (119s)
+    VALID  sinkhorn=0.0235 emd=0.0116 count=0.3572 total=0.0708
+    E141 B200/718 sinkhorn=0.0230 emd=0.0112 count=0.0566 total=0.0398
+    E141 B400/718 sinkhorn=0.0232 emd=0.0110 count=0.0550 total=0.0398
+    E141 B600/718 sinkhorn=0.0237 emd=0.0114 count=0.0479 total=0.0399
+  epoch  141/200  sinkhorn=0.0234 emd=0.0115 count=0.1940 total=0.0543  lr=2.01e-04  (123s)
+    E142 B200/718 sinkhorn=0.0229 emd=0.0109 count=0.2732 total=0.0611
+    E142 B400/718 sinkhorn=0.0230 emd=0.0115 count=0.1933 total=0.0538
+    E142 B600/718 sinkhorn=0.0234 emd=0.0114 count=0.2337 total=0.0582
+  epoch  142/200  sinkhorn=0.0233 emd=0.0114 count=0.1802 total=0.0528  lr=1.94e-04  (119s)
+    E143 B200/718 sinkhorn=0.0232 emd=0.0108 count=0.0653 total=0.0406
+    E143 B400/718 sinkhorn=0.0280 emd=0.0188 count=0.0593 total=0.0528
+    E143 B600/718 sinkhorn=0.0241 emd=0.0126 count=0.3856 total=0.0753
+  epoch  143/200  sinkhorn=0.0255 emd=0.0142 count=0.1636 total=0.0560  lr=1.88e-04  (119s)
+    E144 B200/718 sinkhorn=0.0243 emd=0.0114 count=0.0148 total=0.0371
+    E144 B400/718 sinkhorn=0.0232 emd=0.0117 count=0.0928 total=0.0442
+    E144 B600/718 sinkhorn=0.0235 emd=0.0113 count=0.2224 total=0.0570
+  epoch  144/200  sinkhorn=0.0239 emd=0.0121 count=0.1370 total=0.0498  lr=1.82e-04  (119s)
+    E145 B200/718 sinkhorn=0.0261 emd=0.0143 count=0.0524 total=0.0456
+    E145 B400/718 sinkhorn=0.0252 emd=0.0138 count=0.1011 total=0.0491
+    E145 B600/718 sinkhorn=0.0242 emd=0.0129 count=0.0377 total=0.0409
+  epoch  145/200  sinkhorn=0.0248 emd=0.0131 count=0.1448 total=0.0524  lr=1.76e-04  (119s)
+    VALID  sinkhorn=0.0245 emd=0.0126 count=0.0467 total=0.0418  <- best so far
+    E146 B200/718 sinkhorn=0.0237 emd=0.0114 count=0.0180 total=0.0369
+    E146 B400/718 sinkhorn=0.0233 emd=0.0113 count=0.0857 total=0.0432
+    E146 B600/718 sinkhorn=0.0243 emd=0.0118 count=0.0218 total=0.0382
+  epoch  146/200  sinkhorn=0.0241 emd=0.0122 count=0.1024 total=0.0466  lr=1.70e-04  (119s)
+    E147 B200/718 sinkhorn=0.0237 emd=0.0115 count=0.0273 total=0.0379
+    E147 B400/718 sinkhorn=0.0228 emd=0.0115 count=0.1435 total=0.0487
+    E147 B600/718 sinkhorn=0.0229 emd=0.0113 count=0.0263 total=0.0368
+  epoch  147/200  sinkhorn=0.0234 emd=0.0116 count=0.0880 total=0.0438  lr=1.64e-04  (119s)
+    E148 B200/718 sinkhorn=0.0230 emd=0.0115 count=0.0416 total=0.0386
+    E148 B400/718 sinkhorn=0.0229 emd=0.0116 count=0.0463 total=0.0391
+    E148 B600/718 sinkhorn=0.0251 emd=0.0147 count=0.0217 total=0.0421
+  epoch  148/200  sinkhorn=0.0237 emd=0.0120 count=0.0923 total=0.0450  lr=1.59e-04  (119s)
+    E149 B200/718 sinkhorn=0.0234 emd=0.0120 count=0.0243 total=0.0379
+    E149 B400/718 sinkhorn=0.0242 emd=0.0127 count=0.0250 total=0.0394
+    E149 B600/718 sinkhorn=0.0229 emd=0.0120 count=1.1743 total=0.1523
+  epoch  149/200  sinkhorn=0.0241 emd=0.0123 count=0.1106 total=0.0474  lr=1.53e-04  (119s)
+    E150 B200/718 sinkhorn=0.0232 emd=0.0113 count=0.5693 total=0.0915
+    E150 B400/718 sinkhorn=0.0241 emd=0.0117 count=0.0407 total=0.0399
+    E150 B600/718 sinkhorn=0.0240 emd=0.0117 count=0.0286 total=0.0385
+  epoch  150/200  sinkhorn=0.0236 emd=0.0118 count=0.1638 total=0.0518  lr=1.47e-04  (119s)
+    VALID  sinkhorn=0.0247 emd=0.0137 count=0.0198 total=0.0404  <- best so far
+    E151 B200/718 sinkhorn=0.0234 emd=0.0113 count=0.0290 total=0.0376
+    E151 B400/718 sinkhorn=0.0230 emd=0.0115 count=0.0435 total=0.0389
+    E151 B600/718 sinkhorn=0.0236 emd=0.0111 count=0.0993 total=0.0446
+  epoch  151/200  sinkhorn=0.0233 emd=0.0115 count=0.1776 total=0.0526  lr=1.42e-04  (119s)
+    E152 B200/718 sinkhorn=0.0235 emd=0.0107 count=0.1451 total=0.0487
+    E152 B400/718 sinkhorn=0.0241 emd=0.0124 count=0.0218 total=0.0387
+    E152 B600/718 sinkhorn=0.0235 emd=0.0122 count=0.0196 total=0.0377
+  epoch  152/200  sinkhorn=0.0234 emd=0.0115 count=0.1456 total=0.0495  lr=1.36e-04  (119s)
+    E153 B200/718 sinkhorn=0.0227 emd=0.0106 count=0.0756 total=0.0408
+    E153 B400/718 sinkhorn=0.0240 emd=0.0118 count=0.0110 total=0.0369
+    E153 B600/718 sinkhorn=0.0240 emd=0.0116 count=0.0208 total=0.0377
+  epoch  153/200  sinkhorn=0.0234 emd=0.0115 count=0.0458 total=0.0394  lr=1.31e-04  (120s)
+    E154 B200/718 sinkhorn=0.0230 emd=0.0114 count=0.0183 total=0.0362
+    E154 B400/718 sinkhorn=0.0233 emd=0.0111 count=0.0742 total=0.0418
+    E154 B600/718 sinkhorn=0.0230 emd=0.0109 count=0.0163 total=0.0355
+  epoch  154/200  sinkhorn=0.0232 emd=0.0114 count=0.0376 total=0.0384  lr=1.26e-04  (119s)
+    E155 B200/718 sinkhorn=0.0235 emd=0.0112 count=0.0183 total=0.0366
+    E155 B400/718 sinkhorn=0.0237 emd=0.0113 count=0.0963 total=0.0447
+    E155 B600/718 sinkhorn=0.0228 emd=0.0115 count=0.0303 total=0.0373
+  epoch  155/200  sinkhorn=0.0232 emd=0.0113 count=0.0485 total=0.0393  lr=1.21e-04  (119s)
+    VALID  sinkhorn=0.0232 emd=0.0115 count=0.0149 total=0.0362  <- best so far
+    E156 B200/718 sinkhorn=0.0222 emd=0.0107 count=0.0175 total=0.0347
+    E156 B400/718 sinkhorn=0.0233 emd=0.0120 count=0.0223 total=0.0376
+    E156 B600/718 sinkhorn=0.0229 emd=0.0105 count=0.0161 total=0.0350
+  epoch  156/200  sinkhorn=0.0230 emd=0.0112 count=0.0273 total=0.0369  lr=1.16e-04  (119s)
+    E157 B200/718 sinkhorn=0.0232 emd=0.0119 count=0.1217 total=0.0472
+    E157 B400/718 sinkhorn=0.0228 emd=0.0109 count=0.0274 total=0.0365
+    E157 B600/718 sinkhorn=0.0232 emd=0.0110 count=0.0187 total=0.0360
+  epoch  157/200  sinkhorn=0.0230 emd=0.0112 count=0.0525 total=0.0394  lr=1.11e-04  (119s)
+    E158 B200/718 sinkhorn=0.0232 emd=0.0112 count=0.0173 total=0.0361
+    E158 B400/718 sinkhorn=0.0227 emd=0.0105 count=0.0284 total=0.0361
+    E158 B600/718 sinkhorn=0.0225 emd=0.0112 count=0.0152 total=0.0352
+  epoch  158/200  sinkhorn=0.0230 emd=0.0112 count=0.0379 total=0.0380  lr=1.06e-04  (119s)
+    E159 B200/718 sinkhorn=0.0231 emd=0.0108 count=0.0282 total=0.0367
+    E159 B400/718 sinkhorn=0.0226 emd=0.0113 count=0.0109 total=0.0351
+    E159 B600/718 sinkhorn=0.0225 emd=0.0109 count=0.0400 total=0.0374
+  epoch  159/200  sinkhorn=0.0228 emd=0.0111 count=0.0232 total=0.0362  lr=1.01e-04  (119s)
+    E160 B200/718 sinkhorn=0.0229 emd=0.0106 count=0.0652 total=0.0400
+    E160 B400/718 sinkhorn=0.0221 emd=0.0111 count=0.0218 total=0.0354
+    E160 B600/718 sinkhorn=0.0226 emd=0.0109 count=0.0171 total=0.0352
+  epoch  160/200  sinkhorn=0.0228 emd=0.0111 count=0.0258 total=0.0364  lr=9.64e-05  (119s)
+    VALID  sinkhorn=0.0233 emd=0.0115 count=0.0370 total=0.0386
+    E161 B200/718 sinkhorn=0.0224 emd=0.0102 count=0.0125 total=0.0339
+    E161 B400/718 sinkhorn=0.0223 emd=0.0107 count=0.0107 total=0.0341
+    E161 B600/718 sinkhorn=0.0228 emd=0.0112 count=0.0335 total=0.0373
+  epoch  161/200  sinkhorn=0.0227 emd=0.0110 count=0.0194 total=0.0356  lr=9.18e-05  (119s)
+    E162 B200/718 sinkhorn=0.0227 emd=0.0115 count=1.0110 total=0.1353
+    E162 B400/718 sinkhorn=0.0232 emd=0.0107 count=0.0161 total=0.0355
+    E162 B600/718 sinkhorn=0.0226 emd=0.0104 count=0.0171 total=0.0347
+  epoch  162/200  sinkhorn=0.0227 emd=0.0109 count=0.0294 total=0.0365  lr=8.74e-05  (119s)
+    E163 B200/718 sinkhorn=0.0225 emd=0.0107 count=0.0101 total=0.0342
+    E163 B400/718 sinkhorn=0.0226 emd=0.0110 count=0.0157 total=0.0352
+    E163 B600/718 sinkhorn=0.0225 emd=0.0116 count=0.0125 total=0.0354
+  epoch  163/200  sinkhorn=0.0226 emd=0.0109 count=0.0160 total=0.0351  lr=8.30e-05  (119s)
+    E164 B200/718 sinkhorn=0.0222 emd=0.0107 count=0.0080 total=0.0336
+    E164 B400/718 sinkhorn=0.0228 emd=0.0110 count=0.0060 total=0.0344
+    E164 B600/718 sinkhorn=0.0227 emd=0.0111 count=0.0090 total=0.0347
+  epoch  164/200  sinkhorn=0.0226 emd=0.0109 count=0.0143 total=0.0349  lr=7.88e-05  (119s)
+    E165 B200/718 sinkhorn=0.0222 emd=0.0107 count=0.0380 total=0.0368
+    E165 B400/718 sinkhorn=0.0223 emd=0.0108 count=0.0124 total=0.0343
+    E165 B600/718 sinkhorn=0.0225 emd=0.0109 count=0.0084 total=0.0343
+  epoch  165/200  sinkhorn=0.0225 emd=0.0108 count=0.0138 total=0.0347  lr=7.46e-05  (119s)
+    VALID  sinkhorn=0.0229 emd=0.0113 count=0.0102 total=0.0352  <- best so far
+    E166 B200/718 sinkhorn=0.0226 emd=0.0106 count=0.0109 total=0.0342
+    E166 B400/718 sinkhorn=0.0223 emd=0.0107 count=0.0241 total=0.0355
+    E166 B600/718 sinkhorn=0.0224 emd=0.0108 count=0.0187 total=0.0351
+  epoch  166/200  sinkhorn=0.0225 emd=0.0108 count=0.0131 total=0.0346  lr=7.06e-05  (122s)
+    E167 B200/718 sinkhorn=0.0225 emd=0.0104 count=0.0025 total=0.0332
+    E167 B400/718 sinkhorn=0.0229 emd=0.0104 count=0.0035 total=0.0337
+    E167 B600/718 sinkhorn=0.0224 emd=0.0105 count=0.0068 total=0.0336
+  epoch  167/200  sinkhorn=0.0224 emd=0.0108 count=0.0125 total=0.0344  lr=6.66e-05  (119s)
+    E168 B200/718 sinkhorn=0.0216 emd=0.0106 count=0.0113 total=0.0333
+    E168 B400/718 sinkhorn=0.0221 emd=0.0109 count=0.0349 total=0.0364
+    E168 B600/718 sinkhorn=0.0227 emd=0.0111 count=0.0153 total=0.0353
+  epoch  168/200  sinkhorn=0.0224 emd=0.0107 count=0.0116 total=0.0342  lr=6.28e-05  (119s)
+    E169 B200/718 sinkhorn=0.0222 emd=0.0111 count=0.0369 total=0.0369
+    E169 B400/718 sinkhorn=0.0220 emd=0.0109 count=0.0077 total=0.0336
+    E169 B600/718 sinkhorn=0.0228 emd=0.0113 count=0.0064 total=0.0347
+  epoch  169/200  sinkhorn=0.0223 emd=0.0107 count=0.0109 total=0.0341  lr=5.91e-05  (119s)
+    E170 B200/718 sinkhorn=0.0219 emd=0.0105 count=0.0065 total=0.0330
+    E170 B400/718 sinkhorn=0.0225 emd=0.0104 count=0.0070 total=0.0335
+    E170 B600/718 sinkhorn=0.0226 emd=0.0105 count=0.0064 total=0.0338
+  epoch  170/200  sinkhorn=0.0223 emd=0.0107 count=0.0095 total=0.0339  lr=5.54e-05  (119s)
+    VALID  sinkhorn=0.0226 emd=0.0110 count=0.0083 total=0.0344  <- best so far
+    E171 B200/718 sinkhorn=0.0224 emd=0.0110 count=0.0052 total=0.0340
+    E171 B400/718 sinkhorn=0.0225 emd=0.0108 count=0.0095 total=0.0342
+    E171 B600/718 sinkhorn=0.0219 emd=0.0104 count=0.0046 total=0.0328
+  epoch  171/200  sinkhorn=0.0223 emd=0.0107 count=0.0091 total=0.0338  lr=5.19e-05  (119s)
+    E172 B200/718 sinkhorn=0.0221 emd=0.0108 count=0.0072 total=0.0336
+    E172 B400/718 sinkhorn=0.0221 emd=0.0108 count=0.0090 total=0.0338
+    E172 B600/718 sinkhorn=0.0216 emd=0.0103 count=0.0087 total=0.0328
+  epoch  172/200  sinkhorn=0.0222 emd=0.0106 count=0.0085 total=0.0337  lr=4.85e-05  (119s)
+    E173 B200/718 sinkhorn=0.0226 emd=0.0106 count=0.0141 total=0.0345
+    E173 B400/718 sinkhorn=0.0220 emd=0.0107 count=0.0068 total=0.0334
+    E173 B600/718 sinkhorn=0.0219 emd=0.0103 count=0.0061 total=0.0328
+  epoch  173/200  sinkhorn=0.0222 emd=0.0106 count=0.0083 total=0.0336  lr=4.53e-05  (119s)
+    E174 B200/718 sinkhorn=0.0219 emd=0.0109 count=0.0136 total=0.0342
+    E174 B400/718 sinkhorn=0.0219 emd=0.0105 count=0.0065 total=0.0330
+    E174 B600/718 sinkhorn=0.0222 emd=0.0105 count=0.0043 total=0.0332
+  epoch  174/200  sinkhorn=0.0222 emd=0.0106 count=0.0078 total=0.0335  lr=4.21e-05  (119s)
+    E175 B200/718 sinkhorn=0.0224 emd=0.0108 count=0.0093 total=0.0341
+    E175 B400/718 sinkhorn=0.0222 emd=0.0104 count=0.0051 total=0.0332
+    E175 B600/718 sinkhorn=0.0221 emd=0.0108 count=0.0064 total=0.0336
+  epoch  175/200  sinkhorn=0.0221 emd=0.0106 count=0.0076 total=0.0335  lr=3.90e-05  (119s)
+    VALID  sinkhorn=0.0224 emd=0.0109 count=0.0072 total=0.0340  <- best so far
+    E176 B200/718 sinkhorn=0.0228 emd=0.0112 count=0.0084 total=0.0349
+    E176 B400/718 sinkhorn=0.0219 emd=0.0106 count=0.0070 total=0.0333
+    E176 B600/718 sinkhorn=0.0217 emd=0.0109 count=0.0049 total=0.0331
+  epoch  176/200  sinkhorn=0.0221 emd=0.0105 count=0.0076 total=0.0334  lr=3.61e-05  (119s)
+    E177 B200/718 sinkhorn=0.0218 emd=0.0108 count=0.0105 total=0.0337
+    E177 B400/718 sinkhorn=0.0222 emd=0.0107 count=0.0082 total=0.0337
+    E177 B600/718 sinkhorn=0.0219 emd=0.0108 count=0.0062 total=0.0333
+  epoch  177/200  sinkhorn=0.0221 emd=0.0105 count=0.0072 total=0.0333  lr=3.32e-05  (119s)
+    E178 B200/718 sinkhorn=0.0220 emd=0.0109 count=0.0062 total=0.0335
+    E178 B400/718 sinkhorn=0.0222 emd=0.0107 count=0.0115 total=0.0340
+    E178 B600/718 sinkhorn=0.0219 emd=0.0110 count=0.0122 total=0.0341
+  epoch  178/200  sinkhorn=0.0220 emd=0.0105 count=0.0067 total=0.0332  lr=3.05e-05  (119s)
+    E179 B200/718 sinkhorn=0.0221 emd=0.0107 count=0.0062 total=0.0334
+    E179 B400/718 sinkhorn=0.0220 emd=0.0109 count=0.0136 total=0.0343
+    E179 B600/718 sinkhorn=0.0221 emd=0.0112 count=0.0040 total=0.0337
+  epoch  179/200  sinkhorn=0.0220 emd=0.0105 count=0.0066 total=0.0332  lr=2.79e-05  (119s)
+    E180 B200/718 sinkhorn=0.0218 emd=0.0102 count=0.0044 total=0.0324
+    E180 B400/718 sinkhorn=0.0216 emd=0.0103 count=0.0068 total=0.0326
+    E180 B600/718 sinkhorn=0.0217 emd=0.0104 count=0.0077 total=0.0328
+  epoch  180/200  sinkhorn=0.0220 emd=0.0105 count=0.0062 total=0.0331  lr=2.54e-05  (119s)
+    VALID  sinkhorn=0.0222 emd=0.0108 count=0.0071 total=0.0337  <- best so far
+    E181 B200/718 sinkhorn=0.0223 emd=0.0110 count=0.0054 total=0.0339
+    E181 B400/718 sinkhorn=0.0220 emd=0.0102 count=0.0094 total=0.0332
+    E181 B600/718 sinkhorn=0.0218 emd=0.0102 count=0.0062 total=0.0327
+  epoch  181/200  sinkhorn=0.0220 emd=0.0105 count=0.0063 total=0.0331  lr=2.31e-05  (119s)
+    E182 B200/718 sinkhorn=0.0218 emd=0.0103 count=0.0059 total=0.0328
+    E182 B400/718 sinkhorn=0.0219 emd=0.0108 count=0.0084 total=0.0336
+    E182 B600/718 sinkhorn=0.0217 emd=0.0103 count=0.0042 total=0.0324
+  epoch  182/200  sinkhorn=0.0220 emd=0.0105 count=0.0061 total=0.0330  lr=2.08e-05  (119s)
+    E183 B200/718 sinkhorn=0.0222 emd=0.0109 count=0.0067 total=0.0338
+    E183 B400/718 sinkhorn=0.0217 emd=0.0099 count=0.0067 total=0.0323
+    E183 B600/718 sinkhorn=0.0223 emd=0.0098 count=0.0057 total=0.0327
+  epoch  183/200  sinkhorn=0.0219 emd=0.0104 count=0.0058 total=0.0330  lr=1.87e-05  (119s)
+    E184 B200/718 sinkhorn=0.0220 emd=0.0102 count=0.0079 total=0.0330
+    E184 B400/718 sinkhorn=0.0224 emd=0.0106 count=0.0094 total=0.0339
+    E184 B600/718 sinkhorn=0.0218 emd=0.0100 count=0.0032 total=0.0321
+  epoch  184/200  sinkhorn=0.0219 emd=0.0104 count=0.0058 total=0.0329  lr=1.67e-05  (119s)
+    E185 B200/718 sinkhorn=0.0216 emd=0.0105 count=0.0057 total=0.0326
+    E185 B400/718 sinkhorn=0.0226 emd=0.0102 count=0.0051 total=0.0333
+    E185 B600/718 sinkhorn=0.0216 emd=0.0103 count=0.0071 total=0.0327
+  epoch  185/200  sinkhorn=0.0219 emd=0.0104 count=0.0056 total=0.0329  lr=1.48e-05  (119s)
+    VALID  sinkhorn=0.0222 emd=0.0108 count=0.0063 total=0.0337  <- best so far
+    E186 B200/718 sinkhorn=0.0212 emd=0.0103 count=0.0056 total=0.0320
+    E186 B400/718 sinkhorn=0.0217 emd=0.0100 count=0.0052 total=0.0323
+    E186 B600/718 sinkhorn=0.0218 emd=0.0107 count=0.0071 total=0.0333
+  epoch  186/200  sinkhorn=0.0219 emd=0.0104 count=0.0056 total=0.0329  lr=1.30e-05  (120s)
+    E187 B200/718 sinkhorn=0.0216 emd=0.0105 count=0.0066 total=0.0328
+    E187 B400/718 sinkhorn=0.0218 emd=0.0104 count=0.0060 total=0.0328
+    E187 B600/718 sinkhorn=0.0223 emd=0.0104 count=0.0076 total=0.0335
+  epoch  187/200  sinkhorn=0.0219 emd=0.0104 count=0.0054 total=0.0328  lr=1.14e-05  (120s)
+    E188 B200/718 sinkhorn=0.0215 emd=0.0105 count=0.0059 total=0.0326
+    E188 B400/718 sinkhorn=0.0220 emd=0.0102 count=0.0038 total=0.0326
+    E188 B600/718 sinkhorn=0.0215 emd=0.0099 count=0.0106 total=0.0324
+  epoch  188/200  sinkhorn=0.0219 emd=0.0104 count=0.0053 total=0.0328  lr=9.85e-06  (119s)
+    E189 B200/718 sinkhorn=0.0223 emd=0.0101 count=0.0072 total=0.0332
+    E189 B400/718 sinkhorn=0.0220 emd=0.0111 count=0.0050 total=0.0336
+    E189 B600/718 sinkhorn=0.0217 emd=0.0105 count=0.0025 total=0.0325
+  epoch  189/200  sinkhorn=0.0219 emd=0.0104 count=0.0053 total=0.0328  lr=8.44e-06  (120s)
+    E190 B200/718 sinkhorn=0.0219 emd=0.0105 count=0.0039 total=0.0328
+    E190 B400/718 sinkhorn=0.0223 emd=0.0111 count=0.0059 total=0.0340
+    E190 B600/718 sinkhorn=0.0222 emd=0.0104 count=0.0079 total=0.0334
+  epoch  190/200  sinkhorn=0.0219 emd=0.0104 count=0.0052 total=0.0328  lr=7.15e-06  (119s)
+    VALID  sinkhorn=0.0221 emd=0.0107 count=0.0061 total=0.0334  <- best so far
+    E191 B200/718 sinkhorn=0.0221 emd=0.0105 count=0.0045 total=0.0330
+    E191 B400/718 sinkhorn=0.0221 emd=0.0107 count=0.0045 total=0.0333
+    E191 B600/718 sinkhorn=0.0217 emd=0.0106 count=0.0062 total=0.0329
+  epoch  191/200  sinkhorn=0.0218 emd=0.0104 count=0.0051 total=0.0327  lr=5.98e-06  (122s)
+    E192 B200/718 sinkhorn=0.0218 emd=0.0101 count=0.0029 total=0.0322
+    E192 B400/718 sinkhorn=0.0218 emd=0.0099 count=0.0048 total=0.0322
+    E192 B600/718 sinkhorn=0.0226 emd=0.0110 count=0.0040 total=0.0341
+  epoch  192/200  sinkhorn=0.0218 emd=0.0104 count=0.0051 total=0.0327  lr=4.94e-06  (119s)
+    E193 B200/718 sinkhorn=0.0217 emd=0.0104 count=0.0028 total=0.0324
+    E193 B400/718 sinkhorn=0.0217 emd=0.0106 count=0.0064 total=0.0330
+    E193 B600/718 sinkhorn=0.0218 emd=0.0105 count=0.0039 total=0.0327
+  epoch  193/200  sinkhorn=0.0218 emd=0.0104 count=0.0050 total=0.0327  lr=4.02e-06  (119s)
+    E194 B200/718 sinkhorn=0.0219 emd=0.0105 count=0.0062 total=0.0330
+    E194 B400/718 sinkhorn=0.0226 emd=0.0108 count=0.0052 total=0.0340
+    E194 B600/718 sinkhorn=0.0219 emd=0.0104 count=0.0042 total=0.0327
+  epoch  194/200  sinkhorn=0.0218 emd=0.0104 count=0.0050 total=0.0327  lr=3.22e-06  (119s)
+    E195 B200/718 sinkhorn=0.0218 emd=0.0101 count=0.0025 total=0.0322
+    E195 B400/718 sinkhorn=0.0217 emd=0.0103 count=0.0056 total=0.0326
+    E195 B600/718 sinkhorn=0.0217 emd=0.0102 count=0.0050 total=0.0324
+  epoch  195/200  sinkhorn=0.0218 emd=0.0104 count=0.0050 total=0.0327  lr=2.54e-06  (119s)
+    VALID  sinkhorn=0.0221 emd=0.0106 count=0.0059 total=0.0333  <- best so far
+    E196 B200/718 sinkhorn=0.0220 emd=0.0104 count=0.0025 total=0.0327
+    E196 B400/718 sinkhorn=0.0219 emd=0.0105 count=0.0058 total=0.0330
+    E196 B600/718 sinkhorn=0.0218 emd=0.0106 count=0.0060 total=0.0329
+  epoch  196/200  sinkhorn=0.0218 emd=0.0104 count=0.0049 total=0.0327  lr=1.99e-06  (119s)
+    E197 B200/718 sinkhorn=0.0222 emd=0.0109 count=0.0074 total=0.0338
+    E197 B400/718 sinkhorn=0.0221 emd=0.0109 count=0.0025 total=0.0332
+    E197 B600/718 sinkhorn=0.0215 emd=0.0111 count=0.0062 total=0.0332
+  epoch  197/200  sinkhorn=0.0218 emd=0.0104 count=0.0049 total=0.0326  lr=1.55e-06  (119s)
+    E198 B200/718 sinkhorn=0.0218 emd=0.0107 count=0.0054 total=0.0331
+    E198 B400/718 sinkhorn=0.0215 emd=0.0100 count=0.0033 total=0.0318
+    E198 B600/718 sinkhorn=0.0219 emd=0.0107 count=0.0051 total=0.0331
+  epoch  198/200  sinkhorn=0.0218 emd=0.0104 count=0.0049 total=0.0327  lr=1.25e-06  (119s)
+    E199 B200/718 sinkhorn=0.0221 emd=0.0106 count=0.0062 total=0.0333
+    E199 B400/718 sinkhorn=0.0212 emd=0.0099 count=0.0070 total=0.0318
+    E199 B600/718 sinkhorn=0.0222 emd=0.0104 count=0.0027 total=0.0329
+  epoch  199/200  sinkhorn=0.0218 emd=0.0104 count=0.0049 total=0.0326  lr=1.06e-06  (119s)
+    E200 B200/718 sinkhorn=0.0217 emd=0.0100 count=0.0049 total=0.0322
+    E200 B400/718 sinkhorn=0.0215 emd=0.0101 count=0.0040 total=0.0320
+    E200 B600/718 sinkhorn=0.0218 emd=0.0103 count=0.0051 total=0.0326
+  epoch  200/200  sinkhorn=0.0218 emd=0.0103 count=0.0049 total=0.0326  lr=1.00e-06  (119s)
+    VALID  sinkhorn=0.0221 emd=0.0106 count=0.0058 total=0.0333  <- best so far
+
+  evaluating the best validation epoch (200) on the TEST split
+  count head: exact 99.9%  mean |dN| 0.00
+  training time: 6.68 h (120 s/epoch over 200 timed epochs) + validation 4.0 min
+      observables: real jets ...
+      observables: reconstructions ...
+      energy-flow EMD ...
+  suite: ecf2_b1=0.0946  eec_wide=0.0822  girth=0.0643  mass=0.1026  ecf2_b2=0.0875  ptD=0.0626  emd=0.0105

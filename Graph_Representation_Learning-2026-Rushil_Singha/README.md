@@ -33,6 +33,10 @@ experiment_latent512_attention_v16/   Experiment A: attention vs fixed pooling (
 experiment_latent64_reach_v17/        Experiment B: does reach help? (latent 64, 3 seeds)
     code/                             v17 training, metric suite, aggregation, diagnostics
     results/                          9 runs (3 encoders x 3 seeds) + summary figures
+
+experiment_graph_layers_latent128_v18/  Experiment C: which graph layer? (latent 128, graph decoder)
+    code/                             training script + SLURM array
+    results/runs/                     ChebNet K=2, GraphSAGE, DeepSets
 ```
 
 Each run folder contains the same outputs: `metrics.json` / `suite.json`
@@ -133,6 +137,26 @@ same size) are equal within seed noise.
 
 ---
 
+## Experiment C — which graph layer? (latent 128, v18)
+
+**Question.** With a stronger autoencoder (latent 128, mean pool + log N, a
+decoder with a count head and graph layers, Sinkhorn + energy-flow EMD loss),
+does the graph layer matter?
+
+| model | reach | params | pairwise error | per-particle error | ptD (control) | EMD | exact N |
+|---|---|---|---|---|---|---|---|
+| ChebNet K=2 | 2 hops | 1,518,813 | **0.087** | **0.082** | **0.057** | 0.0111 | 96.4% |
+| GraphSAGE | 2 hops | 1,518,813 | 0.089 | 0.085 | 0.063 | 0.0113 | **99.9%** |
+| DeepSets | 0 hops | 1,256,669 | 0.088 | 0.085 | 0.063 | **0.0105** | **99.9%** |
+
+One seed each. **Takeaway: at 2 layers the three are tied on reconstruction**
+— DeepSets, with no graph, matches both graph models on the pairwise
+quantities. ChebNet's count head is less accurate (96.4% exact N); this only
+matters for generation. Details in
+`experiment_graph_layers_latent128_v18/README.md`.
+
+---
+
 ## The generative pipeline (v15.2)
 
 The full generator: autoencoder + a **conditional flow-matching model on the
@@ -185,6 +209,14 @@ sbatch v16_ablation/slurm_global.sh    # Set2Set arm
 
 Each script trains GraphSAGE, ChebNet K=4 and ChebNet K=8 in turn; only the
 GraphSAGE runs are reported here. See `code/README.md`.
+
+**Experiment C (v18)** — from `experiment_graph_layers_latent128_v18/code/`
+(it reuses `experiment_latent64_reach_v17/code` in place, no copy needed):
+
+```bash
+sbatch --array=0 slurm_v18.sh     # first job builds the graph caches
+sbatch --array=1-2 slurm_v18.sh
+```
 
 **Generative pipeline (v15.2)** — edit the two paths at the top of
 `v_15_2.py`, then `python v_15_2.py`.
