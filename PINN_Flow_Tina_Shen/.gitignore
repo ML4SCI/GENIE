@@ -1,0 +1,20 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+.venv/
+
+# CaloChallenge data -- multi-GB, download from Zenodo, never commit.
+# ds2: https://zenodo.org/records/6366271
+*.hdf5
+*.h5
+*.pt
+data/
+
+# CaloChallenge code fetched on demand (no licence, so never committed)
+calochallenge_code/
+# cached feature extractions (hundreds of MB)
+calochallenge_cache/
+*.npz
+# saved per-repeat floor numbers (regenerable)
+floor_results/

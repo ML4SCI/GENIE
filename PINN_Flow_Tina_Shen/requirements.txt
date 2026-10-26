@@ -1,0 +1,10 @@
+torch
+numpy
+scipy
+scikit-learn
+matplotlib
+pytest
+# jetnet   # optional: enables Tier-2 FPD/KPD. `pip install jetnet` works on Colab;
+#          # for the local no-compiler recipe (Python 3.12) see "Note: FPD / KPD
+#          # need jetnet" in README.md. Without it, FPD/KPD return None and
+#          # everything else runs.
