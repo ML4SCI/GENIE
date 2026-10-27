@@ -1,4 +1,3 @@
-import torch
 import scipy.sparse as sp
 import scipy.sparse.linalg as spl
 import numpy as np
@@ -8,10 +7,21 @@ def normalize(L, half_interval=False):
     assert (sp.isspmatrix(L))
     M = L.shape[0]
     assert (M == L.shape[1])
-    topeig = spl.eigsh(L, k=1, which="LM", return_eigenvectors=False)[0]
-    # print("Topeig = %f" %(topeig))
+    # Laplacians can be integer-valued; rescaling needs floating-point data.
+    ret = L.astype(float, copy=True)
+    if M == 0 or ret.nnz == 0 or not np.any(ret.data):
+        return ret
 
-    ret = L.copy()
+    # ARPACK's eigsh requires k < M for sparse matrices.
+    topeig = float(ret[0, 0]) if M == 1 else float(
+        spl.eigsh(ret, k=1, which="LM", return_eigenvectors=False)[0]
+    )
+    if not np.isfinite(topeig):
+        raise ValueError("Cannot normalize a Laplacian with a non-finite eigenvalue")
+    if abs(topeig) <= np.finfo(float).eps:
+        # A numerically zero Laplacian cannot be scaled by its eigenvalue.
+        return ret * 0.0
+
     if half_interval:
         ret *= 1.0 / topeig
     else:
@@ -22,6 +32,8 @@ def normalize(L, half_interval=False):
 
 
 def assemble(K, L, x):
+    import torch
+
     (B, C_in, M) = x.shape
     assert (L.shape[0] == M)
     assert (L.shape[0] == L.shape[1])
