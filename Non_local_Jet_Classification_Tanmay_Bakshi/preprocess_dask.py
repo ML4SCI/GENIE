@@ -124,7 +124,8 @@ def _transform(df, start=0, stop=None):
     particles_by_jet = ak.unflatten(p4, n_particles)
     jet_p4 = ak.sum(particles_by_jet, axis=1)
 
-    v['jet_pt'] = p4.pt
+    v['jet_pt'] = jet_p4.pt
+    v['part_pt'] = p4.pt
     v['part_eta'] = p4.eta
     v['part_phi'] = p4.phi
     v['jet_eta'] = jet_p4.eta

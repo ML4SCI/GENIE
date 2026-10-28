@@ -29,6 +29,21 @@ def _two_jet_dataframe():
     return pd.DataFrame(fields)
 
 
+def _dataframe_from_jets(jets):
+    """Build zero-padded constituent data for arbitrary jet multiplicities."""
+    fields = {}
+    for component_index, component in enumerate(("PX", "PY", "PZ", "E")):
+        for particle_index in range(200):
+            fields[f"{component}_{particle_index}"] = [
+                float(jet[particle_index][component_index])
+                if particle_index < len(jet) else 0.0
+                for jet in jets
+            ]
+    fields["is_signal_new"] = [index % 2 for index in range(len(jets))]
+    fields["ttv"] = [0] * len(jets)
+    return pd.DataFrame(fields)
+
+
 class TestJetPreprocessing(unittest.TestCase):
     def setUp(self):
         self.frame = _two_jet_dataframe()
@@ -59,6 +74,34 @@ class TestJetPreprocessing(unittest.TestCase):
         eta_sign = np.where(np.sign(jet_eta) == 0, 1, np.sign(jet_eta))
         expected_deta = (particle_eta - np.repeat(jet_eta, [2, 1])) * np.repeat(eta_sign, [2, 1])
         np.testing.assert_allclose(ak.to_numpy(result["part_deta"]), expected_deta)
+
+    def test_jet_pt_single_jet(self):
+        frame = _dataframe_from_jets([[(2.0, 0.0, 1.0, 4.0), (0.0, 1.0, -0.25, 3.0)]])
+        result = _transform(frame)
+        self.assertEqual(len(result["jet_pt"]), 1)
+        np.testing.assert_allclose(ak.to_numpy(result["jet_pt"]), [np.sqrt(5.0)])
+        np.testing.assert_allclose(ak.to_numpy(result["part_pt"]), [2.0, 1.0])
+
+    def test_jet_pt_unequal_multiplicity_multi_jet(self):
+        jets = [
+            [(3.0, 0.0, 0.0, 5.0), (-1.0, 0.0, 0.0, 3.0), (0.0, 2.0, 0.0, 4.0)],
+            [(0.0, 3.0, 0.0, 4.0)],
+            [(1.0, 0.0, 0.0, 3.0), (0.0, -2.0, 0.0, 4.0)],
+        ]
+        result = _transform(_dataframe_from_jets(jets))
+        self.assertEqual(len(result["jet_pt"]), 3)
+        self.assertEqual(len(result["part_pt"]), 6)
+        self.assertEqual(result["jet_nparticles"].tolist(), [3, 1, 2])
+        expected_jet_pt = [np.sqrt(8.0), 3.0, np.sqrt(5.0)]
+        np.testing.assert_allclose(ak.to_numpy(result["jet_pt"]), expected_jet_pt)
+        np.testing.assert_allclose(
+            ak.to_numpy(result["part_pt"]), [3.0, 1.0, 2.0, 3.0, 1.0, 2.0]
+        )
+
+    def test_extract_coords_jet_pt_stays_constituent_level(self):
+        coords = _extract_coords(self.frame)
+        self.assertEqual(len(coords["jet_pt"]), 3)
+        np.testing.assert_allclose(ak.to_numpy(coords["jet_pt"]), [2.0, 1.0, 2.0])
 
 
 if __name__ == "__main__":
