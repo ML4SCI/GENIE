@@ -1,6 +1,0 @@
-parse_args():
-Namespace(input_file='/home/sjose/PINNDE/pinnde_calo/two_stage_ds2.hdf5', reference_file='/home/sjose/PINNDE/dataset_2_2.hdf5', mode='hist', dataset='2', output_dir='/home/sjose/PINNDE/evaluation_two_stage', cls_resnet_layers=18, cls_n_layer=2, cls_n_hidden=2048, cls_dropout_probability=0.0, cls_batch_size=1000, cls_n_epochs=50, cls_lr=0.0002, prdc_k=5, prdc_ext=False, no_cuda=False, which_cuda=0, save_mem=True)
-parse_args():
-Namespace(input_file='/home/sjose/PINNDE/pinnde_calo/two_stage_ds2_100k.hdf5', reference_file='/home/sjose/PINNDE/dataset_2_2.hdf5', mode='hist', dataset='2', output_dir='/home/sjose/PINNDE/evaluation_two_stage', cls_resnet_layers=18, cls_n_layer=2, cls_n_hidden=2048, cls_dropout_probability=0.0, cls_batch_size=1000, cls_n_epochs=50, cls_lr=0.0002, prdc_k=5, prdc_ext=False, no_cuda=False, which_cuda=0, save_mem=True)
-parse_args():
-Namespace(input_file='/home/sjose/PINNDE/pinnde_calo/two_stage_ds2_100k.hdf5', reference_file='/home/sjose/PINNDE/dataset_2_2.hdf5', mode='hist', dataset='2', output_dir='/home/sjose/PINNDE/evaluation_two_stage', cls_resnet_layers=18, cls_n_layer=2, cls_n_hidden=2048, cls_dropout_probability=0.0, cls_batch_size=1000, cls_n_epochs=50, cls_lr=0.0002, prdc_k=5, prdc_ext=False, no_cuda=False, which_cuda=0, save_mem=True)
