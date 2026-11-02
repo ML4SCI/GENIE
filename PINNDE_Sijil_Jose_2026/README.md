@@ -129,7 +129,7 @@ python results/make_tables.py
 
 ```bash
 pip install -e .                       # or: export PYTHONPATH=src
-pytest                                 # 21 checks, seconds, no GPU or data needed
+pytest                                 # seconds, no GPU or data file needed
 ```
 
 Get Dataset 2 from the challenge's Zenodo record — `dataset_2_1.hdf5` to train on,
@@ -160,6 +160,33 @@ python models/3_two_stage/train.py --data data/Dataset2.pt \
 
 ### Description of Directories and files:
 
+```
+src/calods2/            the library — shared by every model, loads nothing on import
+├── data/               dataset.py  calo_dataset.py  layerdata.py  export.py
+├── models/             velocity_net.py  flow_de.py  autoencoder.py  ae_losses.py
+├── metrics/            quick_metrics.py  sweep.py
+└── training/           ae_trainer.py
+
+models/                 one directory per approach, each with its own README
+├── 0_original_flowmap/   the formulation that failed, kept for the record
+├── 1_latent_diffusion/   at its reconstruction ceiling
+├── 2_direct_pinn/        6480-voxel reverse-time ODE
+└── 3_two_stage/          energy ratios + per-layer shape        <- best model
+
+scripts/                tooling: figures, diagnostics, visualization, cluster jobs
+sweeps/                 SLURM array jobs for the latent-dimension sweep
+results/                committed evaluation text + make_tables.py
+docs/                   the documentation set + figures/ + archive/
+notebooks/              exploratory plots of the raw dataset
+tests/                  pytest, no data file required
+CaloChallenge/          only the upstream clone (gitignored)
+```
+
+The three generative models share one ```VelocityNet``` and one Heun sampler. What
+differs between them is the **choice of coordinates**, not the machinery — which is why
+the library is factored this way, and why each model directory holds only a thin
+entrypoint.
+
 - ```src/calods2``` : the installable library. Nothing here loads data at import time.
   - ```data/dataset.py``` : the fraction/threshold representation used by the direct
     PINN path, and the toy-distribution samplers carried over from GSoC 2025.
@@ -181,22 +208,53 @@ python models/3_two_stage/train.py --data data/Dataset2.pt \
   - ```training/ae_trainer.py``` : the autoencoder training loop.
 
 - ```models``` : one directory per approach, each with its own README stating what it
-  scored and why it was superseded.
+  scored and why it was superseded, and a ```configs/``` recording the hyperparameters
+  each reported run was trained with.
   - ```0_original_flowmap/``` : the formulation inherited from GSoC 2025, kept for the
     record along with the measurements that ruled it out at 6,480 dimensions.
+    ```train_calo_pinnde.py```, ```networks_calo.py```, ```sample_and_export.py```,
+    ```generate_anchor_trajectories.py```.
   - ```1_latent_diffusion/``` : train the autoencoder, then diffuse in its latent space.
-    Stopped at its reconstruction ceiling.
+    Stopped at its reconstruction ceiling. ```train_autoencoder.py``` then
+    ```train_latent.py```, with ```generate_caloeval_hdf5.py``` to write a reconstruction
+    in CaloChallenge HDF5 format.
   - ```2_direct_pinn/``` : the reverse-time ODE solved directly in all 6,480 voxels, in a
-    flat-MLP and a convolutional U-Net variant.
-  - ```3_two_stage/``` : energy ratios and per-layer shape generated separately. **Best model.**
+    flat-MLP and a convolutional U-Net variant. ```train.py```, ```sample.py```.
+  - ```3_two_stage/``` : energy ratios and per-layer shape generated separately.
+    **Best model.** ```train.py``` trains both stages and can export in one invocation;
+    ```teacher_forced.py``` is the ```--ceiling``` diagnostic that separates stage A's
+    error from stage B's by sampling stage B on *true* energy ratios.
 
+- ```scripts``` : tooling that is not part of the library and not a model entrypoint.
+  - ```build_comparison_plots.py``` : reads the official results table and this project's
+    evaluation output and writes every figure in ```docs/figures/```. The comparison
+    numbers are parsed live, never hand-copied from the paper.
+  - ```compare_to_reference.py``` : checks a generated file against the evaluation's own
+    reference — units, thresholds, empty-voxel structure. The script that ruled out a
+    units artifact as the cause of AUC ≈ 1.
+  - ```viz/``` : ```visualize_calo_ae.py``` (reconstruction-quality plots),
+    ```visualize_correlations.py```, ```visualize_latent_structure.py``` (PCA / t-SNE /
+    energy-bin separation of the latent space).
+  - ```diagnostics/``` : ```ae_baselines.py``` (the autoencoder against zeros, the mean
+    shower and PCA-k, with a verdict), ```ae_sweep.py```, ```diagnose_training_plateau.py```,
+    ```quick_residual_check.py```, ```subsample_hdf5.py```.
+  - ```cluster/``` : ```run_full_evaluation.py```, the driver that regenerates a
+    reconstruction, runs all three classifier modes plus FPD/KPD/PRDC and rebuilds the
+    comparison plots, along with its SLURM wrappers and a self-healing training watchdog.
+
+- ```sweeps``` : the SLURM array-job orchestration for the latent-dimension sweep and its
+  harvested results. **Read its README before using any number from it** — the sweep ran
+  on three diverged copies of the training script and is not a controlled comparison.
 - ```results``` : the committed text output of every official evaluation, one directory
   per run with a ```config.yaml``` beside it, plus ```make_tables.py``` which regenerates
   every table in every document from those files.
-- ```docs``` : the documentation set, listed below, plus ```figures/``` and the methods PDF.
+- ```docs``` : the documentation set, listed below, plus ```figures/```, the methods PDF
+  and ```archive/```, which keeps superseded documents with their paths marked stale.
+- ```notebooks``` : ```PlotDataset2.ipynb```, exploratory plots of the raw dataset.
 - ```tests``` : pytest suite. Runs in seconds and needs no data file.
-- ```CaloChallenge``` : the remaining tooling and ```Hyper_paramater_tuning/```, the SLURM
-  sweep orchestration and its harvested results.
+- ```CaloChallenge``` : **nothing but a clone of the official challenge repository**,
+  gitignored because it carries its own ```.git```. Clone it as a setup step; see that
+  directory's README.
 - ```README.md``` : this documentation file.
 
 ### Documentation
