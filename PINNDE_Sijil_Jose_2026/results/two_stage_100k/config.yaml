@@ -1,0 +1,43 @@
+# Two-stage factorized PINN sampler -- the best model in this repository.
+model: two_stage
+status: evaluated
+generated_file: two_stage_ds2_100k.hdf5        # 100k showers, not committed
+code:
+  entrypoint: pinnde_calo/train_two_stage.py
+  representation: layer            # pinnde_calo/layerdata.py, logit alpha=1e-6
+  git_commit: unknown              # predates version control
+stage_a_energy:
+  variable: u                      # 45 numbers: total + 44 stick-breaking ratios
+  trunk: film
+  hidden: 512
+  hit_head: false
+  batch: 256
+  steps: 20000
+  parameters: 993325
+stage_b_shape:
+  variable: w                      # 6480 per-layer-normalized voxel shares
+  trunk: conv                      # 3D U-Net over (z, phi, r), circular phi
+  hidden: 1024
+  hit_head: true
+  cond_extra: 45                   # conditioned on all of stage A's output
+  batch: 64
+  steps: 100000
+  parameters: 2474242
+optimizer: {name: adam, lr: 2.0e-4, schedule: cosine_to_zero, warmup: 500,
+            grad_clip: 1.0, ema: 0.999}
+sigma0: 1.0e-2
+sampling: {n_steps: 50, scheme: heun, time_grid: quadratic,
+           gate: topk, readout: raw, n_sample: 100000}
+representation_constants:                   # measured over the full 100k
+  f_scale: 2.9756
+  w_mean: -11.6914
+  w_std: 3.8700
+  empty_value: -0.5489
+notes: |
+  classifier_cls-low_2.txt and classifier_hist_2.txt each contain TWO runs;
+  the first used the 20k file two_stage_ds2.hdf5 and crashed on
+  `assert len(data1) == len(data2)` -- evaluate.py hard-codes a 60k/20k/20k
+  split for dataset 2, so classifier modes require exactly 100k showers.
+  Only the 100k numbers are results.
+  Repeat measurements give the run-to-run scatter: cls-low 0.5800 / 0.5781,
+  cls-high 0.6953 / 0.7015.
