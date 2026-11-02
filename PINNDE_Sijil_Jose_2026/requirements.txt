@@ -1,0 +1,6 @@
+torch>=2.0
+numpy
+h5py
+matplotlib        # plots
+tqdm              # autoencoder training progress
+jetnet            # FPD/KPD in the official evaluation

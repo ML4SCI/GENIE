@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "calods2"
+version = "0.1.0"
+description = "Generative models for CaloChallenge Dataset 2: latent diffusion, a direct physics-informed reverse-time sampler, and a two-stage factorization"
+requires-python = ">=3.10"
+dependencies = ["torch>=2.0", "numpy", "h5py"]
+
+[project.optional-dependencies]
+plots = ["matplotlib"]
+autoencoder = ["tqdm"]
+evaluation = ["jetnet"]          # FPD/KPD, used by the official evaluate.py
+
+[tool.setuptools.packages.find]
+where = ["src"]
