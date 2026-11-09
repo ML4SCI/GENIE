@@ -44,6 +44,17 @@ def _dataframe_from_jets(jets):
     return pd.DataFrame(fields)
 
 
+def _massless(pt, eta, phi):
+    """Massless constituents as (px, py, pz, E) rows."""
+    pt, eta, phi = (np.asarray(values, dtype=float) for values in (pt, eta, phi))
+    momentum = np.stack([pt * np.cos(phi), pt * np.sin(phi), pt * np.sinh(eta)], axis=-1)
+    return np.column_stack([momentum, np.linalg.norm(momentum, axis=-1)])
+
+
+def _wrap(angle):
+    return np.arctan2(np.sin(angle), np.cos(angle))
+
+
 class TestJetPreprocessing(unittest.TestCase):
     def setUp(self):
         self.frame = _two_jet_dataframe()
@@ -102,6 +113,59 @@ class TestJetPreprocessing(unittest.TestCase):
         coords = _extract_coords(self.frame)
         self.assertEqual(len(coords["jet_pt"]), 3)
         np.testing.assert_allclose(ak.to_numpy(coords["jet_pt"]), [2.0, 1.0, 2.0])
+
+    def test_relative_angles_are_invariant_under_azimuthal_rotation(self):
+        rng = np.random.default_rng(7)
+        jets = [
+            _massless(rng.uniform(1.0, 50.0, n), eta + rng.uniform(-0.5, 0.5, n),
+                      phi + rng.uniform(-0.4, 0.4, n))
+            for n, eta, phi in ((4, 0.8, 0.3), (1, -1.2, 2.5), (6, 0.4, -2.9))
+        ]
+        angle = 1.234
+        rotation = np.eye(4)
+        rotation[:2, :2] = [[np.cos(angle), -np.sin(angle)], [np.sin(angle), np.cos(angle)]]
+        base = _transform(_dataframe_from_jets(jets))
+        rotated = _transform(_dataframe_from_jets([jet @ rotation.T for jet in jets]))
+
+        for field in ("part_deta", "part_dphi", "jet_pt", "jet_eta", "jet_mass"):
+            np.testing.assert_allclose(ak.to_numpy(rotated[field]), ak.to_numpy(base[field]),
+                                       atol=1e-9, err_msg=field)
+        jet_phi_shift = ak.to_numpy(rotated["jet_phi"]) - ak.to_numpy(base["jet_phi"])
+        np.testing.assert_allclose(_wrap(jet_phi_shift - angle), 0.0, atol=1e-12)
+
+    def test_dphi_wraps_across_the_phi_branch_cut(self):
+        # The constituents straddle phi = +-pi, so the jet axis sits next to the cut.
+        phi = np.array([np.pi - 0.05, -np.pi + 0.05, np.pi - 0.01])
+        jet = _massless([50.0, 40.0, 30.0], [0.1, -0.1, 0.0], phi)
+        result = _transform(_dataframe_from_jets([jet]))
+
+        jet_phi = np.arctan2(jet[:, 1].sum(), jet[:, 0].sum())
+        self.assertGreater(np.max(np.abs(phi - jet_phi)), np.pi)  # naive difference
+        dphi = ak.to_numpy(result["part_dphi"])
+        np.testing.assert_allclose(dphi, _wrap(phi - jet_phi), atol=1e-12)
+        self.assertTrue(np.all(np.abs(dphi) < 0.1))
+
+    def test_empty_jet_keeps_other_jets_aligned(self):
+        first = [(3.0, 0.0, 0.0, 5.0), (0.0, 2.0, 1.0, 4.0)]
+        last = [(1.0, 1.0, 0.5, 3.0)]
+        reference = _transform(_dataframe_from_jets([first, last]))
+        result = _transform(_dataframe_from_jets([first, [], last]))
+
+        self.assertEqual(result["jet_nparticles"].tolist(), [2, 0, 1])
+        self.assertEqual(len(result["part_dphi"]), 3)
+        np.testing.assert_array_equal(ak.to_numpy(result["jet_pt"])[1], 0.0)
+        np.testing.assert_array_equal(ak.to_numpy(result["jet_energy"])[1], 0.0)
+        for field in ("jet_pt", "jet_eta", "jet_phi", "jet_mass"):
+            np.testing.assert_allclose(np.delete(ak.to_numpy(result[field]), 1),
+                                       ak.to_numpy(reference[field]), err_msg=field)
+        for field in ("part_pt", "part_deta", "part_dphi"):
+            np.testing.assert_allclose(ak.to_numpy(result[field]),
+                                       ak.to_numpy(reference[field]), err_msg=field)
+
+        all_empty = _transform(_dataframe_from_jets([[], []]))
+        self.assertEqual(all_empty["jet_nparticles"].tolist(), [0, 0])
+        self.assertEqual(len(all_empty["part_dphi"]), 0)
+        np.testing.assert_array_equal(ak.to_numpy(all_empty["jet_pt"]), [0.0, 0.0])
 
 
 if __name__ == "__main__":
