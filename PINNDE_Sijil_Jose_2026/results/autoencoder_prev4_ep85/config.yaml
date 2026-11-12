@@ -1,0 +1,21 @@
+# Autoencoder RECONSTRUCTION of real showers -- not a generative sample.
+# Read as the ceiling for any latent generator on this decoder.
+model: autoencoder_reconstruction
+status: evaluated
+generated_file: ae_recon_ds2_full.hdf5
+checkpoint: best_calo_ae_cond_improved.pt
+code: {entrypoint: train_auto_encoder_improved.py}
+version: pre-v4                     # two_head absent from the checkpoint
+units_convention: old               # log1p(E_MeV / E_GeV); shower_units_gev absent
+epoch: 85
+latent: {channels: 8, length: 12, dim: 96}
+parameters: 3110882
+measured:
+  relative_error: 0.395             # 1024 val showers, old units convention
+  lit_fraction: 0.4198              # real 0.2450
+  sub_mev_hits: 941                 # real 113.6 -- an 8.3x excess
+notes: |
+  Originally reported as "AE v4" in this project's docs. It is not: the v4
+  model (two-head decoder, rel 0.367 at 255 epochs, lit fraction 0.256) lives
+  only on the workstation and has never been evaluated. The 42% lit fraction
+  is a no-hit-head signature, which is how the misattribution was caught.
