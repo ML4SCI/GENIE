@@ -25,7 +25,7 @@ Versions:
  - vector==1.4.0
 '''
 
-def _extract_coords(df, start=0, stop=-1):
+def _extract_coords(df, start=0, stop=None):
     from collections import OrderedDict
     v = OrderedDict()
 
@@ -88,7 +88,7 @@ def _p4_from_pxpypze(px, py, pz, e):
 
 
 
-def _transform(df, start=0, stop=-1):
+def _transform(df, start=0, stop=None):
     from collections import OrderedDict
     v = OrderedDict()
 
@@ -119,12 +119,13 @@ def _transform(df, start=0, stop=-1):
     # energy = ak.sum(energy, axis=0)
     p4 = _p4_from_pxpypze(px, py, pz, energy)
 
-    pt = p4.pt
-    print(p4)
+    # Boolean indexing flattens the constituents. Restore the per-jet structure
+    # before computing jet four-momenta and particle-to-jet angular offsets.
+    particles_by_jet = ak.unflatten(p4, n_particles)
+    jet_p4 = ak.sum(particles_by_jet, axis=1)
 
-    jet_p4 = ak.sum(p4, axis=1)
-
-    v['jet_pt'] = p4.pt
+    v['jet_pt'] = jet_p4.pt
+    v['part_pt'] = p4.pt
     v['part_eta'] = p4.eta
     v['part_phi'] = p4.phi
     v['jet_eta'] = jet_p4.eta
@@ -140,15 +141,21 @@ def _transform(df, start=0, stop=-1):
 
     _jet_etasign = ak.to_numpy(np.sign(v['jet_eta']))
     _jet_etasign[_jet_etasign == 0] = 1
-    v['part_deta'] = (p4.eta - v['jet_eta']) * _jet_etasign
-    v['part_dphi'] = p4.deltaphi(p4)
+    # Broadcast each jet's direction to its constituents, then flatten back
+    # to the original per-particle layout used by the other output fields.
+    jet_eta = jet_p4.eta[:, np.newaxis]
+    jet_axis = jet_p4[:, np.newaxis]
+    v['part_deta'] = ak.flatten(
+        (particles_by_jet.eta - jet_eta) * _jet_etasign[:, np.newaxis]
+    )
+    v['part_dphi'] = ak.flatten(particles_by_jet.deltaphi(jet_axis))
 
     _label = df['is_signal_new'].values
     v['label'] = np.stack((_label, 1-_label), axis=-1)
     v['train_val_test'] = df['ttv'].values
 
 
-    del px, py, pz, energy, p4, pt, _jet_etasign, _label
+    del px, py, pz, energy, p4, _jet_etasign, _label
     return v
 
 
